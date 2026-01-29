@@ -1,30 +1,34 @@
 {
-  "name": "codigo-front",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "name": "codigo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "run:client":"pnpm --filter client run dev",
+    "run:server":"pnpm --filter server run start:dev",
+    "run:share":"pnpm --filter share run dev",
+    "run:release":"pnpm --filter release run dev",
+    "build:client":"pnpm --filter client run build",
+    "build:server":"pnpm --filter server run build",
+    "build:release":"pnpm --filter release run build",
+    "build:share":"pnpm --filter share run build",
+    "start:server":"pnpm --filter server run start:prod",
+    "start:release":"pnpm --filter release run start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.2",
+  "devDependencies": {
+    "@types/lodash": "^4.17.23",
+    "@types/node": "^25.1.0",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.39.1",
-    "@types/node": "^24.10.0",
-    "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.2",
-    "@vitejs/plugin-react": "^5.1.0",
-    "eslint": "^9.39.1",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.4.24",
-    "globals": "^16.5.0",
-    "typescript": "~5.9.3",
-    "typescript-eslint": "^8.46.3",
-    "vite": "^7.2.2"
+    "@ant-design/icons": "^6.1.0",
+    "antd": "^6.2.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   }
 }
