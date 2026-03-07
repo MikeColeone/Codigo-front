@@ -33,9 +33,13 @@ export function useSendCode(form: FormInstance, type: string) {
     () => getCaptcha({ type }),
     {
       onSuccess: (result) => {
-        setCaptchaSrc(result.data.data);
+        console.log("验证码接口被调用");
+        setCaptchaSrc(result.data);
       },
-    }
+      onError: () => {
+        console.log("验证码接口请求失败");
+      },
+    },
   );
 
   /**
@@ -50,7 +54,7 @@ export function useSendCode(form: FormInstance, type: string) {
       onSuccess: () => {
         setStartedCountDown(true);
       },
-    }
+    },
   );
 
   /**
@@ -121,8 +125,8 @@ export function useSendCode(form: FormInstance, type: string) {
             {loadingWithGetSendCode
               ? "加载中"
               : isDisable
-              ? `${countDown}秒后重发`
-              : "获取验证码"}
+                ? `${countDown}秒后重发`
+                : "获取验证码"}
           </Button>
         </div>
       </Form.Item>

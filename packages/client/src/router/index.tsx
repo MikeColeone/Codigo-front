@@ -19,18 +19,6 @@ export const router = createHashRouter([
         path: "/editor",
         element: <Editor />,
       },
-      {
-        path: "/dataCount",
-        element: <DataCount />,
-      },
-      {
-        path: "/preview",
-        element: <Preview />,
-      },
-      {
-        path: "/release",
-        element: <Release />,
-      },
     ],
   },
 ]);

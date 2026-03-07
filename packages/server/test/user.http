@@ -11,5 +11,5 @@ Content-Type: application/json
 
 {
   "phone": "19839704896",
-  "randomCode": "123456"
+  "randomCode": 123456
 }

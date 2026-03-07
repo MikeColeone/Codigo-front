@@ -1,25 +1,33 @@
 import axios from "axios";
 import type { AxiosRequestConfig } from "axios";
-// To-do: 替换真实url
-export const BASE_URL = "https://api.example.com";
-const request = axios.create({
-  baseURL: BASE_URL,
-  timeout: 5000,
-});
+import { storeAuth } from "../hooks/useStoreAuth";
+import { message } from "antd";
 
+export const BASE_URL = "http://localhost:3000/api";
+const request = axios.create({ baseURL: BASE_URL });
+
+// 请求拦截器
 request.interceptors.request.use((config) => {
+  if (storeAuth.token) {
+    config.headers.Authorization = storeAuth.token;
+  }
   return config;
 });
 
+// 响应拦截器
 request.interceptors.response.use(
   (response) => {
-    const { data } = response.data;
-    if (data.code !== 0 && data.message) {
+    const data = response?.data;
+    if (data.code === 0 && data.msg !== undefined) {
+      message.success(data.msg);
     }
-    return data;
+    return response;
   },
-  (error) => {
-    return Promise.reject(error);
+  (err) => {
+    const { code, response } = err;
+    if (code === "ERR_BAD_REQUEST") {
+      message.warning(response?.data?.msg ?? "出现未知错误");
+    }
   },
 );
 

@@ -1,4 +1,4 @@
-export function Editor() {
+export default function Editor() {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">编辑器页面</h1>

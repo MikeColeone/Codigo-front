@@ -71,7 +71,7 @@ export default function RegisterCaptcha() {
               },
             ]}
           >
-            <Checkbox>同意小滴课堂《隐私策略》</Checkbox>
+            <Checkbox>同意Codigo《隐私策略》</Checkbox>
           </Form.Item>
 
           <Form.Item>

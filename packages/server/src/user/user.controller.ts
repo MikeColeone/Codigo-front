@@ -39,12 +39,12 @@ export class UserController {
     return this.userService.getCaptcha(type, key);
   }
 
-  // 测试接口
+  // 测试接口;
   // @Post('send_code')
   // async sendCode() {
   //   console.log('发送短信接口被调用');
   //   const phone = '19839704896';
-  //   const randomCode = '1234';
+  //   const randomCode = 1234;
   //   const codeRes = await this.textMessageTool.sendTextMessage(
   //     phone,
   //     randomCode,

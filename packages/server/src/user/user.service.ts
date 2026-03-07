@@ -1,44 +1,38 @@
-import { Injectable } from '@nestjs/common';
-import { SecretTool } from 'src/utils/secretTool';
-import { RedisModule } from 'src/utils/modules/redis.module';
-import { CaptchaTool } from 'src/utils/captchaTool';
-import { RandomTool } from 'src/utils/RandomTool';
-import { User } from './entities/user.entity';
-import { JwtService } from '@nestjs/jwt';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { CaptchaTool } from '../utils/captchaTool';
+import { RedisModule } from '../utils/modules/redis.module';
+import { TextMessageTool } from '../utils/TextMessageTool';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+import { Repository } from 'typeorm';
+import dayjs from 'dayjs';
+import { RandomTool } from '../utils/RandomTool';
+import { SecretTool } from '../utils/secretTool';
+import { JwtService } from '@nestjs/jwt';
+
 @Injectable()
 export class UserService {
   constructor(
-    private readonly redisModule: RedisModule,
     private readonly captchaTool: CaptchaTool,
+    private readonly redis: RedisModule,
+    private readonly textMessageTool: TextMessageTool,
+    private readonly randomTool: RandomTool,
     private readonly secretTool: SecretTool,
     private readonly jwtService: JwtService,
-    private readonly randomTool: RandomTool,
-    @InjectRepository(User) private readonly userRepository,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
+
   /**
-   * 图形验证码功能
-   * @param type 验证码类型
-   * @param key 验证码的唯一标识，可以使用用户的 IP 地址和 User-Agent 生成一个唯一的 key
+   * 图形验证码服务
    */
-  async getCaptcha(type: string, key: string) {
+  async getCaptcha(key: string, type: string) {
     const svgCaptcha = await this.captchaTool.generateCaptcha();
-    this.redisModule.set(`${type}:captcha:${key}`, svgCaptcha.text, 60);
+    this.redis.set(`${type}:captcha:${key}`, svgCaptcha.text, 60);
     return { data: svgCaptcha.data, text: svgCaptcha.text };
   }
 
-  // 查找用户
-  findAll() {
-    return `This action returns all user`;
-  }
-
   /**
-   * ⼿机验证码服务
-   * @param phone ⼿机
-   * @param captcha 图形验证码
-   * @param type 类型
-   * @param key key
-   * @param randomCode 随机验证码
+   * 短信验证码服务
    */
   async sendCode(
     phone: string,
@@ -49,37 +43,47 @@ export class UserService {
   ) {
     // 60秒内不能重复获取
     if (await this.redis.exists(`${type}:code:${phone}`)) {
-      const dateRedis = dayjs(
+      const dateRdis = dayjs(
         Number((await this.redis.get(`${type}:code:${phone}`))!.split('_')[0]),
       );
-      if (dayjs(Date.now()).diff(dateRedis, 'second') <= 60)
-        throw new BadRequestException('请勿重复获取短信验证码');
+      if (dayjs(Date.now()).diff(dateRdis, 'second') <= 60) {
+        throw new BadRequestException('60秒内请勿重复获取验证码');
+      }
     }
-    // 是否有图形验证
-    if (!(await this.redis.exists(`${type}:captcha:${key}`)))
-      throw new BadRequestException('请先获取图形验证码');
-    if (!captcha) throw new BadRequestException('请输⼊图形验证码');
-    // 对⽐⽤户的图形验证码和redis储存的是否⼀致
-    const captchaRedis = await this.redis.get(`${type}:captcha:${key}`);
-    if (!(String(captcha).toLowerCase() === captchaRedis!.toLowerCase()))
-      throw new BadRequestException('图形验证码不正确');
-    // 发送⼿机验证码
-    const codeRes = await this.textMessageTool.sendMsgCode(phone, randomCode);
-    // 获取当前时间拼接验证码
-    const randomCodeTime = `${Date.now()}_${randomCode}`;
-    this.redis.set(`${type}:code:${phone}`, randomCodeTime, 600);
+
+    // // 是否有获取图形验证码
+    // if (!(await this.redis.exists(`${type}:captcha:${key}`)))
+    //   throw new BadRequestException('请先获取图形验证码');
+
+    // // 对比用户传入的图形验证码和存入 redis 的是否一致
+    // const captchaRedis = await this.redis.get(`${type}:captcha:${key}`);
+
+    // if (!(captcha.toLowerCase() === captchaRedis!.toLowerCase()))
+    //   throw new BadRequestException('图形验证码不正确');
+
+    // 发送短信验证码
+    const codeRes = await this.textMessageTool.sendTextMessage(
+      phone,
+      randomCode,
+    );
+
     // 删除图形验证码
     this.redis.del(`${type}:captcha:${key}`);
-    if (codeRes.code === 0) {
-      return null;
+
+    // console.log(codeRes.code);
+    if (codeRes.code === 200) {
+      // 储存短信验证码
+      const randomCodeTime = `${Date.now()}_${randomCode}`;
+      this.redis.set(`${type}:code:${phone}`, randomCodeTime, 60);
     } else {
+      console.log('短信发送失败', codeRes);
       this.redis.del(`${type}:code:${phone}`);
-      throw new BadRequestException('发送失败, 请重试');
+      throw new BadRequestException('发送失败请重试');
     }
   }
 
   /**
-   * 注册功能
+   * 注册服务
    */
   async register(
     phone: string,
@@ -93,7 +97,7 @@ export class UserService {
 
     // 用户传入的短信验证码对比 redis 中的是否一致
     if (await this.redis.exists(`register:code:${phone}`)) {
-      const codeRes = (await this.redis.get(`register:code:${phone}`)!).split(
+      const codeRes = (await this.redis.get(`register:code:${phone}`))!.split(
         '_',
       )[1];
       if (codeRes !== sendCode)
@@ -108,8 +112,8 @@ export class UserService {
     }
 
     // 随机生成头像和昵称
-    const name = this.randomTool.randomName();
-    const avatar = this.randomTool.randomAvatar();
+    const name = this.randomTool.randomNickName();
+    const avatar = this.randomTool.randomImage();
 
     // 生成加密密码
     const pwd = this.secretTool.getSecret(password);

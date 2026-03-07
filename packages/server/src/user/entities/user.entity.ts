@@ -6,8 +6,17 @@ export class User {
   id: number = 0;
 
   @Column()
-  name: string = '';
+  username: string = '';
+
+  @Column({ nullable: true })
+  head_img: string = '';
 
   @Column()
   phone: string = '';
+
+  @Column()
+  password: string = '';
+
+  @Column()
+  open_id: string = '';
 }

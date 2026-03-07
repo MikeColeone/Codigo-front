@@ -7,12 +7,12 @@ import { TextMessageConfig } from 'config';
 
 @Injectable()
 export class TextMessageTool {
-  async sendTextMessage(phone: string, randomCode: string) {
+  async sendTextMessage(phone: string, randomCode: number): Promise<any> {
     const url = new URL('https://jmsms.market.alicloudapi.com/sms/send');
 
     url.searchParams.append('mobile', phone);
     url.searchParams.append('templateId', 'JM1000372');
-    url.searchParams.append('value', randomCode);
+    url.searchParams.append('value', randomCode.toString());
 
     const response = await fetch(url.toString(), {
       method: 'POST',
@@ -21,11 +21,6 @@ export class TextMessageTool {
       },
     });
 
-    const text = await response.text();
-
-    console.log('status:', response.status);
-    console.log('body:', text);
-
-    return text;
+    return response.json();
   }
 }
