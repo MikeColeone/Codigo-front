@@ -131,15 +131,23 @@ const EditorComponent: FC<ComponentProps> = ({ icon, name, type }) => {
     // @ts-ignore
     store.push(type);
   }
+
+  function handleDragStart(e: React.DragEvent) {
+    e.dataTransfer.setData("componentType", type);
+    e.dataTransfer.effectAllowed = "copy";
+  }
+
   return (
     <div
       onClick={handleClick}
-      className="group relative flex flex-col items-center justify-center gap-2 rounded-xl border border-white/5 bg-white/5 p-4 text-xs text-gray-400 cursor-pointer select-none transition-all hover:border-emerald-500/50 hover:bg-emerald-500/10 hover:text-white hover:shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:-translate-y-1"
+      draggable
+      onDragStart={handleDragStart}
+      className="group relative flex flex-col items-center justify-center gap-2 rounded-xl border border-white/5 bg-white/5 p-4 text-xs text-gray-400 cursor-grab select-none transition-all hover:border-emerald-500/50 hover:bg-emerald-500/10 hover:text-white hover:shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:-translate-y-1 active:cursor-grabbing"
     >
-      <div className="text-xl text-emerald-500/70 group-hover:text-emerald-400 transition-colors">
+      <div className="text-xl text-emerald-500/70 group-hover:text-emerald-400 transition-colors pointer-events-none">
         {icon}
       </div>
-      <span className="font-medium">{name}</span>
+      <span className="font-medium pointer-events-none">{name}</span>
     </div>
   );
 };

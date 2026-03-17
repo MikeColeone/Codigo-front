@@ -297,6 +297,22 @@ const EditorCanvas: FC<{
     setIsDragable(true);
   }
 
+  // HTML5 Drag and Drop for adding new components from sidebar
+  function handleDragOver(e: React.DragEvent) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault();
+    const type = e.dataTransfer.getData("componentType");
+    if (type) {
+      // @ts-ignore
+      const { push } = useStoreComponents();
+      push(type);
+    }
+  }
+
   // 键盘操作数组的监听事件
   useComponentKeyPress();
 
@@ -306,7 +322,11 @@ const EditorCanvas: FC<{
   }));
 
   return (
-    <div className="min-h-[700px] bg-white">
+    <div
+      className="min-h-[700px] bg-white pb-20"
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       <EditorChooiseToolbar
         onRef={toolbarRef}
         hidden={!showToolbar || isDragable}
