@@ -62,13 +62,9 @@ export const FormContainer: FC<IFormContainer> = (props) => {
   // 将数据转成一维，方便设置表单数据 {src:{xxx}} => {src:'xxx'}
   const propValues = useMemo(
     () =>
-      Object.entries(props.config)
-        .map(([key, value]) => {
-          return { [key]: value.value };
-        })
-        .reduce((acc, cur) => {
-          return { ...acc, ...cur };
-        }, {}),
+      Object.entries(props.config).reduce((acc, [key, value]) => {
+        return { ...acc, [key]: value.value };
+      }, {}),
     [props.config]
   );
 
@@ -90,7 +86,7 @@ export const FormContainer: FC<IFormContainer> = (props) => {
       form={form}
       layout="vertical"
       onValuesChange={handleValuesChange}
-      {...objectOmit(props, ["onValuesChangeAfter"])}
+      {...objectOmit(props, ["onValuesChangeAfter", "config"])}
     >
       {props.children as ReactNode}
     </Form>

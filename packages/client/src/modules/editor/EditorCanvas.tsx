@@ -28,7 +28,25 @@ export function generateComponent(conf: TBasicComponentConfig) {
   const Component = getComponentByType(conf.type);
 
   // toJS将mobx装饰过的对象转成普通对象
-  return <Component {...toJS(conf.props)} key={conf.id} />;
+  return (
+    <div
+      style={{
+        width: conf.styles?.width || "100%",
+        height: conf.styles?.height || "auto",
+        marginTop: conf.styles?.marginTop,
+        marginBottom: conf.styles?.marginBottom,
+        marginLeft: conf.styles?.marginLeft,
+        marginRight: conf.styles?.marginRight,
+        paddingTop: conf.styles?.paddingTop,
+        paddingBottom: conf.styles?.paddingBottom,
+        paddingLeft: conf.styles?.paddingLeft,
+        paddingRight: conf.styles?.paddingRight,
+        overflow: "hidden", // 防止内容溢出
+      }}
+    >
+      <Component {...toJS(conf.props)} key={conf.id} />
+    </div>
+  );
 }
 
 interface ComponentWrapperProps {

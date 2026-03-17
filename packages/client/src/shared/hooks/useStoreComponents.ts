@@ -77,6 +77,21 @@ export function useStoreComponents() {
     }
   );
 
+  // 定义更新当前组件样式的函数
+  const updateCurrentComponentStyles = action((styles: Record<string, any>) => {
+    const curCompConfig = getCurrentComponentConfig.get();
+    if (!curCompConfig) return;
+
+    if (!curCompConfig.styles) {
+      curCompConfig.styles = {};
+    }
+
+    for (const [key, value] of Object.entries(styles)) {
+      // @ts-expect-error ignore type
+      curCompConfig.styles[key] = calcValueByString(value);
+    }
+  });
+
   // 定义带有数组参数的更新当前组件配置的函数
   type TUpdateCurrentCompConfigWithArray = (args: {
     key: string;
@@ -324,6 +339,7 @@ export function useStoreComponents() {
     setCurrentComponent,
     store: storeComponents,
     updateCurrentComponent,
+    updateCurrentComponentStyles,
     updateCurrentCompConfigWithArray,
     setItemsExpandIndex,
     // 导出撤销操作的函数

@@ -47,6 +47,18 @@ export interface TBasicComponentConfig<
   type: T;
   id: string;
   props: Partial<P>;
+  styles?: {
+    width?: number | string;
+    height?: number | string;
+    marginTop?: number;
+    marginBottom?: number;
+    marginLeft?: number;
+    marginRight?: number;
+    paddingTop?: number;
+    paddingBottom?: number;
+    paddingLeft?: number;
+    paddingRight?: number;
+  };
 }
 
 // 剔除类型里面的可选
