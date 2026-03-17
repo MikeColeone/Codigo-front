@@ -1,17 +1,19 @@
 import { createRef, useEffect, useRef, useState } from "react";
 import { useTitle } from "ahooks";
 import { ConfigProvider, theme } from "antd";
+import { observer } from "mobx-react-lite";
 
 import EditorHeader from "./EditorHeader";
 import EditorLeftPanel from "./EditorLeftPanel";
 import EditorRightPanel from "./EditorRightPanel";
 import EditorCanvas from "./EditorCanvas";
 
-import { useStoreComponents } from "@/shared/hooks";
+import { useStoreComponents, useStorePage } from "@/shared/hooks";
 
-function Editor() {
+const Editor = observer(() => {
   useTitle("codigo - 页面编辑");
   const { store: storeComps, localStorageInStore } = useStoreComponents();
+  const { store: storePage } = useStorePage();
 
   //  创建容器用于调用子组件的函数
   const canvasRef = createRef<any>();
@@ -81,7 +83,7 @@ function Editor() {
             itemColor: "#64748b",
             itemSelectedColor: "#10b981",
             itemHoverColor: "#10b981",
-          }
+          },
         },
       }}
     >
@@ -103,22 +105,32 @@ function Editor() {
           </div>
 
           {/* 中间编辑组件 */}
-          <div className="flex-auto flex items-center justify-center bg-slate-100/50 relative">
+          <div className="flex-auto flex items-center justify-center bg-slate-100/50 relative overflow-auto p-8">
             {/* Canvas Glow Effect */}
             <div className="absolute w-[400px] h-[720px] bg-emerald-500/5 blur-3xl rounded-full pointer-events-none"></div>
 
             <div
               ref={canvasContainerRef}
-              className="editor-canvas-container relative z-10 w-[380px] h-[700px] bg-white text-left overflow-y-auto overflow-x-hidden rounded-[30px] border-[8px] border-slate-800 shadow-2xl scrollbar-hide"
+              className={`editor-canvas-container relative z-10 bg-white text-left overflow-y-auto overflow-x-hidden shadow-2xl transition-all duration-300 ${
+                storePage.deviceType === "mobile"
+                  ? "rounded-[30px] border-[8px] border-slate-800"
+                  : "rounded-lg border border-slate-200"
+              }`}
+              style={{
+                width: storePage.canvasWidth,
+                height: storePage.canvasHeight,
+              }}
             >
               {/* Mobile Status Bar Simulation */}
-              <div className="sticky top-0 z-50 h-6 bg-black/90 text-white text-[10px] flex items-center justify-between px-4 font-mono">
-                <span>9:41</span>
-                <div className="flex gap-1">
-                  <div className="w-3 h-3 bg-white/20 rounded-full"></div>
-                  <div className="w-3 h-3 bg-white/20 rounded-full"></div>
+              {storePage.deviceType === "mobile" && (
+                <div className="sticky top-0 z-50 h-6 bg-black/90 text-white text-[10px] flex items-center justify-between px-4 font-mono">
+                  <span>9:41</span>
+                  <div className="flex gap-1">
+                    <div className="w-3 h-3 bg-white/20 rounded-full"></div>
+                    <div className="w-3 h-3 bg-white/20 rounded-full"></div>
+                  </div>
                 </div>
-              </div>
+              )}
               <EditorCanvas store={storeComps} onRef={canvasRef} />
             </div>
           </div>
@@ -133,5 +145,6 @@ function Editor() {
       </div>
     </ConfigProvider>
   );
-}
+});
+
 export default Editor;
