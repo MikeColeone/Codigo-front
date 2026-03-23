@@ -15,7 +15,7 @@ export default function AlertComponent(_props: IAlertComponentProps) {
   return (
     <Alert
       type={props.type}
-      message={props.title || "请输入文案"}·
+      message={props.title || "请输入文案"}
       showIcon={props.showIcon}
       closable={props.showClose}
     />

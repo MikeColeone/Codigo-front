@@ -2,8 +2,8 @@
 
 import { Input, Segmented } from "antd";
 import type { SegmentedLabeledOption } from "antd/es/segmented";
-import type { ITextComponentProps } from "@codigo/schema";
 import {
+  type ITextComponentProps,
   fillComponentPropsByConfig,
   textComponentDefaultConfig,
 } from "@codigo/materials-react";

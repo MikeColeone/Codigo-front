@@ -1,7 +1,7 @@
 ﻿import { useMemo } from "react";
 import { Form, Input, Select } from "antd";
-import type { IRadioComponentProps } from "@codigo/schema";
 import {
+  type IRadioComponentProps,
   fillComponentPropsByConfig,
   radioComponentDefaultConfig,
 } from "@codigo/materials-react";

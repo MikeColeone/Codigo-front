@@ -21,7 +21,7 @@ export default function QrcodeComponentProps(_props: IQrcodeComponentProps) {
 
   // 判断是改变了二维码颜色和背景颜色的事件
   function handleValuesChangeAfter(
-    changedValues: TQrcodeComponentConfig["props"]
+    changedValues: TQrcodeComponentConfig["props"],
   ) {
     if (changedValues["bgColor"] !== undefined) {
       console.log(changedValues["bgColor"]);
@@ -65,24 +65,6 @@ export default function QrcodeComponentProps(_props: IQrcodeComponentProps) {
       <FormPropLabel prop={props.size} name="size" label="二维码大小：">
         <Input type="number" max={375} min={80} />
       </FormPropLabel>
-      {/* <FormPropLabel prop={props.icon} name="icon" label="二维码中间图标：">
-        <span>TODO</span>
-      </FormPropLabel>
-      <FormPropLabel prop={props.iconSize} name="iconSize" label="二维码大小：">
-        <Input type="number" />
-      </FormPropLabel> */}
     </FormContainer>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

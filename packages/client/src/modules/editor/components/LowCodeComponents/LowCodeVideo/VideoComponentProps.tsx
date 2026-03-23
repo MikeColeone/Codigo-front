@@ -1,5 +1,5 @@
-﻿import type { IVideoComponentProps } from "@codigo/schema";
-import {
+﻿import {
+  type IVideoComponentProps,
   fillComponentPropsByConfig,
   videoComponentDefaultConfig,
 } from "@codigo/materials-react";

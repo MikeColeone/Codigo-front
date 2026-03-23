@@ -1,4 +1,4 @@
-﻿import type { FC } from "react";
+import type { FC } from "react";
 import {
   ImageComponentProps,
   SwiperComponentProps,
@@ -15,7 +15,7 @@ import {
   CheckboxComponentProps,
   RadioComponentProps,
 } from "..";
-import type { TBasicComponentConfig } from "@codigo/schema";
+import type { TBasicComponentConfig, TComponentTypes } from "@codigo/schema";
 
 // @ts-ignore
 export const componentPropsList: Record<TComponentTypes, FC<any>> = {

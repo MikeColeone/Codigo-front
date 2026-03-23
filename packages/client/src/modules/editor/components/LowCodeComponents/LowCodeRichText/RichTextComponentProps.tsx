@@ -1,5 +1,5 @@
-﻿import type { IRichTextComponentProps } from "@codigo/schema";
-import {
+﻿import {
+  type IRichTextComponentProps,
   fillComponentPropsByConfig,
   richTextComponentDefaultConfig,
 } from "@codigo/materials-react";

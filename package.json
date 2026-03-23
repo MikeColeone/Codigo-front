@@ -16,6 +16,7 @@
     "run:materials-react": "pnpm --filter materials-react run dev",
     "run:release": "pnpm --filter release run dev",
     "build:client": "pnpm --filter client run build",
+    "build:schema": "pnpm --filter schema run build",
     "build:server": "pnpm --filter server run build",
     "build:release": "pnpm --filter release run build",
     "build:materials-react": "pnpm --filter materials-react run build",

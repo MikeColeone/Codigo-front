@@ -1,4 +1,7 @@
-import type { TBasicComponentConfig, TransformedComponentConfig } from "..";
+import type {
+  TBasicComponentConfig,
+  TransformedComponentConfig,
+} from "@codigo/schema";
 
 export interface IAlertComponentProps {
   title: string;

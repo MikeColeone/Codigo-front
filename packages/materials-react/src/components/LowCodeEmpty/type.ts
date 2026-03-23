@@ -1,26 +1,34 @@
-import type { IImageComponentProps, TBasicComponentConfig, TransformedComponentConfig } from '..'
+import type { IImageComponentProps } from "..";
+import type {
+  TBasicComponentConfig,
+  TransformedComponentConfig,
+} from "@codigo/schema";
 
 export interface IEmptyComponentProps {
-  image: string
-  description: string
-  imageWidth?: number
-  imageHeight?: number
-  imageObjectFit: IImageComponentProps['fit']
+  image: string;
+  description: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  imageObjectFit: IImageComponentProps["fit"];
 }
 
-export type TEmptyComponentConfig = TBasicComponentConfig<'empty', IEmptyComponentProps>
+export type TEmptyComponentConfig = TBasicComponentConfig<
+  "empty",
+  IEmptyComponentProps
+>;
 
-export type TEmptyComponentConfigResult = TransformedComponentConfig<IEmptyComponentProps>
+export type TEmptyComponentConfigResult =
+  TransformedComponentConfig<IEmptyComponentProps>;
 
 export const emptyComponentDefaultConfig: TEmptyComponentConfigResult = {
   description: {
-    value: '暂无数据',
-    defaultValue: '暂无数据',
+    value: "暂无数据",
+    defaultValue: "暂无数据",
     isHidden: false,
   },
   image: {
-    value: '',
-    defaultValue: '',
+    value: "",
+    defaultValue: "",
     isHidden: false,
   },
   imageWidth: {
@@ -34,8 +42,8 @@ export const emptyComponentDefaultConfig: TEmptyComponentConfigResult = {
     isHidden: false,
   },
   imageObjectFit: {
-    value: 'contain',
-    defaultValue: 'contain',
+    value: "contain",
+    defaultValue: "contain",
     isHidden: false,
   },
-}
+};

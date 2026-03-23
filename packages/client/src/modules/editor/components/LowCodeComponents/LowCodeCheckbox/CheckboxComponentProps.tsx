@@ -1,7 +1,7 @@
 ﻿import { useMemo } from "react";
 import { Checkbox, Form, Input } from "antd";
-import type { ICheckboxComponentProps } from "@codigo/schema";
 import {
+  type ICheckboxComponentProps,
   checkboxComponentDefaultConfig,
   fillComponentPropsByConfig,
 } from "@codigo/materials-react";

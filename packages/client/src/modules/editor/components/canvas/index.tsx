@@ -1,7 +1,12 @@
 import ClassNames from "classnames";
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
-import type { CSSProperties, FC, MouseEvent as ReactMouseEvent, ReactNode } from "react";
+import type {
+  CSSProperties,
+  FC,
+  MouseEvent as ReactMouseEvent,
+  ReactNode,
+} from "react";
 import {
   createRef,
   useEffect,
@@ -10,12 +15,9 @@ import {
   useRef,
   useState,
 } from "react";
-import { getComponentByType } from "@codigo/schema";
-import type {
-  TBasicComponentConfig,
-  TComponentPropsUnion,
-  TComponentTypes,
-} from "@codigo/materials-react";
+import { getComponentByType } from "@codigo/materials-react";
+import type { TBasicComponentConfig, TComponentTypes } from "@codigo/schema";
+import type { TBasicComponentConfig as TComponentPropsUnion } from "@codigo/schema";
 import {
   useComponentKeyPress,
   useStoreComponents,
@@ -301,14 +303,18 @@ const EditorCanvas: FC<{
     if (!movingComponent || !canEditStructure) return;
 
     const onMouseMove = (event: MouseEvent) => {
-      const left = movingComponent.origLeft + event.clientX - movingComponent.startX;
-      const top = movingComponent.origTop + event.clientY - movingComponent.startY;
+      const left =
+        movingComponent.origLeft + event.clientX - movingComponent.startX;
+      const top =
+        movingComponent.origTop + event.clientY - movingComponent.startY;
       updateComponentPosition(movingComponent.id, left, top, true);
     };
 
     const onMouseUp = (event: MouseEvent) => {
-      const left = movingComponent.origLeft + event.clientX - movingComponent.startX;
-      const top = movingComponent.origTop + event.clientY - movingComponent.startY;
+      const left =
+        movingComponent.origLeft + event.clientX - movingComponent.startX;
+      const top =
+        movingComponent.origTop + event.clientY - movingComponent.startY;
       updateComponentPosition(movingComponent.id, left, top, false);
       setMovingComponent(null);
       setIsDragable(false);
@@ -371,8 +377,12 @@ const EditorCanvas: FC<{
             isDragable={isDragable}
             canDrag={canEditStructure}
             onMouseDown={(event) => handleDragComponentStart(event, item)}
-            onClick={() => handleComponentClick(component as TComponentPropsUnion)}
-            isCurrentComponent={isCurrentComponent(component as TComponentPropsUnion)}
+            onClick={() =>
+              handleComponentClick(component as TComponentPropsUnion)
+            }
+            isCurrentComponent={isCurrentComponent(
+              component as TComponentPropsUnion,
+            )}
             id={item}
             style={{
               left: component.styles?.left as string | number | undefined,
@@ -389,15 +399,3 @@ const EditorCanvas: FC<{
 });
 
 export default EditorCanvas;
-
-
-
-
-
-
-
-
-
-
-
-

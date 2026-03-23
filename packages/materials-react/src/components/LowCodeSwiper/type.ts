@@ -1,9 +1,8 @@
-import {
-  type IImageComponentProps,
-  type TBasicComponentConfig,
-  type TransformedComponentConfig,
-  defaultImageInfo,
-} from "..";
+import { type IImageComponentProps, defaultImageInfo } from "..";
+import type {
+  TBasicComponentConfig,
+  TransformedComponentConfig,
+} from "@codigo/schema";
 
 // 轮播图组件属性
 export interface ISwiperComponentProps {

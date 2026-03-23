@@ -2,10 +2,11 @@
 
 import { Input, Segmented } from "antd";
 import type { SegmentedLabeledOption } from "antd/es/segmented";
-import type { ISplitComponentProps } from "@codigo/schema";
 import {
+  type ISplitComponentProps,
   fillComponentPropsByConfig,
   splitComponentDefaultConfig,
+  // @ts-ignore 缺少声明文件，临时忽略类型检查
 } from "@codigo/materials-react";
 import { FormContainer, FormPropLabel } from "..";
 
@@ -49,15 +50,3 @@ export default function SplitComponentProps(_props: ISplitComponentProps) {
     </FormContainer>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

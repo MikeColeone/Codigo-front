@@ -47,7 +47,7 @@ export function initBuiltinComponents() {
     render: LowCodeList,
   });
   registerComponent({
-    type: "text",
+    type: "titleText",
     name: "Text",
     defaultConfig: {} as any,
     render: LowCodeText,
@@ -65,7 +65,7 @@ export function initBuiltinComponents() {
     render: LowCodeEmpty,
   });
   registerComponent({
-    type: "rich_text",
+    type: "richText",
     name: "RichText",
     defaultConfig: {} as any,
     render: LowCodeRichText,
@@ -89,7 +89,7 @@ export function initBuiltinComponents() {
     render: LowCodeInput,
   });
   registerComponent({
-    type: "text_area",
+    type: "textArea",
     name: "TextArea",
     defaultConfig: {} as any,
     render: LowCodeTextArea,

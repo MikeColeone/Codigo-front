@@ -1,11 +1,8 @@
 import { ulid } from "ulid";
 import { action, computed, toJS } from "mobx";
-import type {
-  TBasicComponentConfig,
-  TComponentPropsUnion,
-  TComponentTypes,
-} from "@codigo/materials-react";
-import { calcValueByString } from "@codigo/schema";
+import type { TBasicComponentConfig, TComponentTypes } from "@codigo/schema";
+import type { TBasicComponentConfig as TComponentPropsUnion } from "@codigo/schema";
+import { calcValueByString } from "@codigo/materials-react";
 import { createStoreComponents } from "@/shared/stores";
 import { arrayMove } from "@dnd-kit/sortable";
 import { trackUndo } from "mobx-shallow-undo";

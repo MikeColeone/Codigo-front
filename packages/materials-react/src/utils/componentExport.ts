@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import type { TComponentTypes } from "..";
+import type { TComponentTypes } from "@codigo/schema";
 import {
   CardComponent,
   ImageComponent,

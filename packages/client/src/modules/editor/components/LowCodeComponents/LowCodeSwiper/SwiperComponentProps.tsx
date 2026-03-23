@@ -1,7 +1,7 @@
 ﻿import { Form, Input, Select, Switch } from "antd";
 import { useMemo } from "react";
-import type { ISwiperComponentProps } from "@codigo/schema";
 import {
+  type ISwiperComponentProps,
   defaultImageInfo,
   fillComponentPropsByConfig,
   swiperComponentDefaultConfig,

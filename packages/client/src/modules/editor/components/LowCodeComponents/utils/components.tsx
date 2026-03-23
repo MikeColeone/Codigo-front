@@ -9,12 +9,9 @@ import type {
 } from "antd";
 import { useEffect, useMemo, useState, useRef } from "react";
 import type { FC, ReactNode, RefAttributes } from "react";
-import type {
-  TComponentPropsUnion,
-  TransformedComponentConfig,
-  IResources,
-} from "@codigo/materials-react";
-import { objectOmit } from "@codigo/schema";
+import type { TransformedComponentConfig, IResources } from "@codigo/schema";
+import type { TBasicComponentConfig as TComponentPropsUnion } from "@codigo/schema";
+import { objectOmit } from "@codigo/materials-react";
 import type { UploadType } from "@codigo/schema";
 import { useStoreComponents } from "@/shared/hooks/useStoreComponents";
 import {
@@ -52,7 +49,7 @@ export const FormPropLabel: FC<IFormPropLabelProps> = (props) => {
 interface IFormContainer extends FormProps {
   config: TransformedComponentConfig<Record<string, any>>;
   onValuesChangeAfter?: (
-    changedValues: Record<keyof TComponentPropsUnion["props"], any>
+    changedValues: Record<keyof TComponentPropsUnion["props"], any>,
   ) => void;
 }
 export const FormContainer: FC<IFormContainer> = (props) => {
@@ -65,7 +62,7 @@ export const FormContainer: FC<IFormContainer> = (props) => {
       Object.entries(props.config).reduce((acc, [key, value]) => {
         return { ...acc, [key]: value.value };
       }, {}),
-    [props.config]
+    [props.config],
   );
 
   useEffect(() => {
@@ -74,7 +71,7 @@ export const FormContainer: FC<IFormContainer> = (props) => {
 
   // 表单值改变重新更新 store 中的值
   function handleValuesChange(
-    changedValues: Record<keyof TComponentPropsUnion["props"], any>
+    changedValues: Record<keyof TComponentPropsUnion["props"], any>,
   ) {
     updateCurrentComponent(changedValues);
     // 二维码组件的单独处理背景颜色
@@ -169,7 +166,7 @@ export const FormListItem: FC<FormListItemProps<any>> = (props) => {
 
 // 新增列表类型组件
 interface FormContainerWithListProps<
-  T extends { id: string } & Record<string, any>
+  T extends { id: string } & Record<string, any>,
 > {
   id: string;
   items: T[];
@@ -178,7 +175,7 @@ interface FormContainerWithListProps<
   keyName?: string;
 }
 export const FormContainerWithList: FC<FormContainerWithListProps<any>> = (
-  props
+  props,
 ) => {
   const { updateCurrentComponent, setItemsExpandIndex } = useStoreComponents();
   const [expandIndex, setExpandIndex] = useState(0);
@@ -256,7 +253,7 @@ export const LoadResource: FC<LoadResourceProps> = ({
         message.success(msg ?? "删除成功");
         onDelete();
       },
-    }
+    },
   );
 
   return (
@@ -333,7 +330,7 @@ export const UploadComponent: FC<UploadComponentProps> = ({
         // 资源上传成功之后重新请求资源获取的接口，拿到最新值
         execGetResources();
       },
-    }
+    },
   );
 
   // 打开弹窗重新获取资源
@@ -422,8 +419,7 @@ export const UploadComponent: FC<UploadComponentProps> = ({
 
 // 资源管理组件
 interface UploadEditOrChooiseInputProps
-  extends InputProps,
-    RefAttributes<InputRef> {
+  extends InputProps, RefAttributes<InputRef> {
   propName: string;
   type: "video" | "image";
   listOptions?: {
@@ -500,15 +496,3 @@ export const UploadEditOrChooiseInput: FC<UploadEditOrChooiseInputProps> = ({
     </>
   );
 };
-
-
-
-
-
-
-
-
-
-
-
-

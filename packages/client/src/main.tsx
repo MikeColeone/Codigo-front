@@ -1,6 +1,10 @@
-﻿import { StrictMode } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./app/App.tsx";
+import { initBuiltinComponents } from "@codigo/materials-react";
+
+initBuiltinComponents();
+
 // import { I18nProvider } from "./i18n/I18nProvider.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

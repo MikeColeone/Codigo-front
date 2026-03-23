@@ -1,7 +1,7 @@
 ﻿import { Input } from "antd";
 import { useMemo } from "react";
-import type { IInputComponentProps } from "@codigo/schema";
 import {
+  type IInputComponentProps,
   fillComponentPropsByConfig,
   inputComponentDefaultConfig,
 } from "@codigo/materials-react";

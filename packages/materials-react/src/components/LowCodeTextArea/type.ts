@@ -1,12 +1,19 @@
-import type { TBasicComponentConfig, TransformedComponentConfig } from '..'
+import type {
+  TBasicComponentConfig,
+  TransformedComponentConfig,
+} from "@codigo/schema";
 
 export interface ITextAreaComponentProps {
-  title: string
-  text: string
-  placeholder: string
-  onUpdate?: (value: string) => void
+  title: string;
+  text: string;
+  placeholder: string;
+  onUpdate?: (value: string) => void;
 }
 
-export type TTextAreaComponentConfig = TBasicComponentConfig<'textArea', ITextAreaComponentProps>
+export type TTextAreaComponentConfig = TBasicComponentConfig<
+  "textArea",
+  ITextAreaComponentProps
+>;
 
-export type TTextAreaComponentConfigResult = TransformedComponentConfig<ITextAreaComponentProps>
+export type TTextAreaComponentConfigResult =
+  TransformedComponentConfig<ITextAreaComponentProps>;

@@ -1,14 +1,21 @@
-import type { TBasicComponentConfig, TransformedComponentConfig } from '..'
+import type {
+  TBasicComponentConfig,
+  TransformedComponentConfig,
+} from "@codigo/schema";
 
 export interface ISplitComponentProps {
-  text: string
-  dashed: boolean
-  orientation: 'left' | 'center' | 'right'
+  text: string;
+  dashed: boolean;
+  orientation: "left" | "center" | "right";
 }
 
-export type TSplitComponentConfig = TBasicComponentConfig<'split', ISplitComponentProps>
+export type TSplitComponentConfig = TBasicComponentConfig<
+  "split",
+  ISplitComponentProps
+>;
 
-export type TSplitComponentConfigResult = TransformedComponentConfig<ISplitComponentProps>
+export type TSplitComponentConfigResult =
+  TransformedComponentConfig<ISplitComponentProps>;
 
 export const splitComponentDefaultConfig: TSplitComponentConfigResult = {
   dashed: {
@@ -17,13 +24,13 @@ export const splitComponentDefaultConfig: TSplitComponentConfigResult = {
     isHidden: false,
   },
   orientation: {
-    value: 'center',
-    defaultValue: 'center',
+    value: "center",
+    defaultValue: "center",
     isHidden: false,
   },
   text: {
-    value: '',
-    defaultValue: '',
+    value: "",
+    defaultValue: "",
     isHidden: false,
   },
-}
+};

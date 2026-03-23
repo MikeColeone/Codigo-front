@@ -1,8 +1,8 @@
 ﻿import { Input, Segmented, Select } from "antd";
 import type { SegmentedLabeledOption } from "antd/es/segmented";
 import { useMemo } from "react";
-import type { IImageComponentProps } from "@codigo/schema";
 import {
+  type IImageComponentProps,
   fillComponentPropsByConfig,
   imageComponentDefaultConfig,
 } from "@codigo/materials-react";
@@ -88,15 +88,3 @@ export default function ImageComponentProps(_props: IImageComponentProps) {
     </FormContainer>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

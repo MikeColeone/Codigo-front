@@ -1,8 +1,8 @@
 ﻿import { useMemo } from "react";
 import { Form, Input } from "antd";
 
-import type { IListComponentProps } from "@codigo/schema";
 import {
+  type IListComponentProps,
   fillComponentPropsByConfig,
   listComponentDefaultConfig,
   listItem,
