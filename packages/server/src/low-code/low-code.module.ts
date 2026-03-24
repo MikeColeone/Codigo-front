@@ -13,6 +13,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SecretTool } from '../utils/SecretTool';
 import { CollaborationGateway } from './collaboration.gateway';
 import { CollaborationController } from './collaboration.controller';
+import { WorkspaceService } from './workspace.service';
 
 @Module({
   imports: [
@@ -27,6 +28,11 @@ import { CollaborationController } from './collaboration.controller';
     ]),
   ],
   controllers: [LowCodeController, PagesController, CollaborationController],
-  providers: [SecretTool, LowCodeService, CollaborationGateway],
+  providers: [
+    SecretTool,
+    LowCodeService,
+    CollaborationGateway,
+    WorkspaceService,
+  ],
 })
 export class LowCodeModule {}

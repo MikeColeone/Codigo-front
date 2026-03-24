@@ -12,7 +12,7 @@ export class AbnormalFilter implements ExceptionFilter {
     const status = exception.getStatus();
     // 异常的消息,兼容 DTO 验证提示
     const message = (exception.getResponse() as any).message;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
     response.status(status).json({
       code: -1,
       data: null,

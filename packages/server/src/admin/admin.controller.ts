@@ -18,12 +18,12 @@ import type { GlobalRole } from '@codigo/schema';
 enum GlobalRoleEnum {
   SUPER_ADMIN = 'SUPER_ADMIN',
   ADMIN = 'ADMIN',
-  USER = 'USER'
+  USER = 'USER',
 }
 
 enum StatusEnum {
   active = 'active',
-  frozen = 'frozen'
+  frozen = 'frozen',
 }
 
 @Controller('admin')

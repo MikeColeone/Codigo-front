@@ -59,6 +59,10 @@ export class CollaborationController {
     @Param('userId', ParseIntPipe) targetUserId: number,
     @getUserMess() user: TCurrentUser,
   ) {
-    return this.lowCodeService.removeCollaborator(pageId, targetUserId, user.id);
+    return this.lowCodeService.removeCollaborator(
+      pageId,
+      targetUserId,
+      user.id,
+    );
   }
 }

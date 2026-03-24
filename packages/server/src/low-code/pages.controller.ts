@@ -12,6 +12,7 @@ import { AuthGuard } from '@nestjs/passport';
 import type {
   PostReleaseRequest,
   PostQuestionDataRequest,
+  PageWorkspaceResponse,
 } from '@codigo/schema';
 import {
   GetUserAgent,
@@ -21,12 +22,14 @@ import {
 import type { TCurrentUser } from '../utils/GetUserMessageTool';
 import { SecretTool } from '../utils/SecretTool';
 import { LowCodeService } from './low-code.service';
+import { WorkspaceService } from './workspace.service';
 
 @Controller('pages')
 export class PagesController {
   constructor(
     private readonly secretTool: SecretTool,
     private readonly lowCodeService: LowCodeService,
+    private readonly workspaceService: WorkspaceService,
   ) {}
 
   @Put('me')
@@ -62,6 +65,24 @@ export class PagesController {
     @Param('versionId') versionId: string,
   ) {
     return this.lowCodeService.getPageVersionDetail(id, versionId);
+  }
+
+  @Get(':id/workspace')
+  @UseGuards(AuthGuard('jwt'))
+  getPageWorkspace(
+    @Param('id', ParseIntPipe) id: number,
+    @getUserMess() user: TCurrentUser,
+  ): Promise<PageWorkspaceResponse> {
+    return this.workspaceService.getPageWorkspace(id, user);
+  }
+
+  @Post(':id/workspace')
+  @UseGuards(AuthGuard('jwt'))
+  syncPageWorkspace(
+    @Param('id', ParseIntPipe) id: number,
+    @getUserMess() user: TCurrentUser,
+  ): Promise<PageWorkspaceResponse> {
+    return this.workspaceService.syncPageWorkspace(id, user);
   }
 
   @Get(':id/submissions/me')

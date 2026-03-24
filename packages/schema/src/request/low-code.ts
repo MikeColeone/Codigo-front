@@ -1,4 +1,10 @@
-import type { ILowCode, IComponent, IComponentData, IPageVersion } from "..";
+import type {
+  ILowCode,
+  IComponent,
+  IComponentData,
+  IPageVersion,
+  SyncSchemaItem,
+} from "..";
 
 export type PostReleaseRequest = Omit<
   ILowCode,
@@ -18,3 +24,22 @@ export type GetPageVersionsResponse = Omit<IPageVersion, "schema_data">[];
 
 export type GetPageVersionDetailResponse = IPageVersion;
 
+export interface PageWorkspaceResponse {
+  pageId: number;
+  pageName: string;
+  workspaceId: string;
+  workspaceName: string;
+  workspaceRoot: string;
+  workspaceRelativePath: string;
+  templateRoot: string;
+  packageJsonPath: string;
+  schemaFilePath: string;
+  entryFilePath: string;
+  packageManager: "pnpm";
+  installCommand: string;
+  devCommand: string;
+  exists: boolean;
+  componentCount: number;
+  lastSyncedAt?: string;
+  schema?: SyncSchemaItem[];
+}

@@ -198,7 +198,10 @@ export class UserService {
   /**
    * 更新个人信息服务
    */
-  async updateProfile(userId: number, updateData: { username?: string; head_img?: string }) {
+  async updateProfile(
+    userId: number,
+    updateData: { username?: string; head_img?: string },
+  ) {
     const user = await this.userRepository.findOneBy({ id: userId });
     if (!user) throw new BadRequestException('用户不存在');
 
@@ -206,7 +209,7 @@ export class UserService {
     if (updateData.head_img !== undefined) user.head_img = updateData.head_img;
 
     await this.userRepository.save(user);
-    
+
     // 返回脱敏后的用户信息
     const { password, ...rest } = user;
     return {
@@ -218,13 +221,18 @@ export class UserService {
   /**
    * 修改密码服务
    */
-  async updatePassword(userId: number, oldPassword?: string, newPassword?: string) {
+  async updatePassword(
+    userId: number,
+    oldPassword?: string,
+    newPassword?: string,
+  ) {
     const user = await this.userRepository.findOneBy({ id: userId });
     if (!user) throw new BadRequestException('用户不存在');
 
     // 如果用户设置了旧密码，需要验证旧密码
     if (oldPassword) {
-      const isPasswordValid = user.password === this.secretTool.getSecret(oldPassword);
+      const isPasswordValid =
+        user.password === this.secretTool.getSecret(oldPassword);
       if (!isPasswordValid) throw new BadRequestException('旧密码错误');
     }
 
@@ -239,4 +247,3 @@ export class UserService {
     };
   }
 }
-

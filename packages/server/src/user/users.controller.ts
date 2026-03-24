@@ -18,13 +18,23 @@ export class UsersController {
 
   @Patch('me')
   @UseGuards(AuthGuard('jwt'))
-  updateProfile(@Body() body: UpdateProfileDto, @getUserMess() user: TCurrentUser) {
+  updateProfile(
+    @Body() body: UpdateProfileDto,
+    @getUserMess() user: TCurrentUser,
+  ) {
     return this.userService.updateProfile(user.id, body);
   }
 
   @Put('me/password')
   @UseGuards(AuthGuard('jwt'))
-  updatePassword(@Body() body: UpdatePasswordDto, @getUserMess() user: TCurrentUser) {
-    return this.userService.updatePassword(user.id, body.oldPassword, body.newPassword);
+  updatePassword(
+    @Body() body: UpdatePasswordDto,
+    @getUserMess() user: TCurrentUser,
+  ) {
+    return this.userService.updatePassword(
+      user.id,
+      body.oldPassword,
+      body.newPassword,
+    );
   }
 }
