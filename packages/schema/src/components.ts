@@ -16,7 +16,10 @@ export type TComponentTypes =
   | "radio"
   | "checkbox"
   | "empty"
-  | "alert";
+  | "alert"
+  | "barChart"
+  | "lineChart"
+  | "pieChart";
 
 export interface IComponentPropWarpper<T> {
   value: T;

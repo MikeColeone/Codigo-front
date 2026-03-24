@@ -19,6 +19,9 @@ import {
   TextAreaComponent,
   RadioComponent,
   CheckboxComponent,
+  BarChartComponent,
+  LineChartComponent,
+  PieChartComponent,
 } from "..";
 
 // @ts-ignore
@@ -41,4 +44,7 @@ export const componentList: Record<TComponentTypes, FC<any>> = {
   textArea: TextAreaComponent,
   radio: RadioComponent,
   checkbox: CheckboxComponent,
+  barChart: BarChartComponent,
+  lineChart: LineChartComponent,
+  pieChart: PieChartComponent,
 };

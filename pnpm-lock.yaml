@@ -203,6 +203,12 @@ importers:
       '@codigo/schema':
         specifier: workspace:*
         version: link:../schema
+      echarts:
+        specifier: ^6.0.0
+        version: 6.0.0
+      echarts-for-react:
+        specifier: ^3.0.6
+        version: 3.0.6(echarts@6.0.0)(react@19.2.4)
       react:
         specifier: ^19.2.4
         version: 19.2.4

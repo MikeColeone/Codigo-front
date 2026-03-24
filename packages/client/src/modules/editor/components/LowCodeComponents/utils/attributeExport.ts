@@ -17,6 +17,7 @@ import {
   InputComponentProps,
   CheckboxComponentProps,
   RadioComponentProps,
+  ChartComponentProps,
 } from "..";
 import type { TBasicComponentConfig, TComponentTypes } from "@codigo/schema";
 
@@ -40,20 +41,11 @@ export const componentPropsList: Record<TComponentTypes, FC<any>> = {
   textArea: InputComponentProps,
   radio: RadioComponentProps,
   checkbox: CheckboxComponentProps,
+  barChart: ChartComponentProps,
+  lineChart: ChartComponentProps,
+  pieChart: ChartComponentProps,
 };
 
 export function getComponentPropsByType(type: TBasicComponentConfig["type"]) {
   return componentPropsList[type];
 }
-
-
-
-
-
-
-
-
-
-
-
-

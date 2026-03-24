@@ -505,6 +505,7 @@ export function useStoreComponents() {
     // 设置当前组件配置为可排序组件配置的第一个组件配置
     storeComponents.currentCompConfig = storeComponents.sortableCompConfig[0];
     // 更新页面信息
+    const { updatePage } = useStorePage();
     updatePage({
       tdk: data?.tdk || "",
       title: data?.page_name,

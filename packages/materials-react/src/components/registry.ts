@@ -1,21 +1,26 @@
-import { ButtonComponent as LowCodeButton } from "./Button";
-import { VideoComponent as LowCodeVideo } from "./LowCodeVideo";
-import { ImageComponent as LowCodeImage } from "./LowCodeImage";
-import { SwiperComponent as LowCodeSwiper } from "./LowCodeSwiper";
-import { CardComponent as LowCodeCard } from "./LowCodeCard";
-import { ListComponent as LowCodeList } from "./LowCodeList";
-import { StatisticComponent as LowCodeStatistic } from "./LowCodeStatistic";
-import { TableComponent as LowCodeTable } from "./LowCodeTable";
-import { TextComponent as LowCodeText } from "./LowCodeText";
-import { SplitComponent as LowCodeSplit } from "./LowCodeSplit";
-import { EmptyComponent as LowCodeEmpty } from "./LowCodeEmpty";
-import { RichTextComponent as LowCodeRichText } from "./LowCodeRichText";
-import { QrcodeComponent as LowCodeQrcode } from "./LowCodeQrcode";
-import { AlertComponent as LowCodeAlert } from "./LowCodeAlert";
-import { InputComponent as LowCodeInput } from "./LowCodeInput";
-import { TextAreaComponent as LowCodeTextArea } from "./LowCodeTextArea";
-import { RadioComponent as LowCodeRadio } from "./LowCodeRadio";
-import { CheckboxComponent as LowCodeCheckbox } from "./LowCodeCheckbox";
+import {
+  ButtonComponent as LowCodeButton,
+  CardComponent as LowCodeCard,
+  ImageComponent as LowCodeImage,
+  ListComponent as LowCodeList,
+  StatisticComponent as LowCodeStatistic,
+  SwiperComponent as LowCodeSwiper,
+  TableComponent as LowCodeTable,
+  VideoComponent as LowCodeVideo,
+  TextComponent as LowCodeText,
+  SplitComponent as LowCodeSplit,
+  EmptyComponent as LowCodeEmpty,
+  RichTextComponent as LowCodeRichText,
+  QrcodeComponent as LowCodeQrcode,
+  AlertComponent as LowCodeAlert,
+  InputComponent as LowCodeInput,
+  TextAreaComponent as LowCodeTextArea,
+  RadioComponent as LowCodeRadio,
+  CheckboxComponent as LowCodeCheckbox,
+  BarChartComponent as LowCodeBarChart,
+  LineChartComponent as LowCodeLineChart,
+  PieChartComponent as LowCodePieChart,
+} from ".";
 import { registerComponent } from "@codigo/plugin-system";
 
 export function initBuiltinComponents() {
@@ -126,5 +131,23 @@ export function initBuiltinComponents() {
     name: "Checkbox",
     defaultConfig: {} as any,
     render: LowCodeCheckbox,
+  });
+  registerComponent({
+    type: "barChart",
+    name: "BarChart",
+    defaultConfig: {} as any,
+    render: LowCodeBarChart,
+  });
+  registerComponent({
+    type: "lineChart",
+    name: "LineChart",
+    defaultConfig: {} as any,
+    render: LowCodeLineChart,
+  });
+  registerComponent({
+    type: "pieChart",
+    name: "PieChart",
+    defaultConfig: {} as any,
+    render: LowCodePieChart,
   });
 }

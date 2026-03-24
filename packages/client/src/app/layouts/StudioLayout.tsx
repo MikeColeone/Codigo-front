@@ -1,9 +1,26 @@
-﻿import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ConfigProvider } from "antd";
 import { observer } from "mobx-react-lite";
+import { EditOutlined, ApartmentOutlined } from "@ant-design/icons";
 import EditorHeader from "@/modules/editor/components/header";
 
 export const StudioLayout = observer(() => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const navItems = [
+    {
+      key: "/editor",
+      label: "Editor",
+      icon: <EditOutlined />,
+    },
+    {
+      key: "/flow",
+      label: "Flow",
+      icon: <ApartmentOutlined />,
+    },
+  ];
+
   return (
     <ConfigProvider
       theme={{
@@ -42,7 +59,31 @@ export const StudioLayout = observer(() => {
         </header>
 
         <main className="relative z-10 flex flex-1 overflow-hidden">
-          <Outlet />
+          <aside className="h-full w-16 shrink-0 border-r border-slate-200 bg-white/60 px-2 py-4 backdrop-blur-md">
+            <div className="sticky top-0 flex flex-col gap-2">
+              {navItems.map((item) => {
+                const active = location.pathname === item.key;
+
+                return (
+                  <button
+                    key={item.key}
+                    onClick={() => navigate(item.key)}
+                    className={`group flex h-14 flex-col items-center justify-center rounded-lg border text-[10px] font-medium transition-all ${
+                      active
+                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 shadow-sm"
+                        : "border-slate-200 bg-white text-slate-500 hover:border-emerald-200 hover:text-emerald-600"
+                    }`}
+                  >
+                    <span className="text-base leading-none">{item.icon}</span>
+                    <span className="mt-1 leading-none">{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </aside>
+          <div className="min-w-0 flex-1">
+            <Outlet />
+          </div>
         </main>
       </div>
     </ConfigProvider>

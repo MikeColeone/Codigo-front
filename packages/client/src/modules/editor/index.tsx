@@ -60,58 +60,61 @@ const Editor = observer(() => {
   }, [scrolling]);
 
   return (
-    <>
+    <div className="flex h-full w-full overflow-hidden relative">
       {/* 左侧编辑组件 */}
       <div
-        className={`w-80 border-r border-slate-200 bg-white/60 backdrop-blur-md px-4 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent`}
+        className={`w-80 shrink-0 border-r border-slate-200 bg-white/60 backdrop-blur-md px-4 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent z-20`}
       >
         <EditorLeftPanel />
       </div>
 
       {/* 中间编辑组件 */}
-      <div className="flex-auto flex items-center justify-center bg-slate-100/50 relative overflow-auto p-8">
-        {/* Canvas Glow Effect */}
-        <div className="absolute w-[400px] h-[720px] bg-emerald-500/5 blur-3xl rounded-full pointer-events-none"></div>
+      <div className="flex-1 flex flex-col min-w-0 bg-slate-100/50 relative">
+        <div className="flex-1 flex items-center justify-center p-8 relative overflow-hidden">
+          {/* Canvas Glow Effect */}
+          <div className="absolute w-[400px] h-[720px] bg-emerald-500/5 blur-3xl rounded-full pointer-events-none"></div>
 
-        {storePage.editorMode === "code" ? (
-          <div className="w-full h-full rounded-lg border border-slate-200 overflow-hidden shadow-2xl relative z-10 bg-white">
-            <SandboxCanvas />
-          </div>
-        ) : (
-          <div
-            ref={canvasContainerRef}
-            className={`editor-canvas-container relative z-10 bg-white text-left overflow-y-auto overflow-x-hidden shadow-2xl transition-all duration-300 ${
-              storePage.deviceType === "mobile"
-                ? "rounded-[30px] border-[8px] border-slate-800"
-                : "rounded-lg border border-slate-200"
-            }`}
-            style={{
-              width: storePage.canvasWidth,
-              height: storePage.canvasHeight,
-            }}
-          >
-            {/* Mobile Status Bar Simulation */}
-            {storePage.deviceType === "mobile" && (
-              <div className="sticky top-0 z-50 h-6 bg-black/90 text-white text-[10px] flex items-center justify-between px-4 font-mono">
-                <span>9:41</span>
-                <div className="flex gap-1">
-                  <div className="w-3 h-3 bg-white/20 rounded-full"></div>
-                  <div className="w-3 h-3 bg-white/20 rounded-full"></div>
+          {storePage.editorMode === "code" ? (
+            <div className="w-full h-full rounded-lg border border-slate-200 overflow-hidden shadow-2xl relative z-10 bg-white">
+              <SandboxCanvas />
+            </div>
+          ) : (
+            <div
+              ref={canvasContainerRef}
+              className={`editor-canvas-container relative z-10 bg-white text-left overflow-y-auto overflow-x-hidden shadow-2xl transition-all duration-300 ${
+                storePage.deviceType === "mobile"
+                  ? "rounded-[30px] border-[8px] border-slate-800"
+                  : "rounded-lg border border-slate-200"
+              }`}
+              style={{
+                width: storePage.canvasWidth,
+                height: storePage.canvasHeight,
+                maxHeight: "100%",
+              }}
+            >
+              {/* Mobile Status Bar Simulation */}
+              {storePage.deviceType === "mobile" && (
+                <div className="sticky top-0 z-50 h-6 bg-black/90 text-white text-[10px] flex items-center justify-between px-4 font-mono">
+                  <span>9:41</span>
+                  <div className="flex gap-1">
+                    <div className="w-3 h-3 bg-white/20 rounded-full"></div>
+                    <div className="w-3 h-3 bg-white/20 rounded-full"></div>
+                  </div>
                 </div>
-              </div>
-            )}
-            <EditorCanvas store={storeComps} onRef={canvasRef} />
-          </div>
-        )}
+              )}
+              <EditorCanvas store={storeComps} onRef={canvasRef} />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* 右侧编辑组件 */}
       <div
-        className={`w-80 border-l border-slate-200 bg-white/60 backdrop-blur-md px-4 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent`}
+        className={`w-80 shrink-0 border-l border-slate-200 bg-white/60 backdrop-blur-md px-4 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent z-20`}
       >
         <EditorRightPanel />
       </div>
-    </>
+    </div>
   );
 });
 

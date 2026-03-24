@@ -16,7 +16,7 @@
 } from "@ant-design/icons";
 import { Divider } from "antd";
 import type { FC, ReactNode } from "react";
-import { useStoreComponents } from "@/hooks";
+import { useStoreComponents } from "@/shared/hooks";
 
 // 不同组件配置数组
 export const components = [
@@ -139,15 +139,3 @@ export default function ComponentList() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

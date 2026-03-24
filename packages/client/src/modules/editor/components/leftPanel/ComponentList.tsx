@@ -6,7 +6,7 @@ import {
   DashboardOutlined,
   EditOutlined,
   ExpandOutlined,
-  // FontColorsOutlined,
+  FontColorsOutlined,
   FontSizeOutlined,
   FormOutlined,
   FundViewOutlined,
@@ -16,6 +16,9 @@ import {
   UnorderedListOutlined,
   WarningOutlined,
   TableOutlined,
+  BarChartOutlined,
+  LineChartOutlined,
+  PieChartOutlined,
 } from "@ant-design/icons";
 import { Collapse } from "antd";
 import type { FC, ReactNode } from "react";
@@ -63,11 +66,11 @@ const basicComponents = [
     name: "分割组件",
     icon: <MinusOutlined />,
   },
-  // {
-  //   type: "richText",
-  //   name: "富文本组件",
-  //   icon: <FontColorsOutlined />,
-  // },
+  {
+    type: "richText",
+    name: "富文本组件",
+    icon: <FontColorsOutlined />,
+  },
   {
     type: "empty",
     name: "空状态组件",
@@ -115,6 +118,21 @@ const reportComponents = [
     type: "table",
     name: "表格组件",
     icon: <TableOutlined />,
+  },
+  {
+    type: "barChart",
+    name: "柱状图组件",
+    icon: <BarChartOutlined />,
+  },
+  {
+    type: "lineChart",
+    name: "折线图组件",
+    icon: <LineChartOutlined />,
+  },
+  {
+    type: "pieChart",
+    name: "饼图组件",
+    icon: <PieChartOutlined />,
   },
 ];
 

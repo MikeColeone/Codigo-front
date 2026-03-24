@@ -6,7 +6,6 @@ import Release from "@/modules/release";
 import Preview from "@/modules/preview";
 import LoginOrRegister from "@/modules/auth";
 import Flow from "@/modules/flow";
-import Report from "@/modules/report";
 import DevDoc from "@/modules/devDocument";
 import TemplateSelect from "@/modules/home/components/TemplateSelect";
 import { StudioLayout } from "@/app/layouts/StudioLayout";
@@ -50,10 +49,6 @@ export const router = createHashRouter([
       {
         path: "/flow",
         element: <Flow />,
-      },
-      {
-        path: "/report",
-        element: <Report />,
       },
     ],
   },

@@ -17,15 +17,4 @@ export * from "./LowCodeAlert";
 export * from "./LowCodeInput";
 export * from "./LowCodeRadio";
 export * from "./LowCodeCheckbox";
-
-
-
-
-
-
-
-
-
-
-
-
+export * from "./LowCodeChart";
