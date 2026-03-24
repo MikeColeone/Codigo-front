@@ -1,4 +1,4 @@
-﻿import {
+import {
   CheckOutlined,
   FundViewOutlined,
   PlusOutlined,
@@ -6,8 +6,12 @@
   UndoOutlined,
   MobileOutlined,
   DesktopOutlined,
+  HistoryOutlined,
 } from "@ant-design/icons";
-import type { TBasicComponentConfig as IComponent, PostReleaseRequest } from "@codigo/materials-react";
+import type {
+  TBasicComponentConfig as IComponent,
+  PostReleaseRequest,
+} from "@codigo/materials-react";
 import { useRequest } from "ahooks";
 import { Button, Space, message, InputNumber } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +22,8 @@ import {
   useStorePermission,
 } from "@/shared/hooks";
 import { observer } from "mobx-react-lite";
+import { useState } from "react";
+import { VersionHistoryDrawer } from "./VersionHistoryDrawer";
 
 const Center = observer(() => {
   const nav = useNavigate();
@@ -32,6 +38,7 @@ const Center = observer(() => {
     hasRedo,
   } = useStoreComponents();
   const { can, ensurePermission, addOperationLog } = useStorePermission();
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   // 发布接口调用
   const { run, loading } = useRequest(
@@ -137,6 +144,14 @@ const Center = observer(() => {
       <Button
         type="text"
         className="flex items-center text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+        onClick={() => setHistoryOpen(true)}
+      >
+        <HistoryOutlined /> 版本
+      </Button>
+      <div className="w-px h-4 bg-slate-200"></div>
+      <Button
+        type="text"
+        className="flex items-center text-slate-500 hover:text-slate-900 hover:bg-slate-100"
         onClick={handleGoPreview}
       >
         <FundViewOutlined /> 预览
@@ -178,20 +193,13 @@ const Center = observer(() => {
       >
         发布 <CheckOutlined />
       </Button>
+
+      <VersionHistoryDrawer
+        open={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+      />
     </Space>
   );
 });
 
 export default Center;
-
-
-
-
-
-
-
-
-
-
-
-

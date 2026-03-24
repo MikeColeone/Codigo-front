@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   PostReleaseRequest,
   getQuestionDataByIdRequest,
 } from "@codigo/materials-react";
@@ -29,4 +29,12 @@ export async function getQuestionDataByTypeRequest(
   return request(`/pages/me/analytics/components/${data.id}/submissions`, {
     method: "GET",
   });
+}
+
+export async function getPageVersions(id: number) {
+  return request(`/pages/${id}/versions`, { method: "GET" });
+}
+
+export async function getPageVersionDetail(id: number, versionId: string) {
+  return request(`/pages/${id}/versions/${versionId}`, { method: "GET" });
 }

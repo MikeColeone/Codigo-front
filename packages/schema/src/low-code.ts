@@ -27,3 +27,14 @@ export interface IComponentData {
   page_id: number;
   props: Record<string, any>[];
 }
+
+// 页面版本表属性类型
+export interface IPageVersion {
+  id: string; // uuid
+  page_id: number;
+  account_id: number;
+  version: number;
+  desc: string;
+  schema_data: Record<string, any>; // 快照数据
+  created_at: Date;
+}

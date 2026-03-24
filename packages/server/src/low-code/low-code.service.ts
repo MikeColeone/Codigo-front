@@ -16,7 +16,14 @@ import { User } from '../user/entities/user.entity';
 import { PageCollaborator } from './entities/page-collaborator.entity';
 import { OperationLog } from './entities/operation-log.entity';
 import { RedisModule } from 'src/utils/modules/redis.module';
-import type { InviteCollaboratorRequest, UpdateCollaboratorRoleRequest } from '@codigo/schema';
+import { PageVersion } from './entities/page-version.entity';
+import type {
+ 
+ ,
+
+  InviteCollaboratorRequest,
+  UpdateCollaboratorRoleRequest,
+} from '@codigo/schema';
 
 @Injectable()
 export class LowCodeService {
@@ -32,6 +39,8 @@ export class LowCodeService {
     private readonly pageCollaboratorRepository: Repository<PageCollaborator>,
     @InjectRepository(OperationLog)
     private readonly operationLogRepository: Repository<OperationLog>,
+    @InjectRepository(PageVersion)
+    private readonly pageVersionRepository: Repository<PageVersion>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly redis: RedisModule,
@@ -114,6 +123,24 @@ export class LowCodeService {
         // 创建页面
         await createLowCodePage();
       }
+
+      // 获取当前最大版本号
+      const lastVersion = await queryRunner.manager.findOne(PageVersion, {
+        where: { page_id: id },
+        order: { version: 'DESC' },
+      });
+      const nextVersion = lastVersion ? lastVersion.version + 1 : 1;
+
+      // 插入版本快照
+      await queryRunner.manager.insert(PageVersion, {
+        page_id: id,
+        account_id: user.id,
+        version: nextVersion,
+        desc: `Version ${nextVersion}`,
+        schema_data: body,
+      });
+
+      await queryRunner.commitTransaction();
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(`发布失败，${err}`);
@@ -165,6 +192,31 @@ export class LowCodeService {
   //     },
   //   );
   // }
+
+  /**
+   * 获取页面版本列表
+   */
+  async getPageVersions(pageId: number) {
+    const versions = await this.pageVersionRepository.find({
+      where: { page_id: pageId },
+      order: { created_at: 'DESC' },
+      select: ['id', 'page_id', 'account_id', 'version', 'desc', 'created_at'],
+    });
+    return versions;
+  }
+
+  /**
+   * 获取特定页面版本详情
+   */
+  async getPageVersionDetail(pageId: number, versionId: string) {
+    const version = await this.pageVersionRepository.findOne({
+      where: { page_id: pageId, id: versionId },
+    });
+    if (!version) {
+      throw new BadRequestException('版本不存在');
+    }
+    return version;
+  }
 
   /**
    * 获取低代码组件接口服务（无缓存）
@@ -440,9 +492,13 @@ export class LowCodeService {
     }
 
     collab.role = body.role;
+     ,
+   
     await this.pageCollaboratorRepository.save(collab);
 
-    const targetUser = await this.userRepository.findOneBy({ id: targetUserId });
+    const targetUser = await this.userRepository.findOneBy({
+      id: targetUserId,
+    });
     await this.logOperation(
       pageId,
       currentUserId,
@@ -470,11 +526,15 @@ export class LowCodeService {
 
     if (!collab) {
       throw new BadRequestException('协作者不存在');
+     ,
+   
     }
 
     await this.pageCollaboratorRepository.remove(collab);
 
-    const targetUser = await this.userRepository.findOneBy({ id: targetUserId });
+    const targetUser = await this.userRepository.findOneBy({
+      id: targetUserId,
+    });
     await this.logOperation(
       pageId,
       currentUserId,

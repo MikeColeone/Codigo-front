@@ -49,6 +49,21 @@ export class PagesController {
     return this.lowCodeService.getReleaseData(id);
   }
 
+  @Get(':id/versions')
+  @UseGuards(AuthGuard('jwt'))
+  getPageVersions(@Param('id', ParseIntPipe) id: number) {
+    return this.lowCodeService.getPageVersions(id);
+  }
+
+  @Get(':id/versions/:versionId')
+  @UseGuards(AuthGuard('jwt'))
+  getPageVersionDetail(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('versionId') versionId: string,
+  ) {
+    return this.lowCodeService.getPageVersionDetail(id, versionId);
+  }
+
   @Get(':id/submissions/me')
   isMySubmissionPosted(
     @Param('id', ParseIntPipe) pageId: number,

@@ -1,4 +1,4 @@
-import type { ILowCode, IComponent, IComponentData } from "..";
+import type { ILowCode, IComponent, IComponentData, IPageVersion } from "..";
 
 export type PostReleaseRequest = Omit<
   ILowCode,
@@ -13,3 +13,8 @@ export type GetReleaseDataResponse = Omit<ILowCode, "components"> & {
 };
 
 export type getQuestionDataByIdRequest = Pick<IComponent, "id">;
+
+export type GetPageVersionsResponse = Omit<IPageVersion, "schema_data">[];
+
+export type GetPageVersionDetailResponse = IPageVersion;
+

@@ -7,6 +7,7 @@ import { Page } from './entities/low-code.entity';
 import { Component } from './entities/low-code.entity';
 import { PageCollaborator } from './entities/page-collaborator.entity';
 import { OperationLog } from './entities/operation-log.entity';
+import { PageVersion } from './entities/page-version.entity';
 import { User } from '../user/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SecretTool } from '../utils/SecretTool';
@@ -21,6 +22,7 @@ import { CollaborationController } from './collaboration.controller';
       ComponentData,
       PageCollaborator,
       OperationLog,
+      PageVersion,
       User,
     ]),
   ],
