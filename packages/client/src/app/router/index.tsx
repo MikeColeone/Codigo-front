@@ -1,4 +1,4 @@
-import { createHashRouter } from "react-router-dom";
+import { createHashRouter, Navigate } from "react-router-dom";
 import Editor from "@/modules/editor";
 import Home from "@/modules/home/index";
 import DataCount from "@/modules/dataCount";
@@ -9,6 +9,9 @@ import Flow from "@/modules/flow";
 import DevDoc from "@/modules/devDocument";
 import TemplateSelect from "@/modules/home/components/TemplateSelect";
 import { StudioLayout } from "@/app/layouts/StudioLayout";
+import AdminLayout from "@/modules/admin/components/AdminLayout";
+import AdminUsers from "@/modules/admin/pages/users";
+import { AdminRouteGuard } from "@/modules/admin/components/AdminRouteGuard";
 
 export const router = createHashRouter([
   {
@@ -49,6 +52,24 @@ export const router = createHashRouter([
       {
         path: "/flow",
         element: <Flow />,
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    element: (
+      <AdminRouteGuard>
+        <AdminLayout />
+      </AdminRouteGuard>
+    ),
+    children: [
+      {
+        index: true,
+        element: <Navigate to="users" replace />,
+      },
+      {
+        path: "users",
+        element: <AdminUsers />,
       },
     ],
   },
