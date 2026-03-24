@@ -46,9 +46,9 @@ export function HomeHeader() {
           </button>
           <button
             className="rounded-lg bg-emerald-500 px-5 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:bg-emerald-600 hover:shadow-emerald-500/30 hover:-translate-y-0.5"
-            onClick={() => navigate("/templates")}
+            onClick={() => navigate("/editor")}
           >
-            选择模板
+            进入编辑器
           </button>
         </div>
       </div>

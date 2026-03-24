@@ -157,8 +157,14 @@ const EditorChooiseToolbar: FC<{
   function resizeComponent() {
     const currentComponent = getCurrentCompConfig();
     if (currentComponent) {
-      const rect = currentComponent?.getBoundingClientRect();
-      setCurrentComponentRect(rect);
+      setCurrentComponentRect({
+        top: currentComponent.offsetTop,
+        left: currentComponent.offsetLeft,
+        right: currentComponent.offsetLeft + currentComponent.offsetWidth,
+        bottom: currentComponent.offsetTop + currentComponent.offsetHeight,
+        width: currentComponent.offsetWidth,
+        height: currentComponent.offsetHeight,
+      } as ClientRect);
     }
   }
 
@@ -216,7 +222,7 @@ const EditorChooiseToolbar: FC<{
         className={classNames}
         style={{
           left: `${currentComponentRect?.right}px`,
-          top: `${currentComponentRect && currentComponentRect.bottom - 36}px`,
+          top: `${currentComponentRect?.top}px`,
         }}
       >
         <span className="mr-1">{componentName}</span>
