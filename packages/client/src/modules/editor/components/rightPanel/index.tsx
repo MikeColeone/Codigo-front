@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { Button, Tabs } from "antd";
+import { Tabs, Tooltip } from "antd";
 import {
   AppstoreOutlined,
   SettingOutlined,
   CodeOutlined,
   RobotOutlined,
   TeamOutlined,
-  LineChartOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 import ComponentFields from "./ComponentFields";
 import GlobalFields from "./GlobalFields";
 import CodeSyncPanel from "./CodeSyncPanel";
@@ -17,7 +15,6 @@ import PermissionPanel from "./PermissionPanel";
 import { useStoreComponents, useStorePage } from "@/shared/hooks";
 
 export default function EditorRightPanel() {
-  const navigate = useNavigate();
   const { store: storePage, setEditorMode } = useStorePage();
   const { store: storeComps } = useStoreComponents();
   const [activeKey, setActiveKey] = useState("components-fields");
@@ -26,52 +23,55 @@ export default function EditorRightPanel() {
     {
       key: "components-fields",
       label: (
-        <>
-          <AppstoreOutlined />
-          <span>组件属性</span>
-        </>
+        <Tooltip title="组件属性" placement="bottom">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg transition-all">
+            <AppstoreOutlined className="text-lg" />
+          </div>
+        </Tooltip>
       ),
-      // 组件属性
       children: <ComponentFields store={storeComps} />,
     },
     {
       key: "page-fields",
       label: (
-        <>
-          <SettingOutlined />
-          <span>全局属性</span>
-        </>
+        <Tooltip title="全局属性" placement="bottom">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg transition-all">
+            <SettingOutlined className="text-lg" />
+          </div>
+        </Tooltip>
       ),
-      // 全局组件属性
       children: <GlobalFields store={storePage} />,
     },
     {
       key: "code-sync",
       label: (
-        <>
-          <CodeOutlined />
-          <span>源码同步</span>
-        </>
+        <Tooltip title="源码同步" placement="bottom">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg transition-all">
+            <CodeOutlined className="text-lg" />
+          </div>
+        </Tooltip>
       ),
       children: <CodeSyncPanel />,
     },
     {
       key: "ai-chat",
       label: (
-        <>
-          <RobotOutlined />
-          <span>AI生成</span>
-        </>
+        <Tooltip title="AI生成" placement="bottom">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg transition-all">
+            <RobotOutlined className="text-lg" />
+          </div>
+        </Tooltip>
       ),
       children: <AIChatPanel />,
     },
     {
       key: "permission",
       label: (
-        <>
-          <TeamOutlined />
-          <span>协作权限</span>
-        </>
+        <Tooltip title="协作权限" placement="bottom">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg transition-all">
+            <TeamOutlined className="text-lg" />
+          </div>
+        </Tooltip>
       ),
       children: <PermissionPanel />,
     },
@@ -87,36 +87,14 @@ export default function EditorRightPanel() {
   };
 
   return (
-    <div className="space-y-3">
-      <div className="grid grid-cols-2 gap-2">
-        <Button
-          icon={<RobotOutlined />}
-          onClick={() => handleTabChange("ai-chat")}
-          className="flex items-center justify-center"
-        >
-          AI编辑
-        </Button>
-        <Button
-          icon={<LineChartOutlined />}
-          onClick={() => navigate("/dataCount")}
-          className="flex items-center justify-center"
-        >
-          后台数据
-        </Button>
-      </div>
-      <Tabs activeKey={activeKey} onChange={handleTabChange} items={items} />
+    <div className="flex flex-col h-full w-full bg-transparent">
+      <Tabs
+        activeKey={activeKey}
+        onChange={handleTabChange}
+        items={items}
+        centered
+        className="h-full editor-right-tabs [&>.ant-tabs-nav]:px-2 [&>.ant-tabs-nav]:pt-3 [&>.ant-tabs-nav]:mb-0 [&>.ant-tabs-nav::before]:border-b-slate-100 [&>.ant-tabs-content-holder]:overflow-y-auto [&>.ant-tabs-content-holder]:px-5 [&>.ant-tabs-content-holder]:py-4 [&_.ant-tabs-tab]:!m-0 [&_.ant-tabs-tab]:!p-1 [&_.ant-tabs-tab-active_div]:text-emerald-500 [&_.ant-tabs-tab-active_div]:bg-emerald-500/10 [&_.ant-tabs-ink-bar]:bg-emerald-500 scrollbar-thin scrollbar-thumb-slate-200/60 hover:scrollbar-thumb-slate-300 scrollbar-track-transparent"
+      />
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

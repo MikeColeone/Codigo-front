@@ -60,31 +60,34 @@ const Editor = observer(() => {
   }, [scrolling]);
 
   return (
-    <div className="flex h-full w-full overflow-hidden relative">
-      {/* 左侧编辑组件 */}
-      <div
-        className={`w-80 shrink-0 border-r border-slate-200 bg-white/60 backdrop-blur-md px-4 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent z-20`}
-      >
-        <EditorLeftPanel />
+    <div className="flex h-full w-full overflow-hidden relative bg-[#F8FAFC]">
+      {/* 左侧面板：更紧凑、专业的侧边栏 */}
+      <div className="w-[280px] shrink-0 border-r border-slate-200 bg-white/90 backdrop-blur-xl flex flex-col shadow-[2px_0_8px_-4px_rgba(0,0,0,0.05)] z-20 transition-all duration-300 ease-in-out">
+        <div className="flex-1 overflow-y-auto px-4 py-5 scrollbar-thin scrollbar-thumb-slate-200/60 hover:scrollbar-thumb-slate-300 scrollbar-track-transparent">
+          <EditorLeftPanel />
+        </div>
       </div>
 
-      {/* 中间编辑组件 */}
-      <div className="flex-1 flex flex-col min-w-0 bg-slate-100/50 relative">
+      {/* 中间画布区域：带有点阵背景的沉浸式工作区 */}
+      <div className="flex-1 flex flex-col min-w-0 relative">
+        {/* Dot pattern background */}
+        <div className="absolute inset-0 bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none"></div>
+
         <div className="flex-1 flex items-center justify-center p-8 relative overflow-hidden">
-          {/* Canvas Glow Effect */}
-          <div className="absolute w-[400px] h-[720px] bg-emerald-500/5 blur-3xl rounded-full pointer-events-none"></div>
+          {/* 优化后的 Glow Effect */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-400/5 blur-[100px] rounded-full pointer-events-none"></div>
 
           {storePage.editorMode === "code" ? (
-            <div className="w-full h-full rounded-lg border border-slate-200 overflow-hidden shadow-2xl relative z-10 bg-white">
+            <div className="w-full h-full rounded-xl border border-slate-200/80 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative z-10 bg-white/95 backdrop-blur-sm transition-all duration-300">
               <SandboxCanvas />
             </div>
           ) : (
             <div
               ref={canvasContainerRef}
-              className={`editor-canvas-container relative z-10 bg-white text-left overflow-y-auto overflow-x-hidden shadow-2xl transition-all duration-300 ${
+              className={`editor-canvas-container relative z-10 bg-white text-left overflow-y-auto overflow-x-hidden transition-all duration-500 ease-out ring-1 ring-slate-900/5 ${
                 storePage.deviceType === "mobile"
-                  ? "rounded-[30px] border-[8px] border-slate-800"
-                  : "rounded-lg border border-slate-200"
+                  ? "rounded-[40px] border-[12px] border-slate-800 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)]"
+                  : "rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_8px_40px_rgb(0,0,0,0.08)]"
               }`}
               style={{
                 width: storePage.canvasWidth,
@@ -94,11 +97,12 @@ const Editor = observer(() => {
             >
               {/* Mobile Status Bar Simulation */}
               {storePage.deviceType === "mobile" && (
-                <div className="sticky top-0 z-50 h-6 bg-black/90 text-white text-[10px] flex items-center justify-between px-4 font-mono">
+                <div className="sticky top-0 z-50 h-7 bg-slate-900 text-white text-[11px] flex items-center justify-between px-6 font-medium tracking-wider select-none">
                   <span>9:41</span>
-                  <div className="flex gap-1">
-                    <div className="w-3 h-3 bg-white/20 rounded-full"></div>
-                    <div className="w-3 h-3 bg-white/20 rounded-full"></div>
+                  <div className="flex gap-1.5 items-center">
+                    <div className="w-3.5 h-3.5 bg-white/90 rounded-sm"></div>
+                    <div className="w-3.5 h-3.5 bg-white/90 rounded-full"></div>
+                    <div className="w-4 h-2.5 bg-white/90 rounded-sm"></div>
                   </div>
                 </div>
               )}
@@ -108,11 +112,11 @@ const Editor = observer(() => {
         </div>
       </div>
 
-      {/* 右侧编辑组件 */}
-      <div
-        className={`w-80 shrink-0 border-l border-slate-200 bg-white/60 backdrop-blur-md px-4 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent z-20`}
-      >
-        <EditorRightPanel />
+      {/* 右侧面板：属性配置区 */}
+      <div className="w-[320px] shrink-0 border-l border-slate-200 bg-white/90 backdrop-blur-xl flex flex-col shadow-[-2px_0_8px_-4px_rgba(0,0,0,0.05)] z-20 transition-all duration-300 ease-in-out">
+        <div className="flex-1 flex flex-col min-h-0 w-full">
+          <EditorRightPanel />
+        </div>
       </div>
     </div>
   );
