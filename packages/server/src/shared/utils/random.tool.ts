@@ -13,9 +13,18 @@ export class RandomTool {
     return Math.floor(Math.random() * (9999 - 1000)) + 1000;
   }
 
-  // to-do: 生成随机图像
   randomImage() {
-    return 'https://c-ssl.dtstatic.com/uploads/item/202003/18/20200318091411_bopif.thumb.400_0.jpg';
+    const avatarOptions = [
+      'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
+      'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka',
+      'https://api.dicebear.com/7.x/avataaars/svg?seed=Jasper',
+      'https://api.dicebear.com/7.x/avataaars/svg?seed=Coco',
+      'https://api.dicebear.com/7.x/avataaars/svg?seed=Buster',
+      'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna',
+      'https://api.dicebear.com/7.x/avataaars/svg?seed=Milo',
+      'https://api.dicebear.com/7.x/avataaars/svg?seed=Simba',
+    ];
+    return avatarOptions[Math.floor(Math.random() * avatarOptions.length)];
   }
 
   // 生成随机昵称

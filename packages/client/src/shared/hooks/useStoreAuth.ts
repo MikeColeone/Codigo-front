@@ -35,11 +35,9 @@ export function useStoreAuth() {
       runInAction(() => {
         storeAuth.details = data;
       });
-      console.log(data);
       return data;
     } catch (e: any) {
       console.error("获取用户信息失败", e);
-      console.log(e);
       if (e?.response?.status === 401 || e?.error?.code === 401) {
         logout();
       }
@@ -47,5 +45,22 @@ export function useStoreAuth() {
     }
   });
 
-  return { login, logout, isLogin, fetchUserInfo, store: storeAuth };
+  const updateLocalUserInfo = action(
+    (updates: Partial<typeof storeAuth.details>) => {
+      if (storeAuth.details) {
+        runInAction(() => {
+          storeAuth.details = { ...storeAuth.details, ...updates };
+        });
+      }
+    },
+  );
+
+  return {
+    login,
+    logout,
+    isLogin,
+    fetchUserInfo,
+    updateLocalUserInfo,
+    store: storeAuth,
+  };
 }

@@ -27,7 +27,7 @@ export class ResourcesService {
       name: Buffer.from(file.originalname, 'latin1').toString('utf8'),
     });
 
-    return { msg: '上传成功' };
+    return { msg: '上传成功', data: { url } };
   }
 
   async deleteResource(id: number, account_id: number) {

@@ -21,7 +21,7 @@ export const jwtConfig: JwtModuleOptions = {
 export const aliOssConfig = {
   region: 'oss-cn-beijing',
   accessKeyId: 'LTAI5tDVf27tw64n85oxgKmc',
-  accessKeySecret: 'process.env.ACCESS_KEY_SECRET',
+  accessKeySecret: process.env.ACCESS_KEY_SECRET,
   bucket: 'codigo-oss',
 };
 

@@ -99,6 +99,7 @@ export default observer(function AdminLayout() {
               <Avatar
                 src={storeAuth.details.head_img}
                 icon={!storeAuth.details.head_img && <UserOutlined />}
+                className={!storeAuth.details.head_img ? "bg-emerald-500" : ""}
               />
               <span className="text-sm">{storeAuth.details.username}</span>
               <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full ml-1">

@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import { Avatar, Dropdown } from "antd";
+import { Avatar, Dropdown, Modal } from "antd";
 import type { MenuProps } from "antd";
 import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useStoreAuth } from "@/shared/hooks/useStoreAuth";
+import { useState } from "react";
+import Profile from "@/modules/profile";
 
 const menus = [
   { label: "模板案例", path: "/templates" },
@@ -13,7 +15,8 @@ const menus = [
 
 export const HomeHeader = observer(() => {
   const navigate = useNavigate();
-  const { isLogin, logout } = useStoreAuth();
+  const { isLogin, logout, store: storeAuth } = useStoreAuth();
+  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
 
   const userMenuItems: MenuProps["items"] = [
     {
@@ -21,7 +24,7 @@ export const HomeHeader = observer(() => {
       icon: <UserOutlined />,
       label: "个人中心",
       onClick: () => {
-        navigate("/profile");
+        setIsProfileModalVisible(true);
       },
     },
     {
@@ -71,7 +74,21 @@ export const HomeHeader = observer(() => {
               arrow
             >
               <div className="cursor-pointer transition-transform hover:scale-105">
-                <Avatar icon={<UserOutlined />} className="bg-emerald-500" />
+                <Avatar
+                  src={
+                    storeAuth.details?.head_img ? (
+                      <img
+                        src={storeAuth.details.head_img}
+                        alt={storeAuth.details.username || "avatar"}
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : undefined
+                  }
+                  icon={!storeAuth.details?.head_img && <UserOutlined />}
+                  className={
+                    !storeAuth.details?.head_img ? "bg-emerald-500" : ""
+                  }
+                />
               </div>
             </Dropdown>
           ) : (
@@ -90,6 +107,24 @@ export const HomeHeader = observer(() => {
           </button>
         </div>
       </div>
+
+      <Modal
+        title="个人中心"
+        open={isProfileModalVisible}
+        onCancel={() => setIsProfileModalVisible(false)}
+        footer={null}
+        width={600}
+        destroyOnClose
+        centered
+        styles={{
+          body: { padding: 0, maxHeight: "80vh", overflowY: "auto" },
+        }}
+      >
+        <Profile
+          isModal={true}
+          onUpdateSuccess={() => setIsProfileModalVisible(false)}
+        />
+      </Modal>
     </nav>
   );
 });

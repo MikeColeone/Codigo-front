@@ -32,10 +32,6 @@ export const router = createHashRouter([
     element: <LoginOrRegister />,
   },
   {
-    path: "/profile",
-    element: <Profile />,
-  },
-  {
     path: "/dataCount",
     element: <DataCount />,
   },
