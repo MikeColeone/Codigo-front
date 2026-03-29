@@ -4,14 +4,12 @@ import {
   AppstoreOutlined,
   SettingOutlined,
   CodeOutlined,
-  DesktopOutlined,
   RobotOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
 import ComponentFields from "./ComponentFields";
 import GlobalFields from "./GlobalFields";
 import CodeSyncPanel from "./CodeSyncPanel";
-import WebIDEPanel from "./WebIDEPanel";
 import AIChatPanel from "./AIChatPanel";
 import PermissionPanel from "./PermissionPanel";
 import { useStoreComponents, useStorePage } from "@/shared/hooks";
@@ -51,7 +49,7 @@ export default function EditorRightPanel() {
     {
       key: "code-sync",
       title: "源码同步",
-      description: "在可视化与代码之间切换，保持设计与实现一致。",
+      description: "同步页面源码后直接进入 IDE 编辑态，统一完成源码查看与修改。",
       label: (
         <Tooltip title="源码同步" placement="bottom">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl transition-all">
@@ -60,19 +58,6 @@ export default function EditorRightPanel() {
         </Tooltip>
       ),
       children: <CodeSyncPanel />,
-    },
-    {
-      key: "web-ide",
-      title: "WebIDE",
-      description: "在工作台内直接查看运行时与在线工程环境。",
-      label: (
-        <Tooltip title="WebIDE" placement="bottom">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl transition-all">
-            <DesktopOutlined className="text-lg" />
-          </div>
-        </Tooltip>
-      ),
-      children: <WebIDEPanel />,
     },
     {
       key: "ai-chat",
@@ -105,8 +90,6 @@ export default function EditorRightPanel() {
   const handleTabChange = (key: string) => {
     setActiveKey(key);
     if (key === "code-sync") {
-      setEditorMode("code");
-    } else if (key === "web-ide") {
       setEditorMode("webide");
     } else {
       setEditorMode("visual");

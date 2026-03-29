@@ -2,7 +2,6 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./app/App.tsx";
 import { initBuiltinComponents } from "@codigo/materials-react";
-import "./shared/plugin/opensumiWebIDEBridge";
 
 initBuiltinComponents();
 
@@ -14,7 +13,6 @@ createRoot(document.getElementById("root")!).render(
     {/* </I18nProvider> */}
   </StrictMode>
 );
-
 
 
 

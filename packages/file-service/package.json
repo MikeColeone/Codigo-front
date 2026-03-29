@@ -1,0 +1,7 @@
+{
+  "name": "@codigo/file-service",
+  "version": "0.0.1",
+  "description": "file-service",
+  "main": "./index.ts",
+  "types": "./index.ts"
+}

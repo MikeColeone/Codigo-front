@@ -32,7 +32,12 @@ export class WorkspaceService {
     const page = await this.ensurePageAccess(pageId, user.id);
     const schema = await this.buildPageSchema(page);
     const repositoryRoot = this.resolveRepositoryRoot();
-    const metadata = this.buildWorkspaceMetadata(page, repositoryRoot);
+    const templateRoot = this.resolveTemplateRoot(repositoryRoot);
+    const metadata = this.buildWorkspaceMetadata(
+      page,
+      repositoryRoot,
+      templateRoot,
+    );
 
     return {
       ...metadata,
@@ -49,7 +54,11 @@ export class WorkspaceService {
     const schema = await this.buildPageSchema(page);
     const repositoryRoot = this.resolveRepositoryRoot();
     const templateRoot = this.resolveTemplateRoot(repositoryRoot);
-    const metadata = this.buildWorkspaceMetadata(page, repositoryRoot);
+    const metadata = this.buildWorkspaceMetadata(
+      page,
+      repositoryRoot,
+      templateRoot,
+    );
 
     await rm(metadata.workspaceRoot, { recursive: true, force: true });
     await mkdir(metadata.workspaceRoot, { recursive: true });
@@ -126,6 +135,7 @@ export class WorkspaceService {
   private buildWorkspaceMetadata(
     page: Page,
     repositoryRoot: string,
+    templateRoot: string,
   ): PageWorkspaceResponse {
     const workspaceId = `page-${page.id}`;
     const workspaceDirectoryName = `workspace-${workspaceId}`;
@@ -134,8 +144,6 @@ export class WorkspaceService {
       'packages',
       workspaceDirectoryName,
     );
-    const templateRoot = join(repositoryRoot, 'packages', 'template');
-
     return {
       pageId: page.id,
       pageName: page.page_name,
@@ -174,10 +182,14 @@ export class WorkspaceService {
   }
 
   private resolveTemplateRoot(repositoryRoot: string) {
-    const templateRoot = join(repositoryRoot, 'packages', 'template');
+    const templatePath = process.env.WORKSPACE_TEMPLATE_PATH?.trim();
+    const templatePackage = process.env.WORKSPACE_TEMPLATE_PACKAGE?.trim();
+    const templateRoot = templatePath
+      ? resolve(repositoryRoot, templatePath)
+      : join(repositoryRoot, 'packages', templatePackage || 'template');
     if (!existsSync(templateRoot)) {
       throw new InternalServerErrorException(
-        '未找到源码模板包 packages/template',
+        `未找到源码模板包 ${templateRoot}`,
       );
     }
     return templateRoot;

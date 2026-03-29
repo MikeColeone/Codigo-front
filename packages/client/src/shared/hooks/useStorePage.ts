@@ -10,6 +10,8 @@ import { useStorePermission } from "./useStorePermission";
 import { setDefaultEChartsTheme } from "@codigo/materials-react";
 import type {
   PageWorkspaceIDEConfigResponse,
+  PageWorkspaceExplorerResponse,
+  PageWorkspaceFileResponse,
   PageWorkspaceResponse,
   PageWorkspaceRuntimeResponse,
   PageWorkspaceSessionResponse,
@@ -66,6 +68,12 @@ export function useStorePage() {
     storePage.workspace = workspace;
   });
 
+  const setWorkspaceExplorer = action(
+    (workspaceExplorer: PageWorkspaceExplorerResponse | null) => {
+      storePage.workspaceExplorer = workspaceExplorer;
+    },
+  );
+
   const setWorkspaceSession = action(
     (workspaceSession: PageWorkspaceSessionResponse | null) => {
       storePage.workspaceSession = workspaceSession;
@@ -83,6 +91,65 @@ export function useStorePage() {
       storePage.workspaceIDEConfig = workspaceIDEConfig;
     },
   );
+
+  const setActiveWorkspaceFilePath = action((path: string | null) => {
+    storePage.activeWorkspaceFilePath = path;
+  });
+
+  const upsertWorkspaceFile = action((file: PageWorkspaceFileResponse) => {
+    const currentFileState = storePage.workspaceFiles[file.path];
+
+    storePage.workspaceFiles[file.path] = {
+      file,
+      isDirty: currentFileState?.isDirty ?? false,
+      isSaving: false,
+    };
+
+    if (!storePage.workspaceOpenFilePaths.includes(file.path)) {
+      storePage.workspaceOpenFilePaths.push(file.path);
+    }
+
+    storePage.activeWorkspaceFilePath = file.path;
+  });
+
+  const updateWorkspaceFileContent = action((path: string, content: string) => {
+    const currentFileState = storePage.workspaceFiles[path];
+    if (!currentFileState) return;
+
+    currentFileState.file = {
+      ...currentFileState.file,
+      content,
+    };
+    currentFileState.isDirty = true;
+  });
+
+  const setWorkspaceFileSaving = action((path: string, isSaving: boolean) => {
+    const currentFileState = storePage.workspaceFiles[path];
+    if (!currentFileState) return;
+
+    currentFileState.isSaving = isSaving;
+  });
+
+  const markWorkspaceFileSaved = action((file: PageWorkspaceFileResponse) => {
+    storePage.workspaceFiles[file.path] = {
+      file,
+      isDirty: false,
+      isSaving: false,
+    };
+
+    if (!storePage.workspaceOpenFilePaths.includes(file.path)) {
+      storePage.workspaceOpenFilePaths.push(file.path);
+    }
+
+    storePage.activeWorkspaceFilePath = file.path;
+  });
+
+  const resetWorkspaceFiles = action(() => {
+    storePage.workspaceExplorer = null;
+    storePage.activeWorkspaceFilePath = null;
+    storePage.workspaceOpenFilePaths = [];
+    storePage.workspaceFiles = {};
+  });
 
   /**
    * 更新页面信息
@@ -109,9 +176,16 @@ export function useStorePage() {
     setCodeFramework,
     setEditorMode,
     setWorkspace,
+    setWorkspaceExplorer,
     setWorkspaceSession,
     setWorkspaceRuntime,
     setWorkspaceIDEConfig,
+    setActiveWorkspaceFilePath,
+    upsertWorkspaceFile,
+    updateWorkspaceFileContent,
+    setWorkspaceFileSaving,
+    markWorkspaceFileSaved,
+    resetWorkspaceFiles,
     store: storePage,
   };
 }

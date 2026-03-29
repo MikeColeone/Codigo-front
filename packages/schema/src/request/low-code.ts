@@ -143,3 +143,18 @@ export interface PageWorkspaceFileResponse {
   content: string;
   updatedAt: string;
 }
+
+export interface PutPageWorkspaceFileRequest {
+  path: string;
+  content: string;
+}
+
+export interface PutPageWorkspaceFileResponse {
+  pageId: number;
+  workspaceId: string;
+  path: string;
+  absolutePath: string;
+  language: string;
+  content: string;
+  updatedAt: string;
+}

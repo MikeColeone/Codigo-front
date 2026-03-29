@@ -97,7 +97,7 @@ export class WorkspaceSessionService {
   }
 
   private buildIDEUrl(workspace: PageWorkspaceResponse, previewPort: number) {
-    const baseUrl = process.env.OPENSUMI_BASE_URL ?? 'http://localhost:20000';
+    const baseUrl = process.env.OPENSUMI_BASE_URL ?? 'http://localhost:5174';
     const searchParams = new URLSearchParams({
       pageId: String(workspace.pageId),
       workspaceId: workspace.workspaceId,

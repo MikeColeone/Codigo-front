@@ -6,6 +6,8 @@ import type {
   PageWorkspaceRuntimeResponse,
   PageWorkspaceSessionResponse,
   PostReleaseRequest,
+  PutPageWorkspaceFileRequest,
+  PutPageWorkspaceFileResponse,
   getQuestionDataByIdRequest,
 } from "@codigo/materials-react";
 import request from "@/shared/utils/request";
@@ -135,6 +137,19 @@ export async function getPageWorkspaceFile(id: number, path: string) {
     {
       method: "GET",
       params: { path },
+    },
+  );
+}
+
+export async function savePageWorkspaceFile(
+  id: number,
+  data: PutPageWorkspaceFileRequest,
+) {
+  return request<{ data: PutPageWorkspaceFileResponse }>(
+    `/pages/${id}/workspace/file`,
+    {
+      data,
+      method: "PUT",
     },
   );
 }

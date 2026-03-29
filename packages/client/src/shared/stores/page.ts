@@ -1,5 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import type {
+  PageWorkspaceExplorerResponse,
+  PageWorkspaceFileResponse,
   PageWorkspaceIDEConfigResponse,
   PageWorkspaceResponse,
   PageWorkspaceRuntimeResponse,
@@ -12,6 +14,12 @@ export type EditorMode = "visual" | "code" | "webide";
 
 export type EChartsThemeSetting = "codigoTheme" | "";
 
+export interface WorkspaceFileState {
+  file: PageWorkspaceFileResponse;
+  isDirty: boolean;
+  isSaving: boolean;
+}
+
 interface IStorePage {
   title: string;
   description: string;
@@ -23,9 +31,13 @@ interface IStorePage {
   editorMode: EditorMode;
   chartTheme: EChartsThemeSetting;
   workspace: PageWorkspaceResponse | null;
+  workspaceExplorer: PageWorkspaceExplorerResponse | null;
   workspaceSession: PageWorkspaceSessionResponse | null;
   workspaceRuntime: PageWorkspaceRuntimeResponse | null;
   workspaceIDEConfig: PageWorkspaceIDEConfigResponse | null;
+  activeWorkspaceFilePath: string | null;
+  workspaceOpenFilePaths: string[];
+  workspaceFiles: Record<string, WorkspaceFileState>;
 }
 
 export function createStorePage() {
@@ -40,9 +52,13 @@ export function createStorePage() {
     editorMode: "visual",
     chartTheme: "codigoTheme",
     workspace: null,
+    workspaceExplorer: null,
     workspaceSession: null,
     workspaceRuntime: null,
     workspaceIDEConfig: null,
+    activeWorkspaceFilePath: null,
+    workspaceOpenFilePaths: [],
+    workspaceFiles: {},
   });
 }
 

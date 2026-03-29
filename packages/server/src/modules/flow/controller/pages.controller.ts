@@ -20,6 +20,8 @@ import type {
   PageWorkspaceSessionResponse,
   PostQuestionDataRequest,
   PostReleaseRequest,
+  PutPageWorkspaceFileRequest,
+  PutPageWorkspaceFileResponse,
 } from '@codigo/schema';
 import {
   GetUserAgent,
@@ -179,6 +181,21 @@ export class PagesController {
     @getUserMess() user: TCurrentUser,
   ): Promise<PageWorkspaceFileResponse> {
     return this.workspaceExplorerService.getPageWorkspaceFile(id, user, path);
+  }
+
+  @Put(':id/workspace/file')
+  @UseGuards(AuthGuard('jwt'))
+  savePageWorkspaceFile(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: PutPageWorkspaceFileRequest,
+    @getUserMess() user: TCurrentUser,
+  ): Promise<PutPageWorkspaceFileResponse> {
+    return this.workspaceExplorerService.savePageWorkspaceFile(
+      id,
+      user,
+      body.path,
+      body.content,
+    );
   }
 
   @Get(':id/submissions/me')

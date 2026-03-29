@@ -70,7 +70,7 @@ export class OpenSumiConfigService {
       process.env.OPENSUMI_BROWSER_URL ??
       session.ideUrl ??
       process.env.OPENSUMI_BASE_URL ??
-      'http://localhost:5173/opensumi-host.html';
+      'http://localhost:5174';
     const hostOrigin = new URL(browserBaseUrl).origin;
     const channelId = `codigo-opensumi-${workspace.workspaceId}`;
     const launchQuery = this.buildLaunchQuery(workspace, session, runtime);

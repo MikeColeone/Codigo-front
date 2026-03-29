@@ -6,10 +6,11 @@ import {
 import type {
   PageWorkspaceExplorerResponse,
   PageWorkspaceFileResponse,
+  PutPageWorkspaceFileResponse,
   WorkspaceExplorerNode,
 } from '@codigo/schema';
 import { existsSync } from 'node:fs';
-import { readdir, readFile, stat } from 'node:fs/promises';
+import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { extname, relative, resolve } from 'node:path';
 import type { TCurrentUser } from 'src/shared/helpers/current-user.helper';
 import { WorkspaceService } from 'src/modules/flow/service/workspace.service';
@@ -80,15 +81,49 @@ export class WorkspaceExplorerService {
       throw new BadRequestException('目标路径不是文件');
     }
 
-    return {
+    return this.buildWorkspaceFileResponse(
       pageId,
-      workspaceId: workspace.workspaceId,
-      path: this.toPosixPath(relative(workspace.workspaceRoot, absolutePath)),
+      workspace.workspaceId,
+      workspace.workspaceRoot,
       absolutePath,
-      language: this.detectLanguage(absolutePath),
-      content: await readFile(absolutePath, 'utf8'),
-      updatedAt: fileStat.mtime.toISOString(),
-    };
+    );
+  }
+
+  async savePageWorkspaceFile(
+    pageId: number,
+    user: TCurrentUser,
+    filePath: string,
+    content: string,
+  ): Promise<PutPageWorkspaceFileResponse> {
+    const workspace = await this.workspaceService.getPageWorkspace(
+      pageId,
+      user,
+    );
+    if (!workspace.exists) {
+      throw new NotFoundException('工作区尚未生成');
+    }
+
+    const absolutePath = this.resolveWorkspacePath(
+      workspace.workspaceRoot,
+      filePath,
+    );
+    if (!existsSync(absolutePath)) {
+      throw new NotFoundException('文件不存在');
+    }
+
+    const fileStat = await stat(absolutePath);
+    if (!fileStat.isFile()) {
+      throw new BadRequestException('目标路径不是文件');
+    }
+
+    await writeFile(absolutePath, content, 'utf8');
+
+    return this.buildWorkspaceFileResponse(
+      pageId,
+      workspace.workspaceId,
+      workspace.workspaceRoot,
+      absolutePath,
+    );
   }
 
   private async readDirectoryTree(
@@ -146,6 +181,25 @@ export class WorkspaceExplorerService {
     }
 
     return absolutePath;
+  }
+
+  private async buildWorkspaceFileResponse(
+    pageId: number,
+    workspaceId: string,
+    workspaceRoot: string,
+    absolutePath: string,
+  ) {
+    const fileStat = await stat(absolutePath);
+
+    return {
+      pageId,
+      workspaceId,
+      path: this.toPosixPath(relative(workspaceRoot, absolutePath)),
+      absolutePath,
+      language: this.detectLanguage(absolutePath),
+      content: await readFile(absolutePath, 'utf8'),
+      updatedAt: fileStat.mtime.toISOString(),
+    };
   }
 
   private detectLanguage(filePath: string) {
