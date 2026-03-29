@@ -20,7 +20,10 @@ export default observer(function Right() {
       key: "logout",
       icon: <LogoutOutlined />,
       label: "退出登录",
-      onClick: () => logout(),
+      onClick: () => {
+        logout();
+        navigate("/login");
+      },
     },
   ];
 
@@ -32,7 +35,11 @@ export default observer(function Right() {
         : "协作者";
 
   return (
-    <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={["click"]}>
+    <Dropdown
+      menu={{ items: menuItems }}
+      placement="bottomRight"
+      trigger={["click"]}
+    >
       <button className="rounded-2xl border border-slate-200/80 bg-white/85 px-3 py-2 shadow-[0_14px_30px_-24px_rgba(15,23,42,0.55)] transition-all hover:border-emerald-200 hover:shadow-[0_16px_36px_-24px_rgba(16,185,129,0.45)]">
         <Space size={10}>
           <Avatar
@@ -54,15 +61,3 @@ export default observer(function Right() {
     </Dropdown>
   );
 });
-
-
-
-
-
-
-
-
-
-
-
-

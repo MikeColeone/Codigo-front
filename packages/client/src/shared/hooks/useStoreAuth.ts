@@ -1,5 +1,5 @@
 import { createStoreAuth } from "../stores";
-import { computed, action } from "mobx";
+import { computed, action, runInAction } from "mobx";
 import request from "../utils/request";
 
 export const storeAuth = createStoreAuth();
@@ -9,38 +9,43 @@ export function useStoreAuth() {
 
   // 登录
   const login = action(async (token: string) => {
-    storeAuth.token = `Bearer ${token}`;
-    localStorage.setItem("token", storeAuth.token);
+    // Check if token already has Bearer prefix to prevent double prefixing
+    const formattedToken = token.startsWith("Bearer ")
+      ? token
+      : `Bearer ${token}`;
+    runInAction(() => {
+      storeAuth.token = formattedToken;
+    });
+    localStorage.setItem("token", formattedToken);
     await fetchUserInfo();
   });
 
   const logout = action(() => {
-    storeAuth.token = "";
-    storeAuth.details = null;
+    runInAction(() => {
+      storeAuth.token = "";
+      storeAuth.details = null;
+    });
     localStorage.removeItem("token");
   });
 
   const fetchUserInfo = action(async () => {
-    if (!storeAuth.token) return;
+    if (!storeAuth.token) return null;
     try {
       const { data } = await request("/user/me");
-      storeAuth.details = data;
-    } catch (e) {
+      runInAction(() => {
+        storeAuth.details = data;
+      });
+      console.log(data);
+      return data;
+    } catch (e: any) {
       console.error("获取用户信息失败", e);
+      console.log(e);
+      if (e?.response?.status === 401 || e?.error?.code === 401) {
+        logout();
+      }
+      return null;
     }
   });
 
   return { login, logout, isLogin, fetchUserInfo, store: storeAuth };
 }
-
-
-
-
-
-
-
-
-
-
-
-

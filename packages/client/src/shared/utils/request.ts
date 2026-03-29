@@ -27,7 +27,10 @@ request.interceptors.response.use(
     const { code, response } = err;
     if (code === "ERR_BAD_REQUEST") {
       message.warning(response?.data?.msg ?? "出现未知错误");
+    } else if (response?.status === 401) {
+      message.error(response?.data?.msg ?? "请先登录");
     }
+    return Promise.reject(err);
   },
 );
 

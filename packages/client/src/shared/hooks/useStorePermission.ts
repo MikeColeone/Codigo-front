@@ -68,7 +68,6 @@ export function useStorePermission() {
     currentUserName: string,
   ) => {
     try {
-      // 1. 获取真实协作数据
       const { data } = await request(`/pages/${pageId}/collaborators`, {
         method: "GET",
       });
@@ -191,6 +190,10 @@ export function useStorePermission() {
   };
 
   const getCurrentRole = (): PermissionRole => {
+    const pageId = Number(
+      new URLSearchParams(window.location.hash.split("?")[1] || "").get("id"),
+    );
+    if (!pageId) return "owner"; // No page ID means it's a new page, so user is owner
     return getCurrentUser()?.role ?? "viewer";
   };
 

@@ -1,4 +1,4 @@
-﻿import { useStoreAuth } from "@/shared/hooks/useStoreAuth";
+import { useStoreAuth } from "@/shared/hooks/useStoreAuth";
 import { useNavigate } from "react-router-dom";
 import { useRequest } from "ahooks";
 import { getLoginWithPassword } from "@/modules/auth/api/user";
@@ -9,8 +9,9 @@ export function useLogin() {
 
   return useRequest(getLoginWithPassword, {
     manual: true,
-    onSuccess: ({ data }) => {
-      login(data);
+    onSuccess: async (res) => {
+      // res is { code: 0, data: 'eyJ...', msg: '登录成功' } based on the backend and interceptor
+      await login(res.data);
       nav("/editor");
     },
   });

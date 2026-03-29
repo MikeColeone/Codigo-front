@@ -30,6 +30,7 @@ export const HomeHeader = observer(() => {
       label: "退出登录",
       onClick: () => {
         logout();
+        navigate("/login");
       },
     },
   ];

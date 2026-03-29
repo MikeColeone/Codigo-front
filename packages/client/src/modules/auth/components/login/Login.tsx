@@ -1,4 +1,4 @@
-﻿import { useTitle } from "ahooks";
+import { useTitle } from "ahooks";
 import { useState } from "react";
 import Account from "./Account.tsx";
 import Captcha from "./Captcha.tsx";
@@ -22,7 +22,7 @@ export default function Login(props: ILoginProps) {
             <span
               onClick={() => setActiveKey(1)}
               className={`cursor-pointer transition-colors ${
-                activeKey
+                activeKey === 1
                   ? "text-emerald-600 border-b-2 border-emerald-500 pb-1 font-bold"
                   : "text-slate-500 hover:text-slate-700"
               }`}
@@ -32,7 +32,7 @@ export default function Login(props: ILoginProps) {
             <span
               onClick={() => setActiveKey(0)}
               className={`cursor-pointer transition-colors ${
-                !activeKey
+                activeKey === 0
                   ? "text-emerald-600 border-b-2 border-emerald-500 pb-1 font-bold"
                   : "text-slate-500 hover:text-slate-700"
               }`}
@@ -47,8 +47,8 @@ export default function Login(props: ILoginProps) {
 
         {/* 账号密码登录输入框 */}
         <div className="mb-6">
-          {!!activeKey && <Account />}
-          {!activeKey && <Captcha />}
+          {activeKey === 1 && <Account />}
+          {activeKey === 0 && <Captcha />}
         </div>
 
         <div className="mb-6 flex items-center space-x-2">

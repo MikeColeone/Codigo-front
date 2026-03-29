@@ -19,7 +19,7 @@ import { getLowCodePage } from "@/modules/editor/api/low-code";
 
 const Editor = observer(() => {
   useTitle("codigo - 页面编辑");
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const pageId = Number(searchParams.get("id"));
 
   const { store: storeComps, loadPageData } = useStoreComponents();
@@ -42,7 +42,11 @@ const Editor = observer(() => {
   const [scrolling, setScrolling] = useState(false);
 
   useEffect(() => {
-    loadPageData(getLowCodePage);
+    loadPageData(getLowCodePage).then((data) => {
+      if (data?.id && !searchParams.get("id")) {
+        setSearchParams({ id: String(data.id) }, { replace: true });
+      }
+    });
   }, []);
 
   useEffect(() => {

@@ -118,7 +118,29 @@ export class UserService {
     };
   }
 
-  async passwordLogin({ phone, password }: Ipasswordlogin) {}
+  async passwordLogin({ phone, password }: Ipasswordlogin) {
+    const foundUser = await this.userRepository.findOneBy({ phone });
+    if (!foundUser) {
+      throw new XException({
+        code: Code.LOGIN_ERROR,
+        message: '账号不存在',
+      });
+    }
+
+    const isPasswordValid =
+      foundUser.password === this.secretTool.getSecret(password);
+    if (!isPasswordValid) {
+      throw new XException({
+        code: Code.LOGIN_ERROR,
+        message: '密码错误',
+      });
+    }
+
+    return {
+      data: this.jwtService.sign({ id: foundUser.id }),
+      msg: '登录成功',
+    };
+  }
 
   async phoneLogin({ phone, sendCode }: IphoneLogin) {
     const foundUser = await this.userRepository.findOneBy({ phone });

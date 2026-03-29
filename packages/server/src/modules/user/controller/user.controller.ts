@@ -1,6 +1,5 @@
 import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { UserService } from 'src/modules/user/service/user.service';
-import { SendCodeDto } from 'src/modules/user/dto/sendSms.dto';
 import {
   GetUserIP,
   GetUserAgent,

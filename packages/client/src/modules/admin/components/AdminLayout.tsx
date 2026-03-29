@@ -22,7 +22,7 @@ export default observer(function AdminLayout() {
 
     const role = storeAuth.details.global_role;
     if (role !== "ADMIN" && role !== "SUPER_ADMIN") {
-      nav("/home", { replace: true });
+      nav("/", { replace: true });
     }
   }, [storeAuth.details, nav]);
 
@@ -49,7 +49,7 @@ export default observer(function AdminLayout() {
         key: "back",
         label: "返回工作台",
         icon: <AppstoreOutlined />,
-        onClick: () => nav("/home"),
+        onClick: () => nav("/editor"),
       },
       {
         key: "logout",

@@ -39,7 +39,7 @@ export class CollaborationService {
     const owner = await this.userRepository.findOneBy({ id: ownerId });
     if (owner) {
       result.push({
-        id: owner.id.toString(),
+        id: `owner-${owner.id}`,
         user_id: owner.id,
         page_id: pageId,
         name: owner.username || 'Owner',

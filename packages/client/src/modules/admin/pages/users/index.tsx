@@ -28,8 +28,10 @@ export default function AdminUsers() {
       const res = await request(`/admin/users`, {
         params: { page, limit: 10, search },
       });
-      setData(res.list);
-      setTotal(res.total);
+      // @ts-ignore
+      setData(res.data?.list || res.list);
+      // @ts-ignore
+      setTotal(res.data?.total || res.total);
       setCurrentPage(page);
     } catch (error) {
       message.error("获取用户列表失败");

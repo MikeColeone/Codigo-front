@@ -638,58 +638,70 @@ export function useStoreComponents() {
 
   // 定义从本地存储中读取组件的函数
   const loadPageData = action(
-    async (fetchServerData?: () => Promise<{ data: any }>) => {
-      // 从本地存储中读取组件配置相关数据
-      const compConfig = localStorage.getItem("compConfig");
-      const sortableCompConfig = localStorage.getItem("sortableCompConfig");
-      const currentCompConfig = localStorage.getItem("currentCompConfig");
-      const pageSettings = localStorage.getItem("pageSettings");
+      async (fetchServerData?: () => Promise<{ data: any }>) => {
+        // 从本地存储中读取组件配置相关数据
+        const compConfig = localStorage.getItem("compConfig");
+        const sortableCompConfig = localStorage.getItem("sortableCompConfig");
+        const currentCompConfig = localStorage.getItem("currentCompConfig");
+        const pageSettings = localStorage.getItem("pageSettings");
 
-      const storeTime = localStorage.getItem("store_time");
-      const releaseTime = localStorage.getItem("release_time");
+        const storeTime = localStorage.getItem("store_time");
+        const releaseTime = localStorage.getItem("release_time");
 
-      // 如果存在组件配置数据，则根据存储时间判断是否可以读取数据
-      if (compConfig && compConfig !== "{}") {
-        if (
-          storeTime &&
-          Number(storeTime) > (releaseTime ? Number(releaseTime) : 0)
-        ) {
-          // 从JSON字符串转换为组件配置对象
-          storeComponents.compConfigs = JSON.parse(compConfig);
-          storeComponents.sortableCompConfig = JSON.parse(sortableCompConfig!);
-          storeComponents.currentCompConfig = JSON.parse(currentCompConfig!);
-          normalizeLayout(
-            storeComponents.compConfigs,
-            storeComponents.sortableCompConfig,
-          );
-
-          // Restore page settings
-          if (pageSettings) {
-            const settings = JSON.parse(pageSettings);
-            const { setDeviceType, setCanvasSize, setCodeFramework } =
-              useStorePage();
-            if (settings.deviceType) setDeviceType(settings.deviceType);
-            if (settings.canvasWidth && settings.canvasHeight) {
-              setCanvasSize(settings.canvasWidth, settings.canvasHeight);
-            }
-            if (settings.codeFramework) {
-              setCodeFramework(settings.codeFramework);
-            }
+        let serverData = null;
+        if (fetchServerData) {
+          try {
+            const { data } = await fetchServerData();
+            serverData = data;
+          } catch (e) {
+            console.error("获取服务端数据失败", e);
           }
-
-          message.success("已自动从草稿中读取数据");
-        } else if (fetchServerData) {
-          // 服务端获取页面组件
-          const { data } = await fetchServerData();
-          initFromServerData(data);
         }
-      } else if (fetchServerData) {
-        // 服务端获取页面组件
-        const { data } = await fetchServerData();
-        initFromServerData(data);
-      }
-    },
-  );
+
+        // 如果存在组件配置数据，则根据存储时间判断是否可以读取数据
+        if (compConfig && compConfig !== "{}") {
+          if (
+            storeTime &&
+            Number(storeTime) > (releaseTime ? Number(releaseTime) : 0)
+          ) {
+            // 从JSON字符串转换为组件配置对象
+            storeComponents.compConfigs = JSON.parse(compConfig);
+            storeComponents.sortableCompConfig = JSON.parse(sortableCompConfig!);
+            storeComponents.currentCompConfig = JSON.parse(currentCompConfig!);
+            normalizeLayout(
+              storeComponents.compConfigs,
+              storeComponents.sortableCompConfig,
+            );
+
+            // Restore page settings
+            if (pageSettings) {
+              const settings = JSON.parse(pageSettings);
+              const { setDeviceType, setCanvasSize, setCodeFramework } =
+                useStorePage();
+              if (settings.deviceType) setDeviceType(settings.deviceType);
+              if (settings.canvasWidth && settings.canvasHeight) {
+                setCanvasSize(settings.canvasWidth, settings.canvasHeight);
+              }
+              if (settings.codeFramework) {
+                setCodeFramework(settings.codeFramework);
+              }
+            }
+
+            message.success("已自动从草稿中读取数据");
+            return serverData;
+          } else if (serverData) {
+            // 服务端获取页面组件
+            initFromServerData(serverData);
+            return serverData;
+          }
+        } else if (serverData) {
+          // 服务端获取页面组件
+          initFromServerData(serverData);
+          return serverData;
+        }
+        return serverData;
+      },
+    );
 
   return {
     _replace,

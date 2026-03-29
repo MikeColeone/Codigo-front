@@ -67,10 +67,7 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
           label: "图表主题",
           name: "chartTheme",
           node: (
-            <Select
-              options={chartThemeOptions}
-              placeholder="选择图表主题"
-            />
+            <Select options={chartThemeOptions} placeholder="选择图表主题" />
           ),
         },
       ],
@@ -102,7 +99,7 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
         onValuesChange={handleValuesChange}
         className="[&_.ant-form-item]:mb-4 [&_.ant-form-item-label>label]:text-slate-500 [&_.ant-input]:!rounded-2xl [&_.ant-input]:!border-slate-200 [&_.ant-input]:!bg-slate-50/70 [&_.ant-input]:!px-4 [&_.ant-input]:!py-2.5 [&_.ant-input-affix-wrapper]:!rounded-2xl [&_.ant-input-affix-wrapper]:!border-slate-200 [&_.ant-input-affix-wrapper]:!bg-slate-50/70 [&_.ant-select-selector]:!h-11 [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border-slate-200 [&_.ant-select-selector]:!bg-slate-50/70 [&_.ant-select-selection-wrap]:!items-center"
       >
-        <div className="space-y-4">
+        <div className="space-y-4 mb-20">
           {fieldGroups.map((group) => (
             <div
               key={group.key}
@@ -123,7 +120,11 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
               </div>
 
               {group.fields.map((field) => (
-                <Form.Item key={String(field.name)} label={field.label} name={field.name}>
+                <Form.Item
+                  key={String(field.name)}
+                  label={field.label}
+                  name={field.name}
+                >
                   {field.node}
                 </Form.Item>
               ))}
@@ -131,16 +132,6 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
           ))}
         </div>
       </Form>
-
-      <div className="rounded-3xl border border-slate-200/80 bg-slate-50/80 p-4">
-        <div className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
-          <InfoCircleOutlined className="text-sky-600" />
-          页面信息提示
-        </div>
-        <div className="text-sm leading-6 text-slate-500">
-          标题适合突出业务主题，详情适合说明页面用途，关键字建议用英文逗号分隔，便于后续发布和检索。
-        </div>
-      </div>
     </div>
   );
 });
