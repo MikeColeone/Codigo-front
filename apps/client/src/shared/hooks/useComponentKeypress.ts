@@ -18,14 +18,22 @@ export function useComponentKeyPress() {
   } = useStoreComponents();
 
   /**
+   *
+   * @returns 返回的是message触发条件 这个情况比较多 可以直接在这里添加
+   */
+  function judgeAlertMessage() {
+    return (
+      document.activeElement === document.body ||
+      document.activeElement?.matches('div[role="button"]')
+    );
+  }
+  /**
    * 验证组件
    * @returns {boolean} 组件是否存在且焦点在按钮元素上
    */
   function validateComponent() {
     const isCompExist = getCurrentComponentConfig.get() !== null;
-    const isActive =
-      document.activeElement === document.body ||
-      document.activeElement?.matches('div[role="button"]'); // 兼容拖拽插件
+    const isActive = judgeAlertMessage();
 
     if (!isCompExist) {
       message.warning("请先选择组件");
@@ -93,18 +101,6 @@ export function useComponentKeyPress() {
     {
       // 不严格匹配的话会和redo一次再undo
       exactMatch: true,
-    }
+    },
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

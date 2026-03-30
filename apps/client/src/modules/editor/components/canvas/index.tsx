@@ -612,13 +612,6 @@ const EditorCanvas: FC<{
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-[22px] bg-emerald-500/10 text-3xl text-emerald-600">
               <AppstoreOutlined />
             </div>
-            <div className="text-2xl font-semibold tracking-tight text-slate-900">
-              从这里开始搭建你的页面
-            </div>
-            <div className="mx-auto mt-3 max-w-xl text-sm leading-7 text-slate-500">
-              把左侧组件拖到画布中，或者使用下方快捷入口快速生成首个模块。完成首屏后，再继续补充内容和布局。
-            </div>
-
             <div className="mt-6 grid grid-cols-3 gap-3 text-left">
               {[
                 {
