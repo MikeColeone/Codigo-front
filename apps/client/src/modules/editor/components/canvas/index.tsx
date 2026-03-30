@@ -618,19 +618,16 @@ const EditorCanvas: FC<{
                   key: "drag",
                   icon: <DragOutlined />,
                   title: "拖入组件",
-                  desc: "直接从资源库拖放到画布指定区域。",
                 },
                 {
                   key: "edit",
                   icon: <HighlightOutlined />,
                   title: "实时编辑",
-                  desc: "选中组件后在右侧面板调整内容与样式。",
                 },
                 {
                   key: "preview",
                   icon: <PlusOutlined />,
                   title: "快速起稿",
-                  desc: "用快捷组件先搭出结构，再逐步美化。",
                 },
               ].map((item) => (
                 <div
@@ -642,9 +639,6 @@ const EditorCanvas: FC<{
                   </div>
                   <div className="text-sm font-semibold text-slate-900">
                     {item.title}
-                  </div>
-                  <div className="mt-1 text-xs leading-6 text-slate-400">
-                    {item.desc}
                   </div>
                 </div>
               ))}

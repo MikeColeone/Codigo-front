@@ -1,3 +1,9 @@
+/**
+ * 深合并
+ * @param base 基础对象
+ * @param override 覆盖对象
+ * @returns 合并后的对象
+ */
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   if (value === null || typeof value !== "object") return false;
   if (Array.isArray(value)) return false;

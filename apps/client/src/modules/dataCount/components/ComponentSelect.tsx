@@ -50,8 +50,8 @@ export default function ComponentSelect({
 
   const dataSource: DataType[] = components.map((item) => {
     return {
-      key: item.id,
-      title: item.options?.title ?? item.type ?? "默认展示的标题",
+      key: Number(item.id),
+      title: item?.title ?? item.type ?? "默认展示的标题",
       type: item.type,
       component: item,
     };

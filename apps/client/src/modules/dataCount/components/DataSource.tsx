@@ -27,7 +27,7 @@ export default function DataSource({ currentSelected }: DataSourceProps) {
   const { run: execGetQuestionData } = useRequest(
     () =>
       getQuestionDataByTypeRequest({
-        id: currentSelected!.id,
+        id: Number(currentSelected!.id),
       }),
     {
       manual: true,
@@ -70,7 +70,7 @@ export default function DataSource({ currentSelected }: DataSourceProps) {
 
   // 不同非输入类型组件展示的标题
   const itemTitle = useMemo(
-    () => currentSelected?.options.title ?? "默认展示的标题",
+    () => currentSelected?.title ?? "默认展示的标题",
     [currentSelected],
   );
 

@@ -1,5 +1,5 @@
 import { Button, message } from "antd";
-import { FormOutlined, LineChartOutlined } from "@ant-design/icons";
+import { FormOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useRequest } from "ahooks";
@@ -79,7 +79,7 @@ export default function Statistics() {
             <ComponentSelect
               components={components}
               setCurrnetSelected={setCurrentSelected}
-              currentSelected={currentSelected?.id ?? 0}
+              currentSelected={Number(currentSelected?.id ?? 0)}
             />
           </div>
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex-1">

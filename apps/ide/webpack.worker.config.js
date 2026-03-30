@@ -5,6 +5,7 @@ const { ProgressPlugin } = require('webpack');
 const tsConfigPath = path.join(__dirname, './tsconfig.json');
 const distDir = path.join(__dirname, './dist');
 const opensumiJsonRpcDir = path.dirname(require.resolve('@opensumi/vscode-jsonrpc/package.json'));
+const jsoncParserDir = path.dirname(require.resolve('jsonc-parser/package.json'));
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -46,7 +47,7 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        include: [opensumiJsonRpcDir],
+        include: [opensumiJsonRpcDir, jsoncParserDir],
         loader: require.resolve('ts-loader'),
         options: {
           happyPackMode: true,

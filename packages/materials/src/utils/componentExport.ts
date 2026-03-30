@@ -24,6 +24,10 @@ import {
   PieChartComponent,
 } from "..";
 
+/**
+ * 组件导出
+ * @returns 组件列表
+ */
 // @ts-ignore
 export const componentList: Record<TComponentTypes, FC<any>> = {
   button: ButtonComponent,

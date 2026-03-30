@@ -3,7 +3,7 @@ import type { GetReleaseDataResponse } from "@codigo/schema";
 
 async function getData(id: string) {
   // 请求后端接口获取发布页面组件
-  const response = await fetch(`http://8.134.163.0:5000/api/pages/${id}`, {
+  const response = await fetch(`${process.env.SERVER_URL!}/api/pages/${id}`, {
     cache: "no-cache",
   });
 

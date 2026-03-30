@@ -8,9 +8,23 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 
 const tsConfigPath = path.join(__dirname, './tsconfig.json');
-const dir = path.resolve('.');
+const dir = __dirname;
 const port = 8081;
 const opensumiJsonRpcDir = path.dirname(require.resolve('@opensumi/vscode-jsonrpc/package.json'));
+const jsoncParserDir = path.dirname(require.resolve('jsonc-parser/package.json'));
+const opensumiCoreBrowserDir = path.dirname(require.resolve('@opensumi/ide-core-browser/package.json'));
+const appReactEntry = require.resolve('react', {
+  paths: [dir],
+});
+const appReactDomEntry = require.resolve('react-dom', {
+  paths: [dir],
+});
+const opensumiMobxEntry = require.resolve('mobx', {
+  paths: [opensumiCoreBrowserDir],
+});
+const opensumiMobxReactLiteEntry = require.resolve('mobx-react-lite', {
+  paths: [opensumiCoreBrowserDir],
+});
 
 const isDevelopment =
   process.env['NODE_ENV'] === undefined ||
@@ -48,6 +62,10 @@ module.exports = {
       processGlobal: 'browserfs/dist/shims/process.js',
       bufferGlobal: 'browserfs/dist/shims/bufferGlobal.js',
       bfsGlobal: require.resolve('browserfs'),
+      react$: appReactEntry,
+      'react-dom$': appReactDomEntry,
+      mobx$: opensumiMobxEntry,
+      'mobx-react-lite$': opensumiMobxReactLiteEntry,
     },
   },
   bail: true,
@@ -89,7 +107,7 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        include: [opensumiJsonRpcDir],
+        include: [opensumiJsonRpcDir, jsoncParserDir],
         loader: 'ts-loader',
         options: {
           happyPackMode: true,
@@ -163,6 +181,12 @@ module.exports = {
     mainFields: ['loader', 'main'],
     moduleExtensions: ['-loader'],
   },
+  stats: {
+    warningsFilter: [
+      /vscode-languageserver-types[\\/]lib[\\/]umd[\\/]main\.js/,
+      /@opensumi[\\/]monaco-editor-core[\\/]esm[\\/]vs[\\/]base[\\/]common[\\/]performance\.js/,
+    ],
+  },
   optimization: {
     nodeEnv: process.env.NODE_ENV,
     minimizer: [
@@ -187,6 +211,10 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.NormalModuleReplacementPlugin(/^react$/, appReactEntry),
+    new webpack.NormalModuleReplacementPlugin(/^react-dom$/, appReactDomEntry),
+    new webpack.NormalModuleReplacementPlugin(/^mobx-react-lite$/, opensumiMobxReactLiteEntry),
+    new webpack.NormalModuleReplacementPlugin(/^mobx$/, opensumiMobxEntry),
     new HtmlWebpackPlugin({
       template: __dirname + '/index.html',
       inject: false,

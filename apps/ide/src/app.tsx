@@ -1,6 +1,7 @@
 import '@opensumi/ide-i18n';
 import '@opensumi/ide-core-browser/lib/style/index.less';
 import * as React from 'react';
+import { configure } from 'mobx';
 import { SlotLocation } from '@opensumi/ide-core-browser';
 import { configureFileServiceContext } from '@codigo/file-service';
 
@@ -43,30 +44,37 @@ const layoutConfig = {
 // 支持分支及tag  如 http://0.0.0.0:8081/#https://github.com/opensumi/core/tree/v2.15.0
 
 const hash =
-  location.hash.startsWith('#') && location.hash.indexOf('github') > -1
-    ? location.hash.split('#')[1]
-    : DEFAULT_URL;
+  location.hash.startsWith('#') && location.hash.indexOf('github') > -1 ? location.hash.split('#')[1] : DEFAULT_URL;
 
 const { platform, owner, name } = parseUri(hash);
 const searchParams = new URLSearchParams(window.location.search);
 const workspaceDir = searchParams.get('workspaceRoot') || `/${platform}/${owner}/${name}`;
+
+installConsoleFilters();
+
+configure({
+  isolateGlobalState: true,
+});
 
 configureFileServiceContext({
   pageId: parsePageId(searchParams.get('pageId')),
   baseUrl: searchParams.get('apiBaseUrl') || undefined,
 });
 
-window.addEventListener('message', (event: MessageEvent<{ type?: string; payload?: { token?: string; pageId?: number; apiBaseUrl?: string } }>) => {
-  if (event.data?.type !== 'codigo:opensumi-app-context') {
-    return;
-  }
+window.addEventListener(
+  'message',
+  (event: MessageEvent<{ type?: string; payload?: { token?: string; pageId?: number; apiBaseUrl?: string } }>) => {
+    if (event.data?.type !== 'codigo:opensumi-app-context') {
+      return;
+    }
 
-  configureFileServiceContext({
-    token: event.data.payload?.token,
-    pageId: event.data.payload?.pageId,
-    baseUrl: event.data.payload?.apiBaseUrl,
-  });
-});
+    configureFileServiceContext({
+      token: event.data.payload?.token,
+      pageId: event.data.payload?.pageId,
+      baseUrl: event.data.payload?.apiBaseUrl,
+    });
+  },
+);
 
 if (window.parent !== window) {
   window.parent.postMessage({ type: 'codigo:opensumi-app-ready' }, '*');
@@ -85,11 +93,6 @@ renderApp({
     'editor.scrollBeyondLastLine': false,
   },
   workspaceDir,
-  extraContextProvider: (props) => (
-    <div id='#hi' style={{ width: '100%', height: '100%' }}>
-      {props.children}
-    </div>
-  ),
 });
 
 function parsePageId(value: string | null) {
@@ -99,4 +102,24 @@ function parsePageId(value: string | null) {
 
   const pageId = Number(value);
   return Number.isNaN(pageId) ? undefined : pageId;
+}
+
+function installConsoleFilters() {
+  const suppressedMessages = ['NOT SUPPORTED: option jsonPointers. Deprecated jsPropertySyntax can be used instead.'];
+
+  const wrapConsoleMethod = (method: 'warn' | 'error') => {
+    const originalMethod = console[method];
+    console[method] = (...args: unknown[]) => {
+      const message = args.map((arg) => (typeof arg === 'string' ? arg : '')).join(' ');
+
+      if (suppressedMessages.some((item) => message.includes(item))) {
+        return;
+      }
+
+      return originalMethod.apply(console, args as Parameters<typeof originalMethod>);
+    };
+  };
+
+  wrapConsoleMethod('warn');
+  wrapConsoleMethod('error');
 }

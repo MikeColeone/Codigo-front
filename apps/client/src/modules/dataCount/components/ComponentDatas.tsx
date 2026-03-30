@@ -19,7 +19,7 @@ export default function ComponentDatas(props: {
       return {
         key: item.id,
         dataIndex: item.id,
-        title: item.options?.title ?? item.type ?? "默认展示的标题",
+        title: item?.title ?? item.type ?? "默认展示的标题",
       };
     });
   }, [props.components]);

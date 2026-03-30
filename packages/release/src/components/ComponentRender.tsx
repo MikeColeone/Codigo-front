@@ -149,7 +149,7 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
   useRequest(
     async () => {
       const _f = await fetch(
-        `http://8.134.163.0:5000/api/pages/${data.id}/submissions/me`,
+        `${process.env.SERVER_URL!}/api/pages/${data.id}/submissions/me`,
       );
       return _f.json() as Promise<{ data: boolean }>;
     },
@@ -157,7 +157,7 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
       onSuccess: ({ data }) => {
         if (data) {
           setIsPosted(true);
-          message.open({ content: "�����ύ���ʾ�����л���Ĳ���" });
+          message.open({ content: "已发布" });
         }
       },
     },
@@ -178,10 +178,10 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
 
         return false;
       });
-      if (isNotCompleted) return { msg: "����д�����ʾ���Ϣ", data: false };
+      if (isNotCompleted) return { msg: "请填写完整信息", data: false };
 
       const _f = await fetch(
-        `http://8.134.163.0:5000/api/pages/${data.id}/submissions`,
+        `${process.env.SERVER_URL!}/api/pages/${data.id}/submissions`,
         {
           headers: {
             "Content-Type": "application/json",

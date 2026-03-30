@@ -1,7 +1,7 @@
 export type FileServiceNode = {
   name: string;
   path: string;
-  type: 'file' | 'directory';
+  type: "file" | "directory";
   children?: FileServiceNode[];
 };
 
@@ -23,34 +23,36 @@ type WorkspaceFileResponse = {
   content: string;
 };
 
-const searchParams = typeof window === 'undefined' ? new URLSearchParams() : new URLSearchParams(window.location.search);
-const embedded = typeof window !== 'undefined' && window.parent !== window;
+const searchParams =
+  typeof window === "undefined"
+    ? new URLSearchParams()
+    : new URLSearchParams(window.location.search);
+const embedded = typeof window !== "undefined" && window.parent !== window;
 
 let context: FileServiceContext = {
-  pageId: parsePageId(searchParams.get('pageId')),
-  baseUrl: readString(searchParams.get('apiBaseUrl')),
+  pageId: parsePageId(searchParams.get("pageId")),
+  baseUrl: readString(searchParams.get("apiBaseUrl")),
 };
 
 let explorerCache: Promise<WorkspaceExplorerResponse> | undefined;
 let resolveReady: (() => void) | undefined;
 const whenContextReady = embedded
   ? new Promise<void>((resolve) => {
-    resolveReady = resolve;
-  })
+      resolveReady = resolve;
+    })
   : Promise.resolve();
 
-if (!embedded || (context.pageId && context.baseUrl)) {
+if (!embedded || isContextReady(context)) {
   resolveReady?.();
   resolveReady = undefined;
 }
 
 export function configureFileServiceContext(nextContext: FileServiceContext) {
-  context = {
-    ...context,
-    ...nextContext,
-  };
-  resolveReady?.();
-  resolveReady = undefined;
+  context = mergeContext(context, nextContext);
+  if (isContextReady(context)) {
+    resolveReady?.();
+    resolveReady = undefined;
+  }
 }
 
 export function getFileServiceContext() {
@@ -65,7 +67,9 @@ export async function readFile(path: string) {
   await waitForRuntimeContext();
   const pageId = getPageId();
   const targetPath = normalizePath(path);
-  const response = await requestJson<WorkspaceFileResponse>(`/pages/${pageId}/workspace/file?path=${encodeURIComponent(targetPath)}`);
+  const response = await requestJson<WorkspaceFileResponse>(
+    `/pages/${pageId}/workspace/file?path=${encodeURIComponent(targetPath)}`,
+  );
   return response.content;
 }
 
@@ -79,7 +83,7 @@ export async function readDir(path: string) {
   }
 
   const targetNode = findNode(tree, targetPath);
-  if (!targetNode || targetNode.type !== 'directory') {
+  if (!targetNode || targetNode.type !== "directory") {
     return [];
   }
 
@@ -91,9 +95,9 @@ export async function writeFile(path: string, content: string) {
   const pageId = getPageId();
   const targetPath = normalizePath(path);
   await requestJson(`/pages/${pageId}/workspace/file`, {
-    method: 'PUT',
+    method: "PUT",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       path: targetPath,
@@ -105,7 +109,9 @@ export async function writeFile(path: string, content: string) {
 async function loadExplorer() {
   if (!explorerCache) {
     const pageId = getPageId();
-    explorerCache = requestJson<WorkspaceExplorerResponse>(`/pages/${pageId}/workspace/explorer`);
+    explorerCache = requestJson<WorkspaceExplorerResponse>(
+      `/pages/${pageId}/workspace/explorer`,
+    );
   }
   return explorerCache;
 }
@@ -120,8 +126,8 @@ async function requestJson<T>(path: string, init?: RequestInit) {
     throw new Error(`File service request failed: ${response.status}`);
   }
 
-  const payload = await response.json() as ApiEnvelope<T> | T;
-  if (payload && typeof payload === 'object' && 'data' in payload) {
+  const payload = (await response.json()) as ApiEnvelope<T> | T;
+  if (payload && typeof payload === "object" && "data" in payload) {
     return payload.data as T;
   }
   return payload as T;
@@ -130,7 +136,7 @@ async function requestJson<T>(path: string, init?: RequestInit) {
 function buildHeaders(headers?: HeadersInit) {
   const mergedHeaders = new Headers(headers);
   if (context.token) {
-    mergedHeaders.set('Authorization', context.token);
+    mergedHeaders.set("Authorization", context.token);
   }
   return mergedHeaders;
 }
@@ -139,20 +145,23 @@ function buildUrl(path: string) {
   if (!context.baseUrl) {
     return path;
   }
-  const baseUrl = context.baseUrl.endsWith('/')
+  const baseUrl = context.baseUrl.endsWith("/")
     ? context.baseUrl.slice(0, -1)
     : context.baseUrl;
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   return `${baseUrl}${normalizedPath}`;
 }
 
-function findNode(nodes: FileServiceNode[], targetPath: string): FileServiceNode | undefined {
+function findNode(
+  nodes: FileServiceNode[],
+  targetPath: string,
+): FileServiceNode | undefined {
   for (const node of nodes) {
     if (node.path === targetPath) {
       return node;
     }
 
-    if (node.type === 'directory' && node.children?.length) {
+    if (node.type === "directory" && node.children?.length) {
       const matchedNode = findNode(node.children, targetPath);
       if (matchedNode) {
         return matchedNode;
@@ -165,13 +174,13 @@ function findNode(nodes: FileServiceNode[], targetPath: string): FileServiceNode
 
 function getPageId() {
   if (!context.pageId) {
-    throw new Error('Missing pageId for file service');
+    throw new Error("Missing pageId for file service");
   }
   return context.pageId;
 }
 
 function normalizePath(path: string) {
-  return path.replace(/\\/g, '/').replace(/^\/+/, '').replace(/\/+$/, '');
+  return path.replace(/\\/g, "/").replace(/^\/+/, "").replace(/\/+$/, "");
 }
 
 function parsePageId(value: string | null) {
@@ -193,4 +202,28 @@ async function waitForRuntimeContext() {
   }
 
   await whenContextReady;
+}
+
+function isContextReady(value: FileServiceContext) {
+  return Boolean(value.pageId);
+}
+
+function mergeContext(
+  currentContext: FileServiceContext,
+  nextContext: FileServiceContext,
+) {
+  return {
+    pageId:
+      nextContext.pageId !== undefined
+        ? nextContext.pageId
+        : currentContext.pageId,
+    token:
+      nextContext.token !== undefined
+        ? nextContext.token
+        : currentContext.token,
+    baseUrl:
+      nextContext.baseUrl !== undefined
+        ? nextContext.baseUrl
+        : currentContext.baseUrl,
+  };
 }

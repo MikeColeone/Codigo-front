@@ -35,6 +35,14 @@
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.28.2",
+  "pnpm": {
+    "overrides": {
+      "vscode-languageserver-protocol": "3.16.0",
+      "vscode-jsonrpc": "6.0.0",
+      "yargs": "13.3.2",
+      "@opensumi/di": "1.8.0"
+    }
+  },
   "devDependencies": {
     "@babel/preset-react": "^7.28.5",
     "@commitlint/cli": "^20.4.2",

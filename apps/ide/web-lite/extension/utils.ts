@@ -48,9 +48,30 @@ export function mergeContributes(
 async function tryFetchPackageNlsJson(extensionId: string, version: string) {
   const extPath = `gw.alipayobjects.com/os/marketplace/extension/${extensionId}-${version}/`;
   const defaultPackageJSON = await fetch(`https://${extPath}package.nls.json`)
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        return undefined;
+      }
+      return res.json();
+    })
     .catch((err) => undefined);
   return defaultPackageJSON;
+}
+
+function mayHaveLocalizedStrings(value: unknown): boolean {
+  if (typeof value === 'string') {
+    return /^%[^%]+%$/.test(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value.some((item) => mayHaveLocalizedStrings(item));
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.values(value).some((item) => mayHaveLocalizedStrings(item));
+  }
+
+  return false;
 }
 
 export async function getExtension(extensionId: string, version: string): Promise<IExtensionMetaData | undefined> {
@@ -74,7 +95,10 @@ export async function getExtension(extensionId: string, version: string): Promis
     extendConfig: {},
     path: extensionPath,
     packageJSON,
-    defaultPkgNlsJSON: !extName.startsWith('anycode') && await tryFetchPackageNlsJson(extensionId, version),
+    defaultPkgNlsJSON:
+      !extName.startsWith('anycode') && mayHaveLocalizedStrings(packageJSON)
+        ? await tryFetchPackageNlsJson(extensionId, version)
+        : undefined,
     packageNlsJSON: undefined,
     realPath: extensionPath,
     uri: Uri.parse(extensionPath),
