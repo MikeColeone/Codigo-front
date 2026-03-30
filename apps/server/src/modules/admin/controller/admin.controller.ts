@@ -12,10 +12,7 @@ import {
   ParseEnumPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  type AdminPermission,
-  type GlobalRole,
-} from '@codigo/schema';
+import { type AdminPermission, type GlobalRole } from '@codigo/schema';
 import { AdminPermissions } from 'src/core/guard/admin-permissions.decorator';
 import { AdminPermissionGuard } from 'src/core/guard/admin-permission.guard';
 import { AdminService } from 'src/modules/admin/service/admin.service';
@@ -83,7 +80,11 @@ export class AdminController {
     if (permissions != null && !Array.isArray(permissions)) {
       throw new BadRequestException('permissions 必须是数组');
     }
-    return this.adminService.updateUserPermissions(id, permissions ?? [], currentUser);
+    return this.adminService.updateUserPermissions(
+      id,
+      permissions ?? [],
+      currentUser,
+    );
   }
 
   @Get('pages')

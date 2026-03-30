@@ -8,7 +8,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { existsSync } from 'node:fs';
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join, relative, resolve } from 'node:path';
-import { buildComponentTree, type PageWorkspaceResponse, type SyncSchemaItem } from '@codigo/schema';
+import {
+  buildComponentTree,
+  type PageWorkspaceResponse,
+  type SyncSchemaItem,
+} from '@codigo/schema';
 import { Repository } from 'typeorm';
 import { Component, Page } from 'src/modules/flow/entity/low-code.entity';
 import { PageCollaborator } from 'src/modules/flow/entity/page-collaborator.entity';

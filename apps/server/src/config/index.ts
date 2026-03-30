@@ -1,23 +1,34 @@
 import type { JwtModuleOptions } from '@nestjs/jwt';
 import type { RedisOptions } from 'ioredis';
-
+/**
+ * Redis 配置
+ */
 export const redisConfig: RedisOptions = {
   host: '192.168.231.128',
   port: 6379,
 };
 
+/**
+ * 验证码消息配置
+ */
 export const TextMessageConfig = {
   AppKey: process.env.APP_KEY,
   AppSecret: process.env.APP_SECRET,
   AppCode: process.env.APPCODE,
 };
 
+/**
+ * JWT 配置
+ */
 export const jwtConfig: JwtModuleOptions = {
   secret: process.env.JWT_SECRET,
   signOptions: { expiresIn: '7d' },
   global: true,
 };
 
+/**
+ * 阿里云 OSS 配置
+ */
 export const aliOssConfig = {
   region: 'oss-cn-beijing',
   accessKeyId: 'LTAI5tDVf27tw64n85oxgKmc',
@@ -26,5 +37,3 @@ export const aliOssConfig = {
 };
 
 export const aliOssDomain = 'codigo-oss.oss-cn-beijing.aliyuncs.com';
-
-export const WeChatLoginConfig = {};

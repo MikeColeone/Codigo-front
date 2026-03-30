@@ -50,13 +50,13 @@ export class Component implements IComponent {
   @Column()
   node_id: string = '';
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   parent_node_id: string | null = null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   slot: string | null = null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   name?: string;
 
   @Column({ type: 'simple-json', nullable: true })

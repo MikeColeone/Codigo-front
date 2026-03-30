@@ -134,16 +134,12 @@ describe('AdminService', () => {
     });
 
     await expect(
-      service.updateUserPermissions(
-        2,
-        ['PERMISSION_ASSIGN'],
-        {
-          id: 3,
-          global_role: 'ADMIN',
-          admin_permissions: ['USER_MANAGE'],
-          status: 'active',
-        } as never,
-      ),
+      service.updateUserPermissions(2, ['PERMISSION_ASSIGN'], {
+        id: 3,
+        global_role: 'ADMIN',
+        admin_permissions: ['USER_MANAGE'],
+        status: 'active',
+      } as never),
     ).rejects.toThrow('只有超级管理员可以授予权限分配能力');
   });
 });

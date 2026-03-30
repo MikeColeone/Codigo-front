@@ -12,7 +12,7 @@
     "prepare": "husky",
     "release": "standard-version",
     "run:client": "pnpm --filter client run dev",
-    "run:opensumi-app": "pnpm --filter @codigo/opensumi-app run dev",
+    "run:opensumi-app": "pnpm --filter opensumi-app run start",
     "run:server": "pnpm --filter server run start:dev",
     "run:materials-react": "pnpm --filter materials-react run dev",
     "run:release": "pnpm --filter release run dev",
@@ -54,6 +54,7 @@
     "antd": "^6.2.2",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.19",
+    "lodash": "^4.17.23",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   }

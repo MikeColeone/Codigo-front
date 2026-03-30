@@ -27,10 +27,7 @@ export function flattenComponentTree(
       parentId,
     };
     delete (current as { children?: ComponentNode[] }).children;
-    return [
-      current,
-      ...flattenComponentTree(node.children ?? [], node.id),
-    ];
+    return [current, ...flattenComponentTree(node.children ?? [], node.id)];
   });
 }
 

@@ -72,7 +72,11 @@ export class AdminService implements OnModuleInit {
     };
   }
 
-  async updateUserRole(id: number, role: GlobalRole, currentUser: TCurrentUser) {
+  async updateUserRole(
+    id: number,
+    role: GlobalRole,
+    currentUser: TCurrentUser,
+  ) {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) throw new NotFoundException('用户不存在');
     const previousRole = user.global_role;
@@ -90,7 +94,11 @@ export class AdminService implements OnModuleInit {
     }
 
     user.global_role = role;
-    user.admin_permissions = this.resolveRolePermissions(role, previousRole, user);
+    user.admin_permissions = this.resolveRolePermissions(
+      role,
+      previousRole,
+      user,
+    );
     if (role === 'SUPER_ADMIN') {
       user.status = 'active';
     }
@@ -116,7 +124,9 @@ export class AdminService implements OnModuleInit {
 
     user.status = status;
     await this.userRepository.save(user);
-    return { message: `用户状态已更新为${status === 'active' ? '正常' : '冻结'}` };
+    return {
+      message: `用户状态已更新为${status === 'active' ? '正常' : '冻结'}`,
+    };
   }
 
   async updateUserPermissions(
@@ -331,7 +341,9 @@ export class AdminService implements OnModuleInit {
   }
 
   async deleteComponent(componentId: number) {
-    const component = await this.componentRepository.findOneBy({ id: componentId });
+    const component = await this.componentRepository.findOneBy({
+      id: componentId,
+    });
     if (!component) {
       throw new NotFoundException('组件不存在');
     }
@@ -418,12 +430,12 @@ export class AdminService implements OnModuleInit {
       .groupBy(`record.${fieldName}`)
       .getRawMany<{ page_id: string; count: string }>();
 
-    return new Map(
-      rows.map((row) => [Number(row.page_id), Number(row.count)]),
-    );
+    return new Map(rows.map((row) => [Number(row.page_id), Number(row.count)]));
   }
 
-  private normalizePermissions(permissions: AdminPermission[]): AdminPermission[] {
+  private normalizePermissions(
+    permissions: AdminPermission[],
+  ): AdminPermission[] {
     const normalizedPermissions = ALL_ADMIN_PERMISSIONS.filter((permission) =>
       permissions.includes(permission),
     );

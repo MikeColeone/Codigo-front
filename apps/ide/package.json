@@ -1,5 +1,5 @@
 {
-  "name": "ide-startup-lite",
+  "name": "@codigo/opensumi-app",
   "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
@@ -21,8 +21,8 @@
     "@opensumi/di": "1.8.0",
     "@opensumi/ide-addons": "2.26.8",
     "@opensumi/ide-comments": "2.26.8",
-    "@opensumi/ide-connection": "2.26.8",
     "@opensumi/ide-components": "2.26.8",
+    "@opensumi/ide-connection": "2.26.8",
     "@opensumi/ide-core-browser": "2.26.8",
     "@opensumi/ide-core-common": "2.26.8",
     "@opensumi/ide-core-node": "2.26.8",
@@ -80,7 +80,8 @@
     "react": "^16.8.6",
     "react-dom": "^16.0.0",
     "react-router-dom": "^5.1.2",
-    "tslib": "^2.3.1"
+    "tslib": "^2.3.1",
+    "vscode-languageserver-types": "^3.17.5"
   },
   "devDependencies": {
     "@babel/core": "^7.14.8",

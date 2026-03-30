@@ -1,3 +1,11 @@
 packages:
   - "packages/*"
   - "apps/*"
+
+public-hoist-pattern:
+  - "*vscode*"
+  - "*monaco*"
+  - "*opensumi*"
+  - "*lodash*"
+  - "*vscode*"
+  - "*monaco*"
