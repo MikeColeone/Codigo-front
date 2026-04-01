@@ -7,6 +7,7 @@ import Preview from "@/modules/preview";
 import LoginOrRegister from "@/modules/auth";
 import Flow from "@/modules/flow";
 import DevDoc from "@/modules/devDocument";
+import AppManagement from "@/modules/appManagement";
 import { StudioLayout } from "@/app/layouts/StudioLayout";
 import AdminLayout from "@/modules/admin/components/AdminLayout";
 import { AdminPermissionRoute } from "@/modules/admin/components/AdminPermissionRoute";
@@ -24,6 +25,10 @@ export const router = createHashRouter([
   {
     path: "/doc",
     element: <DevDoc />,
+  },
+  {
+    path: "/app-management",
+    element: <AppManagement />,
   },
   {
     path: "/login",

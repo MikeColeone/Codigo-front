@@ -12,14 +12,14 @@ export const EditorRouteGuard = observer(
     useEffect(() => {
       if (!storeAuth.token) {
         message.info("访客仅可查看已发布页面和模板内容");
-        navigate("/?tab=published", { replace: true });
+        navigate("/app-management?tab=published", { replace: true });
         return;
       }
 
       if (!storeAuth.details) {
         fetchUserInfo().then((res) => {
           if (!res) {
-            navigate("/?tab=published", { replace: true });
+            navigate("/app-management?tab=published", { replace: true });
           }
         });
       }

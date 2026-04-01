@@ -35,6 +35,9 @@ import {
   writeTemplateToDraft,
   type TemplatePreset,
 } from "./TemplateSelect";
+import { HomeFooter } from "@/modules/home/components/homeFooter/homeFooter";
+import { HomeHeader } from "@/modules/home/components/homeHeader/homeHeader";
+import { ParticleBackground } from "@/modules/home/components/background/ParticleBackground";
 
 interface PublicPageItem {
   id: number;
@@ -94,7 +97,10 @@ const componentLabelMap: Record<string, string> = {
 };
 
 function stripHtml(value: string) {
-  return value.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  return value
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function summarizeProps(props?: Record<string, unknown>) {
@@ -142,7 +148,9 @@ function summarizeProps(props?: Record<string, unknown>) {
   return pieces.join(" · ").slice(0, 120);
 }
 
-function resolveSchemaFromReleasePayload(payload: Record<string, any> | null | undefined) {
+function resolveSchemaFromReleasePayload(
+  payload: Record<string, any> | null | undefined,
+) {
   if (!payload) {
     return {
       version: 2,
@@ -181,7 +189,12 @@ function SchemaOutline({
   depth?: number;
 }) {
   if (!nodes.length) {
-    return <Empty description="暂无可展示内容" image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+    return (
+      <Empty
+        description="暂无可展示内容"
+        image={Empty.PRESENTED_IMAGE_SIMPLE}
+      />
+    );
   }
 
   return (
@@ -197,7 +210,9 @@ function SchemaOutline({
               {componentLabelMap[node.type] ?? node.type ?? "组件"}
             </Tag>
             <span className="text-sm font-medium text-slate-700">
-              {summarizeProps(node.props as Record<string, unknown> | undefined)}
+              {summarizeProps(
+                node.props as Record<string, unknown> | undefined,
+              )}
             </span>
           </div>
           {!!node.children?.length && (
@@ -251,17 +266,19 @@ function AppCard({
   );
 }
 
-export const AppManagement = observer(() => {
+const AppManagement = observer(() => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { store: storeAuth } = useStoreAuth();
   const isLoggedIn = Boolean(storeAuth.token);
   const [previewState, setPreviewState] = useState<PreviewState | null>(null);
 
-  const { data: publicPages = [], loading: publicLoading } = useRequest(async () => {
-    const res = await getPublicPages();
-    return (res.data ?? []) as PublicPageItem[];
-  });
+  const { data: publicPages = [], loading: publicLoading } = useRequest(
+    async () => {
+      const res = await getPublicPages();
+      return (res.data ?? []) as PublicPageItem[];
+    },
+  );
 
   const { data: myPageData, loading: myPageLoading } = useRequest(
     async () => {
@@ -288,10 +305,7 @@ export const AppManagement = observer(() => {
     },
   );
 
-  const {
-    runAsync: openPreview,
-    loading: previewLoading,
-  } = useRequest(
+  const { runAsync: openPreview, loading: previewLoading } = useRequest(
     async (task: () => Promise<PreviewState>) => {
       const nextState = await task();
       setPreviewState(nextState);
@@ -308,7 +322,9 @@ export const AppManagement = observer(() => {
 
     const schema = window.localStorage.getItem("pageSchema");
     const storeTime = Number(window.localStorage.getItem("store_time") ?? 0);
-    const releaseTime = Number(window.localStorage.getItem("release_time") ?? 0);
+    const releaseTime = Number(
+      window.localStorage.getItem("release_time") ?? 0,
+    );
     const hasDraft = Boolean(schema);
     const isUpdatedAfterPublish = hasDraft && storeTime >= releaseTime;
 
@@ -319,7 +335,9 @@ export const AppManagement = observer(() => {
     return {
       hasDraft,
       isUpdatedAfterPublish,
-      updatedAt: storeTime ? dayjs(storeTime).format("YYYY-MM-DD HH:mm") : "暂无",
+      updatedAt: storeTime
+        ? dayjs(storeTime).format("YYYY-MM-DD HH:mm")
+        : "暂无",
     };
   }, [isLoggedIn, myPageData?.page]);
 
@@ -352,7 +370,11 @@ export const AppManagement = observer(() => {
     navigate("/editor");
   };
 
-  const handleOpenPublishedPage = async (pageId: number, title: string, subtitle: string) => {
+  const handleOpenPublishedPage = async (
+    pageId: number,
+    title: string,
+    subtitle: string,
+  ) => {
     await openPreview(async () => {
       const res = await getPublishedPage(pageId);
       return {
@@ -363,7 +385,10 @@ export const AppManagement = observer(() => {
     });
   };
 
-  const handleOpenVersion = async (pageId: number, version: PageVersionItem) => {
+  const handleOpenVersion = async (
+    pageId: number,
+    version: PageVersionItem,
+  ) => {
     await openPreview(async () => {
       const res = await getPageVersionDetail(pageId, version.id);
       return {
@@ -392,7 +417,9 @@ export const AppManagement = observer(() => {
       ]}
       actionText="继续开发"
       onAction={() =>
-        navigate(myPageData?.page?.id ? `/editor?id=${myPageData.page.id}` : "/editor")
+        navigate(
+          myPageData?.page?.id ? `/editor?id=${myPageData.page.id}` : "/editor",
+        )
       }
     />
   ) : (
@@ -552,7 +579,9 @@ export const AppManagement = observer(() => {
               </span>
             ))}
           </div>
-          <h3 className="text-lg font-semibold text-slate-900">{template.name}</h3>
+          <h3 className="text-lg font-semibold text-slate-900">
+            {template.name}
+          </h3>
           <p className="mt-3 min-h-[72px] text-sm leading-6 text-slate-500">
             {template.desc}
           </p>
@@ -624,33 +653,47 @@ export const AppManagement = observer(() => {
 
   return (
     <>
-      <section
-        id="app-management"
-        className="mt-20 rounded-[32px] border border-slate-200 bg-white/85 p-6 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.45)] backdrop-blur-xl md:p-8"
-      >
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">
-              应用管理模块
-            </span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-900">
-              在主页集中查看模板、应用状态与版本历史
-            </h2>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-500">
-              {isLoggedIn
-                ? "登录后可直接在这里继续开发、查看已发布内容和回溯历史版本。"
-                : "访客可在这里浏览已发布页面与模板内容，编辑器入口将自动引导回此处。"}
-            </p>
-          </div>
-          <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
-            {isLoggedIn ? "当前身份：开发者" : "当前身份：访客"}
-          </div>
-        </div>
+      <div className="relative min-h-screen overflow-hidden bg-white text-slate-900 font-sans">
+        <HomeHeader />
+        <ParticleBackground />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.05),transparent_45%)]" />
+        <main className="relative z-10 pt-28">
+          <section className="mx-auto w-full max-w-7xl px-6 pb-20 pt-10">
+            <section
+              id="app-management"
+              className="rounded-[32px] border border-slate-200 bg-white/85 p-6 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.45)] backdrop-blur-xl md:p-8"
+            >
+              <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">
+                    应用管理页面
+                  </span>
+                  <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900">
+                    集中查看模板、应用状态与版本历史
+                  </h1>
+                  <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-500">
+                    {isLoggedIn
+                      ? "登录后可在此继续开发、查看已发布内容并回溯历史版本。"
+                      : "访客可在此浏览已发布页面与模板内容，登录后即可进入编辑器继续开发。"}
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
+                  {isLoggedIn ? "当前身份：开发者" : "当前身份：访客"}
+                </div>
+              </div>
 
-        <div className="mt-8 rounded-3xl bg-slate-50/80 p-4 md:p-6">
-          <Tabs activeKey={currentTab} items={items} onChange={handleTabChange} />
-        </div>
-      </section>
+              <div className="mt-8 rounded-3xl bg-slate-50/80 p-4 md:p-6">
+                <Tabs
+                  activeKey={currentTab}
+                  items={items}
+                  onChange={handleTabChange}
+                />
+              </div>
+            </section>
+          </section>
+        </main>
+        <HomeFooter />
+      </div>
 
       <Modal
         open={Boolean(previewState)}
@@ -676,3 +719,5 @@ export const AppManagement = observer(() => {
     </>
   );
 });
+
+export default AppManagement;
