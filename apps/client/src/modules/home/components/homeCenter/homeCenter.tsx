@@ -1,4 +1,5 @@
-﻿import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { AppManagement } from "../AppManagement";
 
 const stats = [
   { label: "在线模板", value: "180+" },
@@ -96,9 +97,9 @@ export function HomeCenter() {
           <div className="mt-10 flex flex-wrap items-center gap-5">
             <button
               className="group relative inline-flex items-center justify-center rounded-xl bg-emerald-500 px-8 py-4 text-sm font-bold text-white transition-all hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
-              onClick={() => navigate("/templates")}
+              onClick={() => navigate("/?tab=published")}
             >
-              <span className="mr-2">进入模板选择</span>
+              <span className="mr-2">进入应用管理</span>
               <svg
                 className="w-4 h-4 transition-transform group-hover:translate-x-1"
                 fill="none"
@@ -166,6 +167,8 @@ export function HomeCenter() {
         </div>
       </div>
 
+      <AppManagement />
+
       <div className="mt-24 grid gap-6 md:grid-cols-3">
         {features.map((feature) => (
           <article
@@ -191,7 +194,6 @@ export function HomeCenter() {
     </section>
   );
 }
-
 
 
 

@@ -1,5 +1,4 @@
-import type { TComponentTypes } from "@codigo/schema";
-import { useNavigate } from "react-router-dom";
+import type { ComponentNode, TComponentTypes } from "@codigo/schema";
 
 interface TemplateComponent {
   type: TComponentTypes;
@@ -7,7 +6,7 @@ interface TemplateComponent {
   styles?: Record<string, unknown>;
 }
 
-interface TemplatePreset {
+export interface TemplatePreset {
   key: string;
   name: string;
   desc: string;
@@ -19,7 +18,7 @@ interface TemplatePreset {
   components: TemplateComponent[];
 }
 
-const templates: TemplatePreset[] = [
+export const templates: TemplatePreset[] = [
   {
     key: "admin-overview",
     name: "后台总览模板",
@@ -137,30 +136,34 @@ function createId(index: number): string {
   return `tpl_${Date.now()}_${index}_${Math.random().toString(36).slice(2, 7)}`;
 }
 
-function writeTemplateToDraft(template: TemplatePreset) {
-  const components: Array<Record<string, unknown>> = [];
+export function buildTemplateSchema(template: TemplatePreset) {
+  const components: ComponentNode[] = template.components.map((component, index) => ({
+    id: createId(index),
+    type: component.type,
+    props: component.props ?? {},
+    styles: component.styles,
+    children: [],
+  }));
 
-  template.components.forEach((component, index) => {
-    const id = createId(index);
-    components.push({
-      id,
-      type: component.type,
-      props: component.props ?? {},
-      styles: component.styles,
-      children: [],
-    });
-  });
+  return {
+    version: 2,
+    components,
+  };
+}
+
+export function writeTemplateToDraft(template: TemplatePreset) {
+  const schema = buildTemplateSchema(template);
 
   localStorage.setItem(
     "pageSchema",
     JSON.stringify({
-      version: 2,
-      components,
+      version: schema.version,
+      components: schema.components,
     }),
   );
   localStorage.setItem(
     "currentCompConfig",
-    JSON.stringify((components[0]?.id as string | null) ?? null),
+    JSON.stringify((schema.components[0]?.id as string | null) ?? null),
   );
   localStorage.setItem(
     "pageSettings",
@@ -172,70 +175,6 @@ function writeTemplateToDraft(template: TemplatePreset) {
   );
   localStorage.setItem("store_time", String(Date.now()));
 }
-
-export default function TemplateSelect() {
-  const navigate = useNavigate();
-
-  function handleUseTemplate(template: TemplatePreset) {
-    writeTemplateToDraft(template);
-    navigate("/editor");
-  }
-
-  return (
-    <div className="min-h-screen bg-slate-50 px-6 py-10">
-      <div className="mx-auto w-full max-w-7xl">
-        <div className="mb-8 flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900">后台管理模板选择</h1>
-            <p className="mt-2 text-sm text-slate-500">
-              选择一个模板后将直接进入编辑器，你可以继续拖拽和修改组件。
-            </p>
-          </div>
-          <button
-            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
-            onClick={() => navigate("/")}
-          >
-            返回主页
-          </button>
-        </div>
-
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {templates.map((template) => (
-            <article
-              key={template.key}
-              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="mb-3 flex flex-wrap gap-2">
-                {template.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-medium text-emerald-700"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <h2 className="text-lg font-semibold text-slate-900">{template.name}</h2>
-              <p className="mt-2 min-h-11 text-sm leading-6 text-slate-500">{template.desc}</p>
-              <div className="mt-5 flex items-center justify-between">
-                <span className="text-xs text-slate-400">
-                  画布 {template.canvasWidth} × {template.canvasHeight}
-                </span>
-                <button
-                  className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-600"
-                  onClick={() => handleUseTemplate(template)}
-                >
-                  使用模板
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 
 
 

@@ -8,7 +8,7 @@ import { useState } from "react";
 import Profile from "@/modules/profile";
 
 const menus = [
-  { label: "模板案例", path: "/templates" },
+  { label: "应用管理", path: "/?tab=published" },
   { label: "数据看板", path: "/dataCount" },
   { label: "开发文档", path: "/doc" },
 ];
@@ -101,9 +101,9 @@ export const HomeHeader = observer(() => {
           )}
           <button
             className="rounded-lg bg-emerald-500 px-5 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all hover:bg-emerald-600 hover:shadow-emerald-500/30 hover:-translate-y-0.5"
-            onClick={() => navigate("/editor")}
+            onClick={() => navigate("/?tab=published")}
           >
-            进入编辑器
+            进入应用管理
           </button>
         </div>
       </div>

@@ -1,0 +1,678 @@
+import { useMemo, useState } from "react";
+import { useRequest } from "ahooks";
+import {
+  Avatar,
+  Button,
+  Empty,
+  List,
+  Modal,
+  Spin,
+  Tabs,
+  Tag,
+  message,
+} from "antd";
+import {
+  EyeOutlined,
+  HistoryOutlined,
+  RocketOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import dayjs from "dayjs";
+import { observer } from "mobx-react-lite";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import type { ComponentNode } from "@codigo/schema";
+import {
+  getLowCodePage,
+  getPageVersionDetail,
+  getPageVersions,
+  getPublicPages,
+  getPublishedPage,
+} from "@/modules/editor/api/low-code";
+import { useStoreAuth } from "@/shared/hooks";
+import {
+  buildTemplateSchema,
+  templates,
+  writeTemplateToDraft,
+  type TemplatePreset,
+} from "./TemplateSelect";
+
+interface PublicPageItem {
+  id: number;
+  page_name: string;
+  desc: string;
+  owner_name: string;
+  owner_head_img?: string | null;
+  version_count: number;
+  latest_version: number;
+  latest_published_at?: string | null;
+}
+
+interface PageVersionItem {
+  id: string;
+  page_id: number;
+  version: number;
+  desc: string;
+  created_at: string;
+}
+
+interface MyPagePayload {
+  page: Record<string, any> | null;
+  versions: PageVersionItem[];
+}
+
+interface PreviewState {
+  title: string;
+  subtitle: string;
+  schema: {
+    version: number;
+    components: ComponentNode[];
+  };
+}
+
+const componentLabelMap: Record<string, string> = {
+  titleText: "文本组件",
+  richText: "富文本组件",
+  split: "分割组件",
+  card: "卡片组件",
+  list: "列表组件",
+  image: "图片组件",
+  input: "输入框组件",
+  textArea: "文本域组件",
+  radio: "单选框组件",
+  checkbox: "多选框组件",
+  button: "按钮组件",
+  container: "容器组件",
+  table: "表格组件",
+  qrcode: "二维码组件",
+  alert: "提示组件",
+  empty: "空状态组件",
+  chart: "图表组件",
+  video: "视频组件",
+  swiper: "轮播组件",
+  statistic: "统计组件",
+  twoColumn: "双栏组件",
+};
+
+function stripHtml(value: string) {
+  return value.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function summarizeProps(props?: Record<string, unknown>) {
+  if (!props) {
+    return "未配置内容";
+  }
+
+  const pieces: string[] = [];
+
+  if (typeof props.title === "string" && props.title.trim()) {
+    pieces.push(props.title.trim());
+  }
+
+  if (typeof props.description === "string" && props.description.trim()) {
+    pieces.push(props.description.trim());
+  }
+
+  if (typeof props.text === "string" && props.text.trim()) {
+    pieces.push(props.text.trim());
+  }
+
+  if (typeof props.placeholder === "string" && props.placeholder.trim()) {
+    pieces.push(`占位：${props.placeholder.trim()}`);
+  }
+
+  if (typeof props.content === "string" && props.content.trim()) {
+    const contentText = stripHtml(props.content);
+    if (contentText) {
+      pieces.push(contentText);
+    }
+  }
+
+  if (Array.isArray(props.items) && props.items.length) {
+    pieces.push(`列表项 ${props.items.length} 个`);
+  }
+
+  if (Array.isArray(props.options) && props.options.length) {
+    pieces.push(`选项 ${props.options.length} 个`);
+  }
+
+  if (!pieces.length) {
+    return "未配置内容";
+  }
+
+  return pieces.join(" · ").slice(0, 120);
+}
+
+function resolveSchemaFromReleasePayload(payload: Record<string, any> | null | undefined) {
+  if (!payload) {
+    return {
+      version: 2,
+      components: [] as ComponentNode[],
+    };
+  }
+
+  if (payload.schema?.components?.length) {
+    return {
+      version: payload.schema.version ?? 2,
+      components: payload.schema.components as ComponentNode[],
+    };
+  }
+
+  const components = Array.isArray(payload.components)
+    ? payload.components.map((component: Record<string, any>) => ({
+        id: component.node_id ?? String(component.id),
+        type: component.type,
+        props: component.options ?? {},
+        styles: component.styles,
+        children: [],
+      }))
+    : [];
+
+  return {
+    version: payload.schema_version ?? 1,
+    components,
+  };
+}
+
+function SchemaOutline({
+  nodes,
+  depth = 0,
+}: {
+  nodes: ComponentNode[];
+  depth?: number;
+}) {
+  if (!nodes.length) {
+    return <Empty description="暂无可展示内容" image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+  }
+
+  return (
+    <div className="space-y-3">
+      {nodes.map((node) => (
+        <div
+          key={node.id}
+          className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4"
+          style={{ marginLeft: depth * 16 }}
+        >
+          <div className="flex flex-wrap items-center gap-2">
+            <Tag color="green">
+              {componentLabelMap[node.type] ?? node.type ?? "组件"}
+            </Tag>
+            <span className="text-sm font-medium text-slate-700">
+              {summarizeProps(node.props as Record<string, unknown> | undefined)}
+            </span>
+          </div>
+          {!!node.children?.length && (
+            <div className="mt-3">
+              <SchemaOutline nodes={node.children} depth={depth + 1} />
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function AppCard({
+  title,
+  desc,
+  meta,
+  actionText,
+  onAction,
+}: {
+  title: string;
+  desc: string;
+  meta: string[];
+  actionText: string;
+  onAction: () => void;
+}) {
+  return (
+    <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
+      <div className="flex min-h-[156px] flex-col justify-between gap-5">
+        <div>
+          <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
+          <p className="mt-3 text-sm leading-6 text-slate-500">{desc}</p>
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-2">
+            {meta.map((item) => (
+              <span
+                key={item}
+                className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+          <Button type="primary" onClick={onAction}>
+            {actionText}
+          </Button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+export const AppManagement = observer(() => {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { store: storeAuth } = useStoreAuth();
+  const isLoggedIn = Boolean(storeAuth.token);
+  const [previewState, setPreviewState] = useState<PreviewState | null>(null);
+
+  const { data: publicPages = [], loading: publicLoading } = useRequest(async () => {
+    const res = await getPublicPages();
+    return (res.data ?? []) as PublicPageItem[];
+  });
+
+  const { data: myPageData, loading: myPageLoading } = useRequest(
+    async () => {
+      const pageRes = await getLowCodePage();
+      const page = pageRes.data;
+
+      if (!page?.id) {
+        return {
+          page: null,
+          versions: [],
+        } as MyPagePayload;
+      }
+
+      const versionRes = await getPageVersions(page.id);
+
+      return {
+        page,
+        versions: (versionRes.data ?? []) as PageVersionItem[],
+      } as MyPagePayload;
+    },
+    {
+      ready: isLoggedIn,
+      refreshDeps: [isLoggedIn, storeAuth.details?.id],
+    },
+  );
+
+  const {
+    runAsync: openPreview,
+    loading: previewLoading,
+  } = useRequest(
+    async (task: () => Promise<PreviewState>) => {
+      const nextState = await task();
+      setPreviewState(nextState);
+    },
+    {
+      manual: true,
+    },
+  );
+
+  const localDraftMeta = useMemo(() => {
+    if (!isLoggedIn || typeof window === "undefined") {
+      return null;
+    }
+
+    const schema = window.localStorage.getItem("pageSchema");
+    const storeTime = Number(window.localStorage.getItem("store_time") ?? 0);
+    const releaseTime = Number(window.localStorage.getItem("release_time") ?? 0);
+    const hasDraft = Boolean(schema);
+    const isUpdatedAfterPublish = hasDraft && storeTime >= releaseTime;
+
+    if (!hasDraft && !myPageData?.page) {
+      return null;
+    }
+
+    return {
+      hasDraft,
+      isUpdatedAfterPublish,
+      updatedAt: storeTime ? dayjs(storeTime).format("YYYY-MM-DD HH:mm") : "暂无",
+    };
+  }, [isLoggedIn, myPageData?.page]);
+
+  const availableTabs = isLoggedIn
+    ? ["developing", "published", "versions", "templates"]
+    : ["published", "templates"];
+  const currentTab = availableTabs.includes(searchParams.get("tab") ?? "")
+    ? (searchParams.get("tab") as string)
+    : availableTabs[0];
+
+  const handleTabChange = (tab: string) => {
+    setSearchParams({ tab });
+  };
+
+  const handleOpenTemplatePreview = (template: TemplatePreset) => {
+    setPreviewState({
+      title: template.name,
+      subtitle: `${template.deviceType === "mobile" ? "移动端" : "PC 端"} · 画布 ${template.canvasWidth} × ${template.canvasHeight}`,
+      schema: buildTemplateSchema(template),
+    });
+  };
+
+  const handleUseTemplate = (template: TemplatePreset) => {
+    if (!isLoggedIn) {
+      message.info("访客仅可查看模板内容，登录后可将模板载入编辑器");
+      return;
+    }
+
+    writeTemplateToDraft(template);
+    navigate("/editor");
+  };
+
+  const handleOpenPublishedPage = async (pageId: number, title: string, subtitle: string) => {
+    await openPreview(async () => {
+      const res = await getPublishedPage(pageId);
+      return {
+        title,
+        subtitle,
+        schema: resolveSchemaFromReleasePayload(res.data),
+      };
+    });
+  };
+
+  const handleOpenVersion = async (pageId: number, version: PageVersionItem) => {
+    await openPreview(async () => {
+      const res = await getPageVersionDetail(pageId, version.id);
+      return {
+        title: `历史版本 v${version.version}`,
+        subtitle: dayjs(version.created_at).format("YYYY-MM-DD HH:mm"),
+        schema: resolveSchemaFromReleasePayload(res.data?.schema_data),
+      };
+    });
+  };
+
+  const developingContent = myPageLoading ? (
+    <div className="flex items-center justify-center py-20">
+      <Spin />
+    </div>
+  ) : myPageData?.page || localDraftMeta ? (
+    <AppCard
+      title={myPageData?.page?.page_name || "未命名应用"}
+      desc={
+        localDraftMeta?.isUpdatedAfterPublish
+          ? "当前存在未发布草稿，可继续进入编辑器完善页面内容。"
+          : "当前草稿与最新发布版本一致，可继续进入编辑器迭代。"
+      }
+      meta={[
+        localDraftMeta?.isUpdatedAfterPublish ? "草稿待发布" : "草稿已同步",
+        `最近编辑 ${localDraftMeta?.updatedAt ?? "暂无"}`,
+      ]}
+      actionText="继续开发"
+      onAction={() =>
+        navigate(myPageData?.page?.id ? `/editor?id=${myPageData.page.id}` : "/editor")
+      }
+    />
+  ) : (
+    <Empty
+      description="暂无开发中的应用，选择模板后即可开始搭建"
+      image={Empty.PRESENTED_IMAGE_SIMPLE}
+    />
+  );
+
+  const publishedContent = isLoggedIn ? (
+    myPageLoading ? (
+      <div className="flex items-center justify-center py-20">
+        <Spin />
+      </div>
+    ) : myPageData?.page ? (
+      <AppCard
+        title={myPageData.page.page_name || "未命名应用"}
+        desc={myPageData.page.desc || "当前版本已发布，可向访客公开展示。"}
+        meta={[
+          `历史版本 ${myPageData.versions.length} 个`,
+          myPageData.versions[0]
+            ? `最近发布 ${dayjs(myPageData.versions[0].created_at).format("YYYY-MM-DD HH:mm")}`
+            : "已发布",
+        ]}
+        actionText="查看已发布内容"
+        onAction={() =>
+          handleOpenPublishedPage(
+            myPageData.page.id,
+            myPageData.page.page_name || "已发布应用",
+            myPageData.page.desc || "当前对外展示的发布内容",
+          )
+        }
+      />
+    ) : (
+      <Empty
+        description="你还没有已发布的应用"
+        image={Empty.PRESENTED_IMAGE_SIMPLE}
+      />
+    )
+  ) : publicLoading ? (
+    <div className="flex items-center justify-center py-20">
+      <Spin />
+    </div>
+  ) : publicPages.length ? (
+    <div className="grid gap-5 md:grid-cols-2">
+      {publicPages.map((page) => (
+        <article
+          key={page.id}
+          className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <h3 className="truncate text-lg font-semibold text-slate-900">
+                {page.page_name}
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-slate-500">
+                {page.desc || "该页面已完成发布，可供访客查看页面内容。"}
+              </p>
+            </div>
+            <Avatar
+              src={page.owner_head_img || undefined}
+              icon={!page.owner_head_img && <UserOutlined />}
+              className={!page.owner_head_img ? "bg-emerald-500" : ""}
+            />
+          </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500">
+              开发者 {page.owner_name}
+            </span>
+            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500">
+              版本 {page.version_count} 个
+            </span>
+            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500">
+              最新 v{page.latest_version}
+            </span>
+          </div>
+          <div className="mt-6 flex justify-end">
+            <Button
+              type="primary"
+              icon={<EyeOutlined />}
+              onClick={() =>
+                handleOpenPublishedPage(
+                  page.id,
+                  page.page_name,
+                  page.latest_published_at
+                    ? `最近发布 ${dayjs(page.latest_published_at).format("YYYY-MM-DD HH:mm")}`
+                    : `开发者 ${page.owner_name}`,
+                )
+              }
+            >
+              查看内容
+            </Button>
+          </div>
+        </article>
+      ))}
+    </div>
+  ) : (
+    <Empty
+      description="暂无可浏览的已发布页面"
+      image={Empty.PRESENTED_IMAGE_SIMPLE}
+    />
+  );
+
+  const versionContent = myPageLoading ? (
+    <div className="flex items-center justify-center py-20">
+      <Spin />
+    </div>
+  ) : myPageData?.versions.length ? (
+    <List
+      dataSource={myPageData.versions}
+      renderItem={(item) => (
+        <List.Item
+          actions={[
+            <Button
+              key={item.id}
+              type="link"
+              onClick={() => handleOpenVersion(item.page_id, item)}
+            >
+              查看版本内容
+            </Button>,
+          ]}
+        >
+          <List.Item.Meta
+            avatar={
+              <Avatar
+                icon={<HistoryOutlined />}
+                className="bg-emerald-500/90"
+              />
+            }
+            title={`版本 v${item.version}`}
+            description={`${item.desc || "历史发布版本"} · ${dayjs(item.created_at).format("YYYY-MM-DD HH:mm")}`}
+          />
+        </List.Item>
+      )}
+    />
+  ) : (
+    <Empty
+      description="暂无历史版本记录"
+      image={Empty.PRESENTED_IMAGE_SIMPLE}
+    />
+  );
+
+  const templateContent = (
+    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+      {templates.map((template) => (
+        <article
+          key={template.key}
+          className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+        >
+          <div className="mb-3 flex flex-wrap gap-2">
+            {template.tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-medium text-emerald-700"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+          <h3 className="text-lg font-semibold text-slate-900">{template.name}</h3>
+          <p className="mt-3 min-h-[72px] text-sm leading-6 text-slate-500">
+            {template.desc}
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500">
+              画布 {template.canvasWidth} × {template.canvasHeight}
+            </span>
+            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500">
+              {template.components.length} 个组件
+            </span>
+          </div>
+          <div className="mt-6 flex gap-3">
+            <Button
+              icon={<EyeOutlined />}
+              onClick={() => handleOpenTemplatePreview(template)}
+            >
+              查看模板
+            </Button>
+            {isLoggedIn && (
+              <Button
+                type="primary"
+                icon={<RocketOutlined />}
+                onClick={() => handleUseTemplate(template)}
+              >
+                使用模板
+              </Button>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+
+  const items = isLoggedIn
+    ? [
+        {
+          key: "developing",
+          label: "开发中应用",
+          children: developingContent,
+        },
+        {
+          key: "published",
+          label: "已发布应用",
+          children: publishedContent,
+        },
+        {
+          key: "versions",
+          label: "历史版本",
+          children: versionContent,
+        },
+        {
+          key: "templates",
+          label: "模板库",
+          children: templateContent,
+        },
+      ]
+    : [
+        {
+          key: "published",
+          label: "已发布页面",
+          children: publishedContent,
+        },
+        {
+          key: "templates",
+          label: "模板库",
+          children: templateContent,
+        },
+      ];
+
+  return (
+    <>
+      <section
+        id="app-management"
+        className="mt-20 rounded-[32px] border border-slate-200 bg-white/85 p-6 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.45)] backdrop-blur-xl md:p-8"
+      >
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">
+              应用管理模块
+            </span>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-900">
+              在主页集中查看模板、应用状态与版本历史
+            </h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-500">
+              {isLoggedIn
+                ? "登录后可直接在这里继续开发、查看已发布内容和回溯历史版本。"
+                : "访客可在这里浏览已发布页面与模板内容，编辑器入口将自动引导回此处。"}
+            </p>
+          </div>
+          <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
+            {isLoggedIn ? "当前身份：开发者" : "当前身份：访客"}
+          </div>
+        </div>
+
+        <div className="mt-8 rounded-3xl bg-slate-50/80 p-4 md:p-6">
+          <Tabs activeKey={currentTab} items={items} onChange={handleTabChange} />
+        </div>
+      </section>
+
+      <Modal
+        open={Boolean(previewState)}
+        title={previewState?.title}
+        footer={null}
+        width={760}
+        onCancel={() => setPreviewState(null)}
+        destroyOnClose
+      >
+        {previewLoading ? (
+          <div className="flex items-center justify-center py-24">
+            <Spin />
+          </div>
+        ) : previewState ? (
+          <div className="space-y-5">
+            <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
+              {previewState.subtitle}
+            </div>
+            <SchemaOutline nodes={previewState.schema.components} />
+          </div>
+        ) : null}
+      </Modal>
+    </>
+  );
+});

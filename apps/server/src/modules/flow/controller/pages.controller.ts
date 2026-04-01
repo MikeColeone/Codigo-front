@@ -66,6 +66,11 @@ export class PagesController {
     return this.pageReleaseService.getMyReleaseData(user);
   }
 
+  @Get('public')
+  getPublicPages() {
+    return this.pageReleaseService.getPublicPageList();
+  }
+
   @Get(':id')
   getPage(@Param('id', ParseIntPipe) id: number) {
     return this.pageReleaseService.getReleaseData(id);
@@ -73,8 +78,11 @@ export class PagesController {
 
   @Get(':id/versions')
   @UseGuards(AuthGuard('jwt'))
-  getPageVersions(@Param('id', ParseIntPipe) id: number) {
-    return this.pageReleaseService.getPageVersions(id);
+  getPageVersions(
+    @Param('id', ParseIntPipe) id: number,
+    @getUserMess() user: TCurrentUser,
+  ) {
+    return this.pageReleaseService.getPageVersions(id, user);
   }
 
   @Get(':id/versions/:versionId')
@@ -82,8 +90,9 @@ export class PagesController {
   getPageVersionDetail(
     @Param('id', ParseIntPipe) id: number,
     @Param('versionId') versionId: string,
+    @getUserMess() user: TCurrentUser,
   ) {
-    return this.pageReleaseService.getPageVersionDetail(id, versionId);
+    return this.pageReleaseService.getPageVersionDetail(id, versionId, user);
   }
 
   @Get(':id/workspace')

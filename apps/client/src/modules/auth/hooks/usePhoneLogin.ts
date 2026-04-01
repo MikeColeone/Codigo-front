@@ -11,11 +11,10 @@ export function usePhoneLogin() {
     manual: true,
     onSuccess: async (res) => {
       await login(res.data);
-      nav("/editor");
+      nav("/?tab=developing");
     },
   });
 }
-
 
 
 

@@ -23,6 +23,14 @@ export async function getLowCodePage() {
   return request("/pages/me", { method: "GET" });
 }
 
+export async function getPublicPages() {
+  return request("/pages/public", { method: "GET" });
+}
+
+export async function getPublishedPage(id: number) {
+  return request(`/pages/${id}`, { method: "GET" });
+}
+
 export async function getQuestionComponents() {
   return request("/pages/me/analytics/components", { method: "GET" });
 }

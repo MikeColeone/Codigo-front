@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ import {
   Page,
 } from 'src/modules/flow/entity/low-code.entity';
 import { PageVersion } from 'src/modules/flow/entity/page-version.entity';
+import { User } from 'src/modules/user/entity/user.entity';
 import { DataSource, Repository } from 'typeorm';
 
 function objectOmit<T extends Record<string, any>, K extends keyof T>(
@@ -91,6 +93,42 @@ export class PageReleaseService {
         rootIds,
       ),
     };
+  }
+
+  private async buildReleaseData(page: Page) {
+    const components = await this.componentRepository.find({
+      where: {
+        page_id: page.id,
+      },
+      order: {
+        id: 'ASC',
+      },
+    });
+    const componentIds = page.components;
+    const schema = this.buildPageSchema(
+      components,
+      componentIds,
+      page.schema_version ?? 1,
+    );
+
+    return {
+      ...objectOmit(page, ['components']),
+      components,
+      componentIds,
+      schema_version: page.schema_version ?? 1,
+      schema,
+    };
+  }
+
+  private async ensurePageOwner(pageId: number, user: TCurrentUser) {
+    const page = await this.pageRepository.findOneBy({
+      id: pageId,
+      account_id: user.id,
+    });
+    if (!page) {
+      throw new ForbiddenException('无权限访问该页面');
+    }
+    return page;
   }
 
   async release(body: PostReleaseRequest, user: TCurrentUser) {
@@ -204,7 +242,69 @@ export class PageReleaseService {
     };
   }
 
-  async getPageVersions(pageId: number) {
+  async getPublicPageList(limit: number = 12) {
+    const rows = await this.pageRepository
+      .createQueryBuilder('page')
+      .leftJoin(User, 'owner', 'owner.id = page.account_id')
+      .select([
+        'page.id AS id',
+        'page.page_name AS page_name',
+        'page.desc AS page_desc',
+        'owner.username AS owner_name',
+        'owner.head_img AS owner_head_img',
+      ])
+      .orderBy('page.id', 'DESC')
+      .take(limit)
+      .getRawMany<{
+        id: number;
+        page_name: string;
+        page_desc: string;
+        owner_name: string;
+        owner_head_img: string | null;
+      }>();
+
+    const pageIds = rows.map((row) => Number(row.id));
+    if (!pageIds.length) {
+      return [];
+    }
+
+    const versionStats = await this.pageVersionRepository
+      .createQueryBuilder('version')
+      .select('version.page_id', 'page_id')
+      .addSelect('COUNT(*)', 'version_count')
+      .addSelect('MAX(version.version)', 'latest_version')
+      .addSelect('MAX(version.created_at)', 'latest_published_at')
+      .where('version.page_id IN (:...pageIds)', { pageIds })
+      .groupBy('version.page_id')
+      .getRawMany<{
+        page_id: number;
+        version_count: string;
+        latest_version: string;
+        latest_published_at: string;
+      }>();
+
+    const versionStatMap = new Map(
+      versionStats.map((item) => [Number(item.page_id), item]),
+    );
+
+    return rows.map((row) => {
+      const stats = versionStatMap.get(Number(row.id));
+
+      return {
+        id: Number(row.id),
+        page_name: row.page_name,
+        desc: row.page_desc,
+        owner_name: row.owner_name,
+        owner_head_img: row.owner_head_img,
+        version_count: Number(stats?.version_count ?? 0),
+        latest_version: Number(stats?.latest_version ?? 0),
+        latest_published_at: stats?.latest_published_at ?? null,
+      };
+    });
+  }
+
+  async getPageVersions(pageId: number, user: TCurrentUser) {
+    await this.ensurePageOwner(pageId, user);
     return await this.pageVersionRepository.find({
       where: { page_id: pageId },
       order: { created_at: 'DESC' },
@@ -212,7 +312,12 @@ export class PageReleaseService {
     });
   }
 
-  async getPageVersionDetail(pageId: number, versionId: string) {
+  async getPageVersionDetail(
+    pageId: number,
+    versionId: string,
+    user: TCurrentUser,
+  ) {
+    await this.ensurePageOwner(pageId, user);
     const version = await this.pageVersionRepository.findOne({
       where: { page_id: pageId, id: versionId },
     });
@@ -227,34 +332,15 @@ export class PageReleaseService {
       return null;
     }
 
-    const page = await this.pageRepository.findOneBy({
-      id,
-      account_id: user?.id,
-    });
-    if (!page) return;
+    const page = user
+      ? await this.pageRepository.findOneBy({
+          id,
+          account_id: user.id,
+        })
+      : await this.pageRepository.findOneBy({ id });
+    if (!page) return null;
 
-    const components = await this.componentRepository.find({
-      where: {
-        page_id: page.id,
-      },
-      order: {
-        id: 'ASC',
-      },
-    });
-    const componentIds = page.components;
-    const schema = this.buildPageSchema(
-      components,
-      componentIds,
-      page.schema_version ?? 1,
-    );
-
-    return {
-      ...objectOmit(page, ['components']),
-      components,
-      componentIds,
-      schema_version: page.schema_version ?? 1,
-      schema,
-    };
+    return this.buildReleaseData(page);
   }
 
   async getMyReleaseData(user: TCurrentUser) {
@@ -263,27 +349,6 @@ export class PageReleaseService {
     });
     if (!page) return null;
 
-    const components = await this.componentRepository.find({
-      where: {
-        page_id: page.id,
-      },
-      order: {
-        id: 'ASC',
-      },
-    });
-    const componentIds = page.components;
-    const schema = this.buildPageSchema(
-      components,
-      componentIds,
-      page.schema_version ?? 1,
-    );
-
-    return {
-      ...objectOmit(page, ['components']),
-      components,
-      componentIds,
-      schema_version: page.schema_version ?? 1,
-      schema,
-    };
+    return this.buildReleaseData(page);
   }
 }

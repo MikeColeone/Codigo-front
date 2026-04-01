@@ -7,7 +7,6 @@ import Preview from "@/modules/preview";
 import LoginOrRegister from "@/modules/auth";
 import Flow from "@/modules/flow";
 import DevDoc from "@/modules/devDocument";
-import TemplateSelect from "@/modules/home/components/TemplateSelect";
 import { StudioLayout } from "@/app/layouts/StudioLayout";
 import AdminLayout from "@/modules/admin/components/AdminLayout";
 import { AdminPermissionRoute } from "@/modules/admin/components/AdminPermissionRoute";
@@ -15,6 +14,7 @@ import AdminComponents from "@/modules/admin/pages/components";
 import AdminPages from "@/modules/admin/pages/pages";
 import AdminUsers from "@/modules/admin/pages/users";
 import { AdminRouteGuard } from "@/modules/admin/components/AdminRouteGuard";
+import { EditorRouteGuard } from "@/modules/editor/components/EditorRouteGuard";
 
 export const router = createHashRouter([
   {
@@ -24,10 +24,6 @@ export const router = createHashRouter([
   {
     path: "/doc",
     element: <DevDoc />,
-  },
-  {
-    path: "/templates",
-    element: <TemplateSelect />,
   },
   {
     path: "/login",
@@ -50,7 +46,11 @@ export const router = createHashRouter([
     children: [
       {
         path: "/editor",
-        element: <Editor />,
+        element: (
+          <EditorRouteGuard>
+            <Editor />
+          </EditorRouteGuard>
+        ),
       },
       {
         path: "/flow",

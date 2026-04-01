@@ -14,14 +14,13 @@ export function useRegister(form: FormInstance) {
     manual: true,
     onSuccess: async (res) => {
       await login(res.data);
-      nav("/editor");
+      nav("/?tab=developing");
     },
     onFinally: () => {
       refreshCaptcha();
     },
   });
 }
-
 
 
 

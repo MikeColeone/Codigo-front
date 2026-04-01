@@ -10,13 +10,11 @@ export function useLogin() {
   return useRequest(getLoginWithPassword, {
     manual: true,
     onSuccess: async (res) => {
-      // res is { code: 0, data: 'eyJ...', msg: '登录成功' } based on the backend and interceptor
       await login(res.data);
-      nav("/editor");
+      nav("/?tab=developing");
     },
   });
 }
-
 
 
 
