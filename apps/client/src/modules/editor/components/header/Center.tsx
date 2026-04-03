@@ -120,6 +120,8 @@ const Center = observer(() => {
       schema: serializeSchema(),
       schema_version: 2,
       tdk: store.tdk,
+      pageCategory: store.pageCategory,
+      layoutMode: store.layoutMode,
       deviceType: store.deviceType,
       canvasWidth: store.canvasWidth,
       canvasHeight: store.canvasHeight,

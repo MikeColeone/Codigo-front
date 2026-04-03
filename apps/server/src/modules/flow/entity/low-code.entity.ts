@@ -26,6 +26,12 @@ export class Page implements ILowCode {
   @Column()
   desc: string = '';
 
+  @Column({ default: 'marketing' })
+  pageCategory: 'marketing' | 'admin' = 'marketing';
+
+  @Column({ default: 'absolute' })
+  layoutMode: 'absolute' | 'flow' = 'absolute';
+
   @Column({ default: 'mobile' })
   deviceType: 'mobile' | 'pc' = 'mobile';
 

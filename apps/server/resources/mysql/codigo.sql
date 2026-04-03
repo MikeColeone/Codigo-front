@@ -38,6 +38,8 @@ CREATE TABLE IF NOT EXISTS `page` (
     `schema_version` INT NOT NULL DEFAULT 1,
     `tdk` VARCHAR(255) NOT NULL,
     `desc` VARCHAR(255) NOT NULL,
+    `pageCategory` VARCHAR(20) NOT NULL DEFAULT 'marketing',
+    `layoutMode` VARCHAR(20) NOT NULL DEFAULT 'absolute',
     `lockEditing` TINYINT(1) NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

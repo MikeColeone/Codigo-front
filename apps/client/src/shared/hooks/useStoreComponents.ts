@@ -25,6 +25,12 @@ const codeSupportedTypes: TComponentTypes[] = [
   "container",
   "twoColumn",
   "button",
+  "breadcrumbBar",
+  "pageHeader",
+  "queryFilter",
+  "statCard",
+  "cardGrid",
+  "dataTable",
   "video",
   "swiper",
   "qrcode",
@@ -59,7 +65,22 @@ type CodeSyncNode = {
   children?: CodeSyncNode[];
 };
 
-function getDefaultWidthByType(type: TComponentTypes): string {
+function getDefaultWidthByType(type: TComponentTypes, isFlow = false): string {
+  if (isFlow) {
+    switch (type) {
+      case "statCard":
+        return "320px";
+      case "breadcrumbBar":
+      case "pageHeader":
+      case "queryFilter":
+      case "cardGrid":
+      case "dataTable":
+        return "100%";
+      default:
+        return "100%";
+    }
+  }
+
   switch (type) {
     case "twoColumn":
       return "960px";
@@ -97,7 +118,9 @@ function getDefaultPosition(index: number) {
 function normalizeLayout(
   compConfigs: Record<string, ComponentNodeRecord>,
   ids: string[],
+  layoutMode = useStorePage().store.layoutMode,
 ) {
+  const isFlow = layoutMode === "flow";
   ids.forEach((id, index) => {
     const comp = compConfigs[id];
     if (!comp) return;
@@ -106,16 +129,24 @@ function normalizeLayout(
       nextStyles.left !== undefined && nextStyles.top !== undefined;
     const fallbackPosition = getDefaultPosition(index);
 
-    nextStyles.position = "absolute";
-    nextStyles.left = hasPosition ? nextStyles.left : fallbackPosition.left;
-    nextStyles.top = hasPosition ? nextStyles.top : fallbackPosition.top;
-    nextStyles.width =
-      nextStyles.width === "100%" && !hasPosition
-        ? getDefaultWidthByType(comp.type)
-        : (nextStyles.width ?? getDefaultWidthByType(comp.type));
+    if (isFlow) {
+      nextStyles.position = "relative";
+      delete nextStyles.left;
+      delete nextStyles.top;
+      nextStyles.width =
+        nextStyles.width ?? getDefaultWidthByType(comp.type, true);
+    } else {
+      nextStyles.position = "absolute";
+      nextStyles.left = hasPosition ? nextStyles.left : fallbackPosition.left;
+      nextStyles.top = hasPosition ? nextStyles.top : fallbackPosition.top;
+      nextStyles.width =
+        nextStyles.width === "100%" && !hasPosition
+          ? getDefaultWidthByType(comp.type)
+          : (nextStyles.width ?? getDefaultWidthByType(comp.type));
+    }
 
     comp.styles = nextStyles;
-    normalizeLayout(compConfigs, comp.childIds);
+    normalizeLayout(compConfigs, comp.childIds, layoutMode);
   });
 }
 
@@ -136,7 +167,10 @@ function createRecordFromNode(
   };
 }
 
-function normalizeFromSchema(schema?: IPageSchema | null) {
+function normalizeFromSchema(
+  schema?: IPageSchema | null,
+  layoutMode?: "absolute" | "flow",
+) {
   const nextCompConfigs: Record<string, ComponentNodeRecord> = {};
   const nextSortableCompConfig: string[] = [];
 
@@ -160,7 +194,7 @@ function normalizeFromSchema(schema?: IPageSchema | null) {
     nextSortableCompConfig.push(node.id);
   }
 
-  normalizeLayout(nextCompConfigs, nextSortableCompConfig);
+  normalizeLayout(nextCompConfigs, nextSortableCompConfig, layoutMode);
   return {
     compConfigs: nextCompConfigs,
     sortableCompConfig: nextSortableCompConfig,
@@ -180,11 +214,17 @@ function sanitizeCodeSyncNodes(nodes: CodeSyncNode[]): ComponentNode[] {
     }));
 }
 
-function normalizeFromFlatComponents(components: CodeSyncNode[]) {
-  return normalizeFromSchema({
-    version: 2,
-    components: sanitizeCodeSyncNodes(components),
-  });
+function normalizeFromFlatComponents(
+  components: CodeSyncNode[],
+  layoutMode?: "absolute" | "flow",
+) {
+  return normalizeFromSchema(
+    {
+      version: 2,
+      components: sanitizeCodeSyncNodes(components),
+    },
+    layoutMode,
+  );
 }
 
 function serializeStore(store: TStoreComponents): IPageSchema {
@@ -967,6 +1007,11 @@ export function useStoreComponents() {
     // Get current page store state
     const { store: pageStore } = useStorePage();
     const pageSettings = JSON.stringify({
+      title: pageStore.title,
+      description: pageStore.description,
+      tdk: pageStore.tdk,
+      pageCategory: pageStore.pageCategory,
+      layoutMode: pageStore.layoutMode,
       deviceType: pageStore.deviceType,
       canvasWidth: pageStore.canvasWidth,
       canvasHeight: pageStore.canvasHeight,
@@ -984,7 +1029,7 @@ export function useStoreComponents() {
 
   const initFromServerData = action((data: any) => {
     const normalized = data?.schema
-      ? normalizeFromSchema(data.schema)
+      ? normalizeFromSchema(data.schema, data?.layoutMode ?? "absolute")
       : normalizeFromFlatComponents(
           (data?.components ?? []).map((comp: any) => ({
             id: comp.node_id || ulid(),
@@ -993,6 +1038,7 @@ export function useStoreComponents() {
             styles: comp.styles ?? comp.options?.styles,
             slot: comp.slot,
           })),
+          data?.layoutMode ?? "absolute",
         );
     storeComponents.compConfigs = normalized.compConfigs;
     storeComponents.sortableCompConfig = normalized.sortableCompConfig;
@@ -1003,6 +1049,8 @@ export function useStoreComponents() {
       tdk: data?.tdk || "",
       title: data?.page_name,
       description: data?.desc,
+      pageCategory: data?.pageCategory ?? "marketing",
+      layoutMode: data?.layoutMode ?? "absolute",
       deviceType: data?.deviceType ?? "mobile",
       canvasWidth: data?.canvasWidth ?? 380,
       canvasHeight: data?.canvasHeight ?? 700,
@@ -1037,24 +1085,33 @@ export function useStoreComponents() {
           storeTime &&
           Number(storeTime) > (releaseTime ? Number(releaseTime) : 0)
         ) {
-          const normalized = normalizeFromSchema(JSON.parse(pageSchema));
+          const settings = pageSettings ? JSON.parse(pageSettings) : null;
+          const normalized = normalizeFromSchema(
+            JSON.parse(pageSchema),
+            settings?.layoutMode ?? "absolute",
+          );
           storeComponents.compConfigs = normalized.compConfigs;
           storeComponents.sortableCompConfig = normalized.sortableCompConfig;
           storeComponents.currentCompConfig = currentCompConfig
             ? JSON.parse(currentCompConfig)
             : (normalized.sortableCompConfig[0] ?? null);
 
-          if (pageSettings) {
-            const settings = JSON.parse(pageSettings);
-            const { setDeviceType, setCanvasSize, setCodeFramework } =
-              useStorePage();
-            if (settings.deviceType) setDeviceType(settings.deviceType);
-            if (settings.canvasWidth && settings.canvasHeight) {
-              setCanvasSize(settings.canvasWidth, settings.canvasHeight);
-            }
-            if (settings.codeFramework) {
+          if (settings) {
+            const { updatePage, setCodeFramework } = useStorePage();
+            updatePage({
+              title: settings.title ?? "Codigo低代码平台",
+              description: settings.description ?? "Codigo低代码开发页面详情",
+              tdk:
+                settings.tdk ??
+                "lowcode platform, lowcode development, lowcode page details",
+              pageCategory: settings.pageCategory ?? "marketing",
+              layoutMode: settings.layoutMode ?? "absolute",
+              deviceType: settings.deviceType ?? "mobile",
+              canvasWidth: settings.canvasWidth ?? 380,
+              canvasHeight: settings.canvasHeight ?? 700,
+            });
+            if (settings.codeFramework)
               setCodeFramework(settings.codeFramework);
-            }
           }
 
           message.success("已自动从草稿中读取数据");
@@ -1072,10 +1129,12 @@ export function useStoreComponents() {
         ) {
           const legacyComponents = JSON.parse(compConfig);
           const legacyOrder = JSON.parse(sortableCompConfig!);
+          const settings = pageSettings ? JSON.parse(pageSettings) : null;
           const normalized = normalizeFromFlatComponents(
             legacyOrder
               .map((id: string) => legacyComponents[id])
               .filter(Boolean),
+            settings?.layoutMode ?? "absolute",
           );
           storeComponents.compConfigs = normalized.compConfigs;
           storeComponents.sortableCompConfig = normalized.sortableCompConfig;
@@ -1083,17 +1142,22 @@ export function useStoreComponents() {
             ? JSON.parse(currentCompConfig)
             : (normalized.sortableCompConfig[0] ?? null);
 
-          if (pageSettings) {
-            const settings = JSON.parse(pageSettings);
-            const { setDeviceType, setCanvasSize, setCodeFramework } =
-              useStorePage();
-            if (settings.deviceType) setDeviceType(settings.deviceType);
-            if (settings.canvasWidth && settings.canvasHeight) {
-              setCanvasSize(settings.canvasWidth, settings.canvasHeight);
-            }
-            if (settings.codeFramework) {
+          if (settings) {
+            const { updatePage, setCodeFramework } = useStorePage();
+            updatePage({
+              title: settings.title ?? "Codigo低代码平台",
+              description: settings.description ?? "Codigo低代码开发页面详情",
+              tdk:
+                settings.tdk ??
+                "lowcode platform, lowcode development, lowcode page details",
+              pageCategory: settings.pageCategory ?? "marketing",
+              layoutMode: settings.layoutMode ?? "absolute",
+              deviceType: settings.deviceType ?? "mobile",
+              canvasWidth: settings.canvasWidth ?? 380,
+              canvasHeight: settings.canvasHeight ?? 700,
+            });
+            if (settings.codeFramework)
               setCodeFramework(settings.codeFramework);
-            }
           }
 
           message.success("已自动从草稿中读取数据");

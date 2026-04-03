@@ -24,19 +24,58 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
       key: "basic",
       title: "页面信息",
       icon: <FileTextOutlined />,
-      description: "定义页面标题与简介，让工作台表达更完整。",
+      description:
+        store.pageCategory === "admin"
+          ? "定义后台页面的类型、布局与业务说明。"
+          : "定义页面标题与简介，让工作台表达更完整。",
       fields: [
+        {
+          label: "页面类型",
+          name: "pageCategory",
+          node: (
+            <Select
+              options={[
+                { label: "营销页", value: "marketing" },
+                { label: "后台页", value: "admin" },
+              ]}
+            />
+          ),
+        },
+        {
+          label: "布局模式",
+          name: "layoutMode",
+          node: (
+            <Select
+              options={[
+                { label: "自由布局", value: "absolute" },
+                { label: "流式布局", value: "flow" },
+              ]}
+            />
+          ),
+        },
         {
           label: "页面标题",
           name: "title",
-          node: <Input placeholder="例如：春季营销活动页" />,
+          node: (
+            <Input
+              placeholder={
+                store.pageCategory === "admin"
+                  ? "例如：搜索列表（应用）"
+                  : "例如：春季营销活动页"
+              }
+            />
+          ),
         },
         {
           label: "页面详情",
           name: "description",
           node: (
             <Input.TextArea
-              placeholder="输入页面用途、内容摘要或业务说明"
+              placeholder={
+                store.pageCategory === "admin"
+                  ? "输入后台页面用途、模块职责或业务说明"
+                  : "输入页面用途、内容摘要或业务说明"
+              }
               autoSize={{ minRows: 3, maxRows: 5 }}
             />
           ),
@@ -47,12 +86,23 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
       key: "seo",
       title: "SEO 设置",
       icon: <GlobalOutlined />,
-      description: "补充关键字，方便页面发布后的搜索识别与归档。",
+      description:
+        store.pageCategory === "admin"
+          ? "补充后台页面的关键字，方便页面归档与检索。"
+          : "补充关键字，方便页面发布后的搜索识别与归档。",
       fields: [
         {
           label: "页面关键字",
           name: "tdk",
-          node: <Input placeholder="lowcode, editor, marketing" />,
+          node: (
+            <Input
+              placeholder={
+                store.pageCategory === "admin"
+                  ? "admin, list, search"
+                  : "lowcode, editor, marketing"
+              }
+            />
+          ),
         },
       ],
     },
@@ -81,18 +131,25 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
             Global
           </span>
           <span className="rounded-full bg-slate-900/5 px-2.5 py-1 text-xs text-slate-500">
-            {store.deviceType === "mobile" ? "移动端页面" : "桌面端页面"}
+            {store.pageCategory === "admin"
+              ? "后台页"
+              : store.deviceType === "mobile"
+                ? "移动端页面"
+                : "桌面端页面"}
           </span>
         </div>
         <div className="text-base font-semibold text-slate-900">
           {store.title || "未命名页面"}
         </div>
         <div className="mt-1 text-sm leading-6 text-slate-500">
-          统一维护页面级信息、关键词与图表主题，让设计输出更完整、更适合发布。
+          {store.pageCategory === "admin"
+            ? "统一维护后台页面的类型、布局和关键词，让模板、物料与画布行为保持一致。"
+            : "统一维护页面级信息、关键词与图表主题，让设计输出更完整、更适合发布。"}
         </div>
       </div>
 
       <Form
+        key={`${store.pageCategory}-${store.layoutMode}-${store.deviceType}`}
         layout="vertical"
         initialValues={store}
         onValuesChange={handleValuesChange}

@@ -1,5 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import type {
+  PageCategory,
+  PageLayoutMode,
   PageWorkspaceExplorerResponse,
   PageWorkspaceFileResponse,
   PageWorkspaceIDEConfigResponse,
@@ -24,6 +26,8 @@ interface IStorePage {
   title: string;
   description: string;
   tdk: string;
+  pageCategory: PageCategory;
+  layoutMode: PageLayoutMode;
   deviceType: DeviceType;
   canvasWidth: number;
   canvasHeight: number;
@@ -45,6 +49,8 @@ export function createStorePage() {
     title: "Codigo低代码平台",
     description: "Codigo低代码开发页面详情",
     tdk: "lowcode platform, lowcode development, lowcode page details",
+    pageCategory: "marketing",
+    layoutMode: "absolute",
     deviceType: "mobile",
     canvasWidth: 380,
     canvasHeight: 700,

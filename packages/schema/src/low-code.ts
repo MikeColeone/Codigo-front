@@ -5,7 +5,19 @@ import type {
   TComponentTypes,
 } from "./components";
 
-// 页面表属性类型
+/**
+ * 描述页面所属的业务分类。
+ */
+export type PageCategory = "marketing" | "admin";
+
+/**
+ * 描述页面在画布中的布局模式。
+ */
+export type PageLayoutMode = "absolute" | "flow";
+
+/**
+ * 描述低代码页面实体的基础信息。
+ */
 export interface ILowCode {
   id: number;
   account_id: number;
@@ -18,14 +30,21 @@ export interface ILowCode {
   canvasWidth?: number;
   canvasHeight?: number;
   lockEditing?: boolean; // 编辑锁状态
+  pageCategory?: PageCategory;
+  layoutMode?: PageLayoutMode;
 }
 
+/**
+ * 描述页面 schema 的版本号和组件树数据。
+ */
 export interface IPageSchema {
   version: number;
   components: ComponentNode[];
 }
 
-// 组件表属性类型
+/**
+ * 描述组件实例在存储层中的结构。
+ */
 export interface IComponent {
   id: number;
   account_id: number;
@@ -40,7 +59,9 @@ export interface IComponent {
   meta?: ComponentMeta;
 }
 
-// 组件数据表属性类型
+/**
+ * 描述组件业务数据的存储结构。
+ */
 export interface IComponentData {
   id: number;
   user: string;
@@ -48,7 +69,9 @@ export interface IComponentData {
   props: Record<string, any>[];
 }
 
-// 页面版本表属性类型
+/**
+ * 描述页面版本快照的存储结构。
+ */
 export interface IPageVersion {
   id: string; // uuid
   page_id: number;

@@ -1,9 +1,15 @@
 import type { ComponentNode } from "./components";
 
+/**
+ * 描述扁平化组件树后的节点结构。
+ */
 export interface FlatComponentNode extends Omit<ComponentNode, "children"> {
   parentId?: string | null;
 }
 
+/**
+ * 深拷贝组件节点，避免在树转换过程中修改原始数据。
+ */
 function cloneNode(node: ComponentNode): ComponentNode {
   return {
     ...node,
@@ -14,6 +20,9 @@ function cloneNode(node: ComponentNode): ComponentNode {
   };
 }
 
+/**
+ * 将组件树拍平成带父节点信息的一维数组。
+ */
 export function flattenComponentTree(
   nodes: ComponentNode[],
   parentId: string | null = null,
@@ -31,6 +40,9 @@ export function flattenComponentTree(
   });
 }
 
+/**
+ * 将扁平节点列表重新组装为树形组件结构。
+ */
 export function buildComponentTree(
   nodes: FlatComponentNode[],
   rootIds?: string[],
@@ -57,6 +69,9 @@ export function buildComponentTree(
     childrenMap.set(parentKey, list);
   }
 
+  /**
+   * 按根节点顺序对顶层节点排序。
+   */
   const sortByRoot = (list: ComponentNode[]) => {
     if (!rootIds?.length) return list;
     const orderMap = new Map(rootIds.map((id, index) => [id, index]));
@@ -67,6 +82,9 @@ export function buildComponentTree(
     });
   };
 
+  /**
+   * 递归为节点挂载子节点列表。
+   */
   const attachChildren = (node: ComponentNode) => {
     const children = childrenMap.get(node.id) ?? [];
     node.children = children.map((child) => attachChildren(child));
@@ -78,6 +96,9 @@ export function buildComponentTree(
   );
 }
 
+/**
+ * 按插槽名称对节点的子组件进行分组。
+ */
 export function groupChildrenBySlot(
   node: Pick<ComponentNode, "children">,
   defaultSlot = "default",

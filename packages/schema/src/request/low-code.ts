@@ -7,6 +7,9 @@ import type {
   SyncSchemaItem,
 } from "..";
 
+/**
+ * 描述发布页面时提交的请求数据结构。
+ */
 export type PostReleaseRequest = Omit<
   ILowCode,
   "id" | "account_id" | "components"
@@ -16,8 +19,14 @@ export type PostReleaseRequest = Omit<
   schema?: IPageSchema;
 };
 
+/**
+ * 描述提交组件问卷或业务数据时的请求结构。
+ */
 export type PostQuestionDataRequest = Pick<IComponentData, "page_id" | "props">;
 
+/**
+ * 描述获取已发布页面详情时的返回结构。
+ */
 export type GetReleaseDataResponse = Omit<ILowCode, "components"> & {
   componentIds: string[];
   components: IComponent[];
@@ -25,12 +34,24 @@ export type GetReleaseDataResponse = Omit<ILowCode, "components"> & {
   schema?: IPageSchema;
 };
 
+/**
+ * 描述按组件 ID 查询数据时的请求参数。
+ */
 export type getQuestionDataByIdRequest = Pick<IComponent, "id">;
 
+/**
+ * 描述页面版本列表接口的返回结构。
+ */
 export type GetPageVersionsResponse = Omit<IPageVersion, "schema_data">[];
 
+/**
+ * 描述页面单个版本详情接口的返回结构。
+ */
 export type GetPageVersionDetailResponse = IPageVersion;
 
+/**
+ * 描述页面源码工作区的基础信息。
+ */
 export interface PageWorkspaceResponse {
   pageId: number;
   pageName: string;
@@ -51,12 +72,18 @@ export interface PageWorkspaceResponse {
   schema?: SyncSchemaItem[];
 }
 
+/**
+ * 定义源码工作区会话的状态枚举。
+ */
 export type PageWorkspaceSessionStatus =
   | "workspace_missing"
   | "stopped"
   | "starting"
   | "ready";
 
+/**
+ * 描述页面源码工作区 IDE 会话的运行信息。
+ */
 export interface PageWorkspaceSessionResponse {
   pageId: number;
   workspaceId: string;
@@ -72,6 +99,9 @@ export interface PageWorkspaceSessionResponse {
   heartbeatAt: string;
 }
 
+/**
+ * 定义页面源码运行时实例的状态枚举。
+ */
 export type PageWorkspaceRuntimeStatus =
   | "workspace_missing"
   | "stopped"
@@ -79,6 +109,9 @@ export type PageWorkspaceRuntimeStatus =
   | "running"
   | "error";
 
+/**
+ * 描述页面源码运行时实例的状态信息。
+ */
 export interface PageWorkspaceRuntimeResponse {
   pageId: number;
   workspaceId: string;
@@ -95,6 +128,9 @@ export interface PageWorkspaceRuntimeResponse {
   exitCode?: number | null;
 }
 
+/**
+ * 描述打开源码 IDE 所需的连接配置。
+ */
 export interface PageWorkspaceIDEConfigResponse {
   pageId: number;
   workspaceId: string;
@@ -120,6 +156,9 @@ export interface PageWorkspaceIDEConfigResponse {
   heartbeatAt: string;
 }
 
+/**
+ * 描述工作区文件树中的单个节点。
+ */
 export interface WorkspaceExplorerNode {
   name: string;
   path: string;
@@ -127,6 +166,9 @@ export interface WorkspaceExplorerNode {
   children?: WorkspaceExplorerNode[];
 }
 
+/**
+ * 描述工作区目录树查询接口的返回结构。
+ */
 export interface PageWorkspaceExplorerResponse {
   pageId: number;
   workspaceId: string;
@@ -134,6 +176,9 @@ export interface PageWorkspaceExplorerResponse {
   tree: WorkspaceExplorerNode[];
 }
 
+/**
+ * 描述读取工作区文件内容接口的返回结构。
+ */
 export interface PageWorkspaceFileResponse {
   pageId: number;
   workspaceId: string;
@@ -144,11 +189,17 @@ export interface PageWorkspaceFileResponse {
   updatedAt: string;
 }
 
+/**
+ * 描述写入工作区文件内容接口的请求结构。
+ */
 export interface PutPageWorkspaceFileRequest {
   path: string;
   content: string;
 }
 
+/**
+ * 描述写入工作区文件内容接口的返回结构。
+ */
 export interface PutPageWorkspaceFileResponse {
   pageId: number;
   workspaceId: string;

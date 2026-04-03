@@ -1,6 +1,9 @@
 import {
   LayoutOutlined,
   BorderOutlined,
+  ApartmentOutlined,
+  BarsOutlined,
+  FilterOutlined,
   SearchOutlined,
   CheckCircleOutlined,
   CheckSquareOutlined,
@@ -27,7 +30,11 @@ import type { TComponentTypes } from "@codigo/schema";
 import { getComponentContainerMeta } from "@codigo/materials";
 import type { FC, ReactNode } from "react";
 import { useMemo, useState } from "react";
-import { useStoreComponents, useStorePermission } from "@/shared/hooks";
+import {
+  useStoreComponents,
+  useStorePage,
+  useStorePermission,
+} from "@/shared/hooks";
 
 interface ComponentProps {
   name: string;
@@ -154,7 +161,41 @@ const reportComponents: ComponentProps[] = [
   },
 ];
 
+const adminComponents: ComponentProps[] = [
+  {
+    type: "breadcrumbBar",
+    name: "面包屑组件",
+    icon: <ApartmentOutlined />,
+  },
+  {
+    type: "pageHeader",
+    name: "页面头组件",
+    icon: <BarsOutlined />,
+  },
+  {
+    type: "queryFilter",
+    name: "搜索区组件",
+    icon: <FilterOutlined />,
+  },
+  {
+    type: "statCard",
+    name: "统计卡片组件",
+    icon: <DashboardOutlined />,
+  },
+  {
+    type: "cardGrid",
+    name: "卡片网格组件",
+    icon: <CreditCardOutlined />,
+  },
+  {
+    type: "dataTable",
+    name: "数据表格组件",
+    icon: <TableOutlined />,
+  },
+];
+
 export const components = [
+  ...adminComponents,
   ...basicComponents,
   ...formComponents,
   ...reportComponents,
@@ -220,9 +261,15 @@ const EditorComponent: FC<ComponentProps> = ({ icon, name, type }) => {
 
 export default function ComponentList() {
   const [keyword, setKeyword] = useState("");
+  const { store: storePage } = useStorePage();
   const normalizedKeyword = keyword.trim().toLowerCase();
 
   const sections = [
+    {
+      key: "admin",
+      label: "后台组件",
+      items: adminComponents,
+    },
     {
       key: "basic",
       label: "基础组件",
@@ -240,9 +287,14 @@ export default function ComponentList() {
     },
   ];
 
+  const orderedSections =
+    storePage.pageCategory === "admin"
+      ? sections
+      : [...sections.filter((section) => section.key !== "admin"), sections[0]];
+
   const filteredSections = useMemo(
     () =>
-      sections
+      orderedSections
         .map((section) => ({
           ...section,
           items: normalizedKeyword
@@ -254,7 +306,7 @@ export default function ComponentList() {
             : section.items,
         }))
         .filter((section) => section.items.length > 0),
-    [normalizedKeyword],
+    [normalizedKeyword, orderedSections],
   );
 
   const collapseItems = filteredSections.map((section) => ({

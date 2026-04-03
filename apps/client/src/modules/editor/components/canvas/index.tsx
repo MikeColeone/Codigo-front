@@ -107,6 +107,7 @@ interface ComponentWrapperProps {
   parentId?: string | null;
   slot?: string | null;
   children: ReactNode;
+  isFlowLayout: boolean;
   isDragable: boolean;
   canDrag: boolean;
   onClick: () => void;
@@ -120,6 +121,7 @@ const ComponentWrapper: FC<ComponentWrapperProps> = ({
   parentId,
   slot,
   children,
+  isFlowLayout,
   isDragable,
   canDrag,
   isCurrentComponent,
@@ -129,17 +131,20 @@ const ComponentWrapper: FC<ComponentWrapperProps> = ({
 }) => {
   const classNames = useMemo(() => {
     return ClassNames({
-      "absolute left-0 top-0 w-full h-full z-[999] transition-all duration-200": true,
+      "absolute left-0 top-0 w-full h-full z-[999] transition-all duration-200":
+        !isFlowLayout,
+      "absolute inset-0 z-[999] rounded-[20px] transition-all duration-200":
+        isFlowLayout,
       "hover:border-[2px] hover:border-emerald-400 hover:shadow-[inset_0_0_20px_rgba(16,185,129,0.1)]":
         !isCurrentComponent && !isDragable,
       "border-[2px] border-emerald-500 shadow-[inset_0_0_20px_rgba(16,185,129,0.2)]":
         isCurrentComponent,
     });
-  }, [isCurrentComponent, isDragable]);
+  }, [isCurrentComponent, isDragable, isFlowLayout]);
 
   return (
     <div
-      className={`absolute component-warpper ${canDrag ? "cursor-move" : "cursor-pointer"}`}
+      className={`${isFlowLayout ? "relative mb-4" : "absolute"} component-warpper ${canDrag ? "cursor-move" : "cursor-pointer"}`}
       onClick={onClick}
       onMouseDown={onMouseDown}
       style={style}
@@ -673,6 +678,7 @@ const EditorCanvas: FC<{
         return (
           <ComponentWrapper
             key={node.id}
+            isFlowLayout={storePage.layoutMode === "flow"}
             isDragable={isDragable}
             canDrag={canEditStructure}
             onMouseDown={(event) => handleDragComponentStart(event, node.id)}
@@ -691,9 +697,19 @@ const EditorCanvas: FC<{
                 ?.slot ?? null
             }
             style={{
-              left: node.styles?.left as string | number | undefined,
-              top: node.styles?.top as string | number | undefined,
-              position: "absolute",
+              left:
+                storePage.layoutMode === "flow"
+                  ? undefined
+                  : (node.styles?.left as string | number | undefined),
+              top:
+                storePage.layoutMode === "flow"
+                  ? undefined
+                  : (node.styles?.top as string | number | undefined),
+              position:
+                storePage.layoutMode === "flow"
+                  ? "relative"
+                  : "absolute",
+              width: node.styles?.width as string | number | undefined,
             }}
           >
             <div className="relative">

@@ -2,6 +2,12 @@ import {
   ContainerComponent as LowCodeContainer,
   TwoColumnComponent as LowCodeTwoColumn,
   ButtonComponent as LowCodeButton,
+  BreadcrumbBarComponent as LowCodeBreadcrumbBar,
+  PageHeaderComponent as LowCodePageHeader,
+  QueryFilterComponent as LowCodeQueryFilter,
+  StatCardComponent as LowCodeStatCard,
+  CardGridComponent as LowCodeCardGrid,
+  DataTableComponent as LowCodeDataTable,
   CardComponent as LowCodeCard,
   ImageComponent as LowCodeImage,
   ListComponent as LowCodeList,
@@ -52,6 +58,42 @@ export function initBuiltinComponents() {
     name: "Button",
     defaultConfig: {} as any,
     render: LowCodeButton,
+  });
+  registerComponent({
+    type: "breadcrumbBar",
+    name: "BreadcrumbBar",
+    defaultConfig: {} as any,
+    render: LowCodeBreadcrumbBar,
+  });
+  registerComponent({
+    type: "pageHeader",
+    name: "PageHeader",
+    defaultConfig: {} as any,
+    render: LowCodePageHeader,
+  });
+  registerComponent({
+    type: "queryFilter",
+    name: "QueryFilter",
+    defaultConfig: {} as any,
+    render: LowCodeQueryFilter,
+  });
+  registerComponent({
+    type: "statCard",
+    name: "StatCard",
+    defaultConfig: {} as any,
+    render: LowCodeStatCard,
+  });
+  registerComponent({
+    type: "cardGrid",
+    name: "CardGrid",
+    defaultConfig: {} as any,
+    render: LowCodeCardGrid,
+  });
+  registerComponent({
+    type: "dataTable",
+    name: "DataTable",
+    defaultConfig: {} as any,
+    render: LowCodeDataTable,
   });
   registerComponent({
     type: "video",

@@ -9,6 +9,8 @@ import type {
 import { useStorePermission } from "./useStorePermission";
 import { setDefaultEChartsTheme } from "@codigo/materials";
 import type {
+  PageCategory,
+  PageLayoutMode,
   PageWorkspaceIDEConfigResponse,
   PageWorkspaceExplorerResponse,
   PageWorkspaceFileResponse,
@@ -23,6 +25,21 @@ setDefaultEChartsTheme(storePage.chartTheme || undefined);
 
 export function useStorePage() {
   const { ensurePermission, addOperationLog } = useStorePermission();
+
+  const syncPageCategoryDefaults = action((category: PageCategory) => {
+    if (category === "admin") {
+      storePage.deviceType = "pc";
+      storePage.canvasWidth = 1280;
+      storePage.canvasHeight = 900;
+      storePage.layoutMode = "flow";
+      return;
+    }
+
+    storePage.deviceType = "mobile";
+    storePage.canvasWidth = 380;
+    storePage.canvasHeight = 700;
+    storePage.layoutMode = "absolute";
+  });
 
   /**
    * 设置页面标题
@@ -41,8 +58,8 @@ export function useStorePage() {
       storePage.canvasWidth = 380;
       storePage.canvasHeight = 700;
     } else {
-      storePage.canvasWidth = 1024; // Default PC width
-      storePage.canvasHeight = 768; // Default PC height
+      storePage.canvasWidth = storePage.pageCategory === "admin" ? 1280 : 1024;
+      storePage.canvasHeight = storePage.pageCategory === "admin" ? 900 : 768;
     }
     addOperationLog("update_page", "终端模式");
   });
@@ -58,6 +75,22 @@ export function useStorePage() {
     if (!ensurePermission("edit_content", "当前角色不能修改源码框架")) return;
     storePage.codeFramework = framework;
     addOperationLog("update_page", "源码框架");
+  });
+
+  const setPageCategory = action((category: PageCategory) => {
+    if (!ensurePermission("edit_content", "当前角色不能修改页面类型")) return;
+    storePage.pageCategory = category;
+    syncPageCategoryDefaults(category);
+    addOperationLog("update_page", "页面类型");
+  });
+
+  const setLayoutMode = action((mode: PageLayoutMode) => {
+    if (!ensurePermission("edit_content", "当前角色不能修改布局模式")) return;
+    storePage.layoutMode = mode;
+    if (mode === "flow" && storePage.pageCategory === "marketing") {
+      storePage.deviceType = "pc";
+    }
+    addOperationLog("update_page", "布局模式");
   });
 
   const setEditorMode = action((mode: EditorMode) => {
@@ -162,6 +195,18 @@ export function useStorePage() {
       // @ts-ignore
       storePage[key as keyof TStorePage] = value;
 
+    if (page.pageCategory) {
+      if (page.pageCategory === "admin") {
+        storePage.deviceType = page.deviceType ?? "pc";
+        storePage.canvasWidth = page.canvasWidth ?? 1280;
+        storePage.canvasHeight = page.canvasHeight ?? 900;
+        storePage.layoutMode = page.layoutMode ?? "flow";
+      } else {
+        storePage.deviceType = page.deviceType ?? storePage.deviceType;
+        storePage.layoutMode = page.layoutMode ?? "absolute";
+      }
+    }
+
     if (Object.prototype.hasOwnProperty.call(page, "chartTheme")) {
       setDefaultEChartsTheme(storePage.chartTheme || undefined);
     }
@@ -171,6 +216,8 @@ export function useStorePage() {
   return {
     updatePage,
     setPageTitle,
+    setPageCategory,
+    setLayoutMode,
     setDeviceType,
     setCanvasSize,
     setCodeFramework,
