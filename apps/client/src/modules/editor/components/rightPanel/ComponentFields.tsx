@@ -9,9 +9,9 @@ import {
   NodeIndexOutlined,
   ShrinkOutlined,
 } from "@ant-design/icons";
-import { getComponentPropsByType } from "@/modules/editor/components/LowCodeComponents";
 import type { ActionConfig, ComponentNode } from "@codigo/schema";
 import type { ReactNode } from "react";
+import { getComponentPropsByType } from "@/modules/editor/registry/components";
 import type { TStoreComponents } from "@/shared/stores";
 import { useStoreComponents } from "@/shared/hooks";
 import { Button, Collapse, Empty, Form, Input, InputNumber, Select } from "antd";
@@ -269,7 +269,13 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
             key="props"
           >
             <div className="rounded-[18px] border border-slate-100 bg-slate-50/70 p-3.5">
-              <ComponentProps {...toJS(config.props)} id={config.id} />
+              {ComponentProps ? (
+                <ComponentProps {...toJS(config.props)} id={config.id} />
+              ) : (
+                <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-4 py-6 text-center text-[13px] text-slate-400">
+                  当前组件暂未配置属性面板
+                </div>
+              )}
             </div>
           </Panel>
 

@@ -6,16 +6,25 @@ import {
 import { Form, Input, Select } from "antd";
 import { observer } from "mobx-react-lite";
 import type { FC } from "react";
+import { useMemo } from "react";
 
-import { useStorePage } from "@/shared/hooks";
+import { useStoreComponents, useStorePage, useStorePermission } from "@/shared/hooks";
 import type { TStorePage } from "@/shared/stores";
 import { getBuiltinEChartsThemeOptions } from "@codigo/materials";
+import { getPageLayoutPresets } from "@/modules/editor/registry/components";
 
 const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
   const { updatePage } = useStorePage();
+  const { applyLayoutPreset } = useStoreComponents();
+  const { can } = useStorePermission();
+  const canEditStructure = can("edit_structure");
   //todo: 优化图表主题选项 暂时没有统一option
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chartThemeOptions = getBuiltinEChartsThemeOptions() as any;
+  const layoutPresets = useMemo(
+    () => getPageLayoutPresets(store.pageCategory),
+    [store.pageCategory],
+  );
 
   function handleValuesChange(changedValues: Partial<TStorePage>) {
     updatePage(changedValues);
@@ -49,6 +58,45 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
                 { label: "流式布局", value: "flow" },
               ]}
             />
+          ),
+        },
+        {
+          label: "整体布局",
+          node: (
+            <div className="space-y-2.5">
+              <div className="grid grid-cols-1 gap-2.5">
+                {layoutPresets.map((preset) => (
+                  <button
+                    key={preset.key}
+                    type="button"
+                    disabled={!canEditStructure}
+                    onClick={() => applyLayoutPreset(preset.key)}
+                    className={`w-full rounded-[18px] border px-3.5 py-3 text-left transition-all ${
+                      canEditStructure
+                        ? "border-sky-200 bg-[linear-gradient(135deg,rgba(14,165,233,0.08),rgba(255,255,255,0.98))] hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-[0_18px_32px_-28px_rgba(14,165,233,0.75)]"
+                        : "cursor-not-allowed border-slate-100 bg-slate-50 opacity-55"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600">
+                        {preset.icon}
+                      </span>
+                      <div>
+                        <div className="text-[13px] font-semibold text-slate-900">
+                          {preset.name}
+                        </div>
+                        <div className="mt-1 text-[11px] leading-5 text-slate-400">
+                          {preset.description}
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+              <div className="rounded-2xl border border-dashed border-sky-100 bg-sky-50/60 px-3.5 py-3 text-[11px] leading-5 text-slate-500">
+                先配置页面整体布局，再从左侧拖拽组件到容器区域，搭建效率会比自由拖拽更高。
+              </div>
+            </div>
           ),
         },
         {
@@ -170,7 +218,7 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
 
               {group.fields.map((field) => (
                 <Form.Item
-                  key={String(field.name)}
+                  key={field.name ? String(field.name) : `${group.key}-${field.label}`}
                   label={field.label}
                   name={field.name}
                 >

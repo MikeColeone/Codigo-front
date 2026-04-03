@@ -5,6 +5,7 @@ import type {
   ComponentNode,
   ComponentNodeRecord,
   IPageSchema,
+  PageCategory,
   TBasicComponentConfig,
   TComponentTypes,
 } from "@codigo/schema";
@@ -20,7 +21,10 @@ import { message } from "antd";
 import type { TStoreComponents } from "@/shared/stores";
 import { useStorePage } from ".";
 import { useStorePermission } from "./useStorePermission";
-import { codeSyncComponentTypes } from "@/modules/editor/registry/components";
+import {
+  codeSyncComponentTypes,
+  type PageLayoutPresetKey,
+} from "@/modules/editor/registry/components";
 
 const storeComponents = createStoreComponents();
 const codeSupportedTypes: TComponentTypes[] = codeSyncComponentTypes;
@@ -41,6 +45,11 @@ type CodeSyncNode = {
   };
   slot?: string;
   children?: CodeSyncNode[];
+};
+
+type LayoutPresetNode = ComponentNode & {
+  slot?: string;
+  children?: LayoutPresetNode[];
 };
 
 function getDefaultWidthByType(type: TComponentTypes, isFlow = false): string {
@@ -90,6 +99,174 @@ function getDefaultPosition(index: number) {
   return {
     left: `${layoutStartX + (index % 3) * layoutGapX}px`,
     top: `${layoutStartY + Math.floor(index / 3) * layoutGapY}px`,
+  };
+}
+
+function createContainerNode(
+  title: string,
+  options?: {
+    minHeight?: number;
+    backgroundColor?: string;
+    borderColor?: string;
+    padding?: number;
+    borderRadius?: number;
+    styles?: ComponentNode["styles"];
+    children?: LayoutPresetNode[];
+    slot?: string;
+  },
+): LayoutPresetNode {
+  return {
+    id: ulid(),
+    type: "container",
+    props: {
+      title,
+      minHeight: options?.minHeight ?? 240,
+      backgroundColor: options?.backgroundColor ?? "#ffffff",
+      borderColor: options?.borderColor ?? "#d9d9d9",
+      padding: options?.padding ?? 24,
+      borderRadius: options?.borderRadius ?? 16,
+    },
+    styles: {
+      width: "100%",
+      ...(options?.styles ?? {}),
+    },
+    slot: options?.slot,
+    children: options?.children ?? [],
+  };
+}
+
+function createTwoColumnNode(
+  title: string,
+  options?: {
+    leftWidth?: number;
+    gap?: number;
+    minHeight?: number;
+    backgroundColor?: string;
+    styles?: ComponentNode["styles"];
+    children?: LayoutPresetNode[];
+  },
+): LayoutPresetNode {
+  return {
+    id: ulid(),
+    type: "twoColumn",
+    props: {
+      title,
+      leftWidth: options?.leftWidth ?? 280,
+      gap: options?.gap ?? 20,
+      minHeight: options?.minHeight ?? 360,
+      backgroundColor: options?.backgroundColor ?? "#ffffff",
+    },
+    styles: {
+      width: "100%",
+      ...(options?.styles ?? {}),
+    },
+    children: options?.children ?? [],
+  };
+}
+
+function createPageLayoutPreset(
+  preset: PageLayoutPresetKey,
+  pageCategory: PageCategory,
+) {
+  if (preset === "sidebarLayout") {
+    const header = createContainerNode(
+      pageCategory === "admin" ? "页面头部" : "页面横幅",
+      {
+        minHeight: pageCategory === "admin" ? 160 : 200,
+        backgroundColor: "#f8fafc",
+        borderColor: "#cbd5e1",
+        styles: { marginBottom: 16 },
+      },
+    );
+    const main = createTwoColumnNode(
+      pageCategory === "admin" ? "主工作区" : "分栏主体",
+      {
+        leftWidth: pageCategory === "admin" ? 280 : 300,
+        minHeight: 420,
+        styles: { marginBottom: 16 },
+      },
+    );
+    const footer = createContainerNode(
+      pageCategory === "admin" ? "补充操作区" : "页面页脚",
+      {
+        minHeight: 140,
+        backgroundColor: "#f8fafc",
+        borderColor: "#cbd5e1",
+      },
+    );
+
+    return {
+      nodes: [header, main, footer],
+      focusId: main.id,
+    };
+  }
+
+  if (preset === "dashboardLayout") {
+    const summary = createContainerNode("概览区", {
+      minHeight: 180,
+      backgroundColor: "#f8fafc",
+      borderColor: "#bfdbfe",
+      styles: { marginBottom: 16 },
+    });
+    const workspace = createTwoColumnNode("工作台主体", {
+      leftWidth: 320,
+      minHeight: 420,
+      backgroundColor: "#ffffff",
+      styles: { marginBottom: 16 },
+      children: [
+        createContainerNode("左侧导航/筛选", {
+          minHeight: 340,
+          slot: "left",
+          backgroundColor: "#ffffff",
+          borderColor: "#d9d9d9",
+        }),
+        createContainerNode("右侧主内容", {
+          minHeight: 340,
+          slot: "right",
+          backgroundColor: "#ffffff",
+          borderColor: "#d9d9d9",
+        }),
+      ],
+    });
+    const footer = createContainerNode("底部补充区", {
+      minHeight: 160,
+      backgroundColor: "#f8fafc",
+      borderColor: "#bfdbfe",
+    });
+
+    return {
+      nodes: [summary, workspace, footer],
+      focusId: workspace.id,
+    };
+  }
+
+  const header = createContainerNode(
+    pageCategory === "admin" ? "页面头部" : "页面头图",
+    {
+      minHeight: pageCategory === "admin" ? 160 : 200,
+      backgroundColor: "#f8fafc",
+      borderColor: "#cbd5e1",
+      styles: { marginBottom: 16 },
+    },
+  );
+  const main = createContainerNode(
+    pageCategory === "admin" ? "主内容区" : "内容区",
+    {
+      minHeight: 360,
+      backgroundColor: "#ffffff",
+      borderColor: "#d9d9d9",
+      styles: { marginBottom: 16 },
+    },
+  );
+  const footer = createContainerNode("页脚区域", {
+    minHeight: 140,
+    backgroundColor: "#f8fafc",
+    borderColor: "#cbd5e1",
+  });
+
+  return {
+    nodes: [header, main, footer],
+    focusId: main.id,
   };
 }
 
@@ -617,6 +794,47 @@ export function useStoreComponents() {
       addOperationLog("add_component", type);
     },
   );
+
+  const applyLayoutPreset = action((preset: PageLayoutPresetKey) => {
+    if (!ensurePermission("edit_structure", "当前角色不能创建页面布局")) return;
+    const { store: storePage, setLayoutMode } = useStorePage();
+    const wasEmpty = storeComponents.sortableCompConfig.length === 0;
+    const presetTree = createPageLayoutPreset(preset, storePage.pageCategory);
+    const insertStartIndex = storeComponents.sortableCompConfig.length;
+
+    if (storePage.layoutMode !== "flow") {
+      setLayoutMode("flow");
+    }
+
+    presetTree.nodes.forEach((node, index) => {
+      insertNodeTree(node, {
+        index: insertStartIndex + index,
+      });
+    });
+
+    if (presetTree.focusId) {
+      setCurrentComponent(presetTree.focusId);
+    }
+
+    const { store: storePermission, broadcastComponentUpdate } =
+      useStorePermission();
+    broadcastComponentUpdate(
+      Number(new URLSearchParams(window.location.hash.split("?")[1]).get("id")),
+      Number(storePermission.currentUserId),
+      "replace_all",
+      {
+        compConfigs: storeComponents.compConfigs,
+        sortableCompConfig: storeComponents.sortableCompConfig,
+      },
+    );
+
+    message.success(
+      wasEmpty
+        ? "已创建页面布局，直接把组件拖到布局区域即可"
+        : "已插入布局骨架，可把现有组件拖到新的布局区域",
+    );
+    addOperationLog("add_component", `layout:${preset}`);
+  });
 
   const getComponentById = action((id: string) => {
     return storeComponents.compConfigs[id];
@@ -1200,6 +1418,7 @@ export function useStoreComponents() {
 
   return {
     _replace,
+    applyLayoutPreset,
     replaceByCode,
     push,
     getComponentById,

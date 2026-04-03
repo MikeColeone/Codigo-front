@@ -734,17 +734,23 @@ const EditorCanvas: FC<{
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-[22px] bg-emerald-500/10 text-3xl text-emerald-600">
               <AppstoreOutlined />
             </div>
+            <div className="text-base font-semibold text-slate-900">
+              先在页面属性配置整体布局，再开始搭建
+            </div>
+            <div className="mt-2 text-sm text-slate-500">
+              右侧页面信息里可以先配置整体布局，再把组件拖入对应容器区域。
+            </div>
             <div className="mt-6 grid grid-cols-3 gap-3 text-left">
               {[
                 {
-                  key: "drag",
+                  key: "setting",
                   icon: <DragOutlined />,
-                  title: "拖入组件",
+                  title: "配置布局",
                 },
                 {
                   key: "edit",
                   icon: <HighlightOutlined />,
-                  title: "实时编辑",
+                  title: "拖入组件",
                 },
                 {
                   key: "preview",
@@ -783,7 +789,7 @@ const EditorCanvas: FC<{
 
             <div className="mt-5 text-xs text-slate-400">
               {canEditStructure
-                ? "支持点击快捷插入，也支持从左侧直接拖拽"
+                ? "先到右侧页面信息配置整体布局，再从左侧资源库拖拽组件"
                 : "当前角色没有新增组件权限"}
             </div>
           </div>
