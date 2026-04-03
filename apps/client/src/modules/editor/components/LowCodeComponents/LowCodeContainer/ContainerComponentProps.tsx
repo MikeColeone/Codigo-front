@@ -46,6 +46,20 @@ export default function ContainerComponentProps(
       <FormPropLabel name="minHeight" prop={props.minHeight} label="最小高度：">
         <InputNumber className="w-full" />
       </FormPropLabel>
+      <FormPropLabel
+        name="visibleStateKey"
+        prop={props.visibleStateKey}
+        label="显示状态键："
+      >
+        <Input placeholder="activePanel" />
+      </FormPropLabel>
+      <FormPropLabel
+        name="visibleStateValue"
+        prop={props.visibleStateValue}
+        label="显示状态值："
+      >
+        <Input placeholder="payment-methods" />
+      </FormPropLabel>
     </FormContainer>
   );
 }

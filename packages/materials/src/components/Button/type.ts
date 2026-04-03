@@ -9,9 +9,11 @@ export interface IButtonComponentProps {
   size: "large" | "middle" | "small";
   danger: boolean;
   block: boolean;
-  actionType: "none" | "open-url" | "scroll-to-id";
+  actionType: "none" | "open-url" | "scroll-to-id" | "set-state";
   link: string;
   targetId: string;
+  stateKey: string;
+  stateValue: string;
 }
 
 export type TButtonComponentConfig = TBasicComponentConfig<
@@ -61,6 +63,16 @@ export const buttonComponentDefaultConfig: TButtonComponentConfigResult = {
   targetId: {
     value: "section-overview",
     defaultValue: "section-overview",
+    isHidden: false,
+  },
+  stateKey: {
+    value: "activePanel",
+    defaultValue: "activePanel",
+    isHidden: false,
+  },
+  stateValue: {
+    value: "overview",
+    defaultValue: "overview",
     isHidden: false,
   },
 };

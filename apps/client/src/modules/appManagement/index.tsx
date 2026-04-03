@@ -88,7 +88,6 @@ const componentLabelMap: Record<string, string> = {
   alert: "提示组件",
   empty: "空状态组件",
   chart: "图表组件",
-  video: "视频组件",
   swiper: "轮播组件",
   statistic: "统计组件",
   twoColumn: "双栏组件",

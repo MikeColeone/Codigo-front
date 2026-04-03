@@ -13,7 +13,7 @@ import { observer } from "mobx-react-lite";
 
 const { Header, Sider, Content } = Layout;
 
-export default observer(function AdminLayout() {
+const AdminLayout = observer(function AdminLayout() {
   const { store: storeAuth, logout } = useStoreAuth();
   const { hasAdminPermission } = useAdminAccess();
   const nav = useNavigate();
@@ -134,3 +134,5 @@ export default observer(function AdminLayout() {
     </Layout>
   );
 });
+
+export default AdminLayout;

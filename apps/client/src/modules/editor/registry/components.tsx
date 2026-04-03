@@ -109,12 +109,6 @@ export const editorComponentCatalog: EditorComponentMeta[] = [
     quickInsert: true,
   },
   {
-    type: "video",
-    name: "视频",
-    icon: <PlaySquareOutlined />,
-    sectionKey: "basic",
-  },
-  {
     type: "swiper",
     name: "轮播",
     icon: <SplitCellsOutlined />,

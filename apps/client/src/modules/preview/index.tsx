@@ -1,19 +1,73 @@
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FloatButton } from "antd";
 import { useNavigate } from "react-router-dom";
 import { CaretLeftOutlined } from "@ant-design/icons";
-import { generateComponent } from "@/modules/editor/components/canvas";
+import {
+  generateComponent,
+  resolveInitialPageState,
+  type RuntimeAction,
+} from "@/modules/editor/components/canvas";
 import { useStoreComponents, useStorePage } from "@/shared/hooks";
 import type { ComponentNode } from "@codigo/schema";
 
 const PreviewCanvas = observer(() => {
   const { store, getComponentTree, loadPageData } = useStoreComponents();
+  const componentTree = getComponentTree.get();
+  const initialPageState = useMemo(
+    () => resolveInitialPageState(componentTree),
+    [componentTree],
+  );
+  const [pageState, setPageState] = useState(initialPageState);
 
-  // 从本地或者服务端读取组件信息
   useEffect(() => {
     loadPageData();
-  }, []);
+  }, [loadPageData]);
+
+  useEffect(() => {
+    setPageState(initialPageState);
+  }, [initialPageState]);
+
+  const runtime = useMemo(
+    () => ({
+      pageState,
+      onAction: (action: RuntimeAction) => {
+        if (action.type === "set-state") {
+          setPageState((prev) => ({
+            ...prev,
+            [action.key]: action.value,
+          }));
+          return;
+        }
+
+        if (action.type === "setState") {
+          setPageState((prev) => ({
+            ...prev,
+            [action.key]: action.value,
+          }));
+          return;
+        }
+
+        if (action.type === "navigate") {
+          window.location.assign(action.path);
+          return;
+        }
+
+        if (action.type === "openUrl") {
+          window.open(
+            action.url,
+            action.target ?? "_blank",
+            "noopener,noreferrer",
+          );
+          return;
+        }
+
+        const targetElement = document.getElementById(action.targetId);
+        targetElement?.scrollIntoView({ behavior: "smooth", block: "start" });
+      },
+    }),
+    [pageState],
+  );
 
   return (
     <div
@@ -22,7 +76,7 @@ const PreviewCanvas = observer(() => {
         minHeight: `${Math.max(700, Object.keys(store.compConfigs).length * 220)}px`,
       }}
     >
-      {getComponentTree.get().map(function renderTreeNode(node: ComponentNode) {
+      {componentTree.map(function renderTreeNode(node: ComponentNode) {
         const renderedChildren =
           node.children?.map((child) => renderTreeNode(child)) ?? [];
         return (
@@ -35,7 +89,7 @@ const PreviewCanvas = observer(() => {
             }}
           >
             <div className="relative">
-              {generateComponent(node, undefined, renderedChildren)}
+              {generateComponent(node, undefined, renderedChildren, runtime)}
             </div>
           </div>
         );

@@ -1,5 +1,5 @@
 import { Table, Typography } from "antd";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { getDefaultValueByConfig } from "..";
 import { type IDataTableComponentProps, dataTableComponentDefaultConfig } from ".";
 

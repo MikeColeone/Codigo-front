@@ -10,6 +10,8 @@ export interface IContainerComponentProps {
   borderRadius: number;
   padding: number;
   minHeight: number;
+  visibleStateKey: string;
+  visibleStateValue: string;
 }
 
 export type TContainerComponentConfig = TBasicComponentConfig<
@@ -49,6 +51,16 @@ export const containerComponentDefaultConfig: TContainerComponentConfigResult = 
   minHeight: {
     value: 240,
     defaultValue: 240,
+    isHidden: false,
+  },
+  visibleStateKey: {
+    value: "",
+    defaultValue: "",
+    isHidden: false,
+  },
+  visibleStateValue: {
+    value: "",
+    defaultValue: "",
     isHidden: false,
   },
 };

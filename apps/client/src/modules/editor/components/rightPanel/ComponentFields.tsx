@@ -10,13 +10,33 @@ import {
   ShrinkOutlined,
 } from "@ant-design/icons";
 import { getComponentPropsByType } from "@/modules/editor/components/LowCodeComponents";
-import type { ComponentNode } from "@codigo/schema";
+import type { ActionConfig, ComponentNode } from "@codigo/schema";
 import type { ReactNode } from "react";
 import type { TStoreComponents } from "@/shared/stores";
 import { useStoreComponents } from "@/shared/hooks";
-import { Collapse, Empty, Form, InputNumber } from "antd";
+import { Button, Collapse, Empty, Form, Input, InputNumber, Select } from "antd";
 
 const { Panel } = Collapse;
+
+const actionTypeOptions = [
+  { label: "设置状态", value: "setState" },
+  { label: "页面跳转", value: "navigate" },
+  { label: "打开链接", value: "openUrl" },
+  { label: "滚动定位", value: "scrollTo" },
+] as const;
+
+function createDefaultAction(type: ActionConfig["type"]): ActionConfig {
+  switch (type) {
+    case "navigate":
+      return { type, path: "/admin/users" };
+    case "openUrl":
+      return { type, url: "https://example.com", target: "_blank" };
+    case "scrollTo":
+      return { type, targetId: "section-overview" };
+    default:
+      return { type: "setState", key: "activePanel", value: "overview" };
+  }
+}
 
 const ComponentFields: FC<{ store: TStoreComponents }> = observer(
   ({ store }) => {
@@ -82,6 +102,7 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
       getCurrentComponentConfig,
       getAvailableSlots,
       setCurrentComponent,
+      updateCurrentComponentEvents,
       updateCurrentComponentStyles,
     } = useStoreComponents();
     const config = getCurrentComponentConfig.get();
@@ -94,6 +115,7 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
     const containerMeta = getComponentContainerMeta(config.type);
     const currentSlots = getAvailableSlots(config.type);
     const childrenCount = config.childIds?.length ?? 0;
+    const eventActions = (toJS(config.events?.onClick) ?? []) as ActionConfig[];
 
     const componentTree = getComponentTree.get();
 
@@ -183,6 +205,36 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
       },
     ];
 
+    const updateEventActions = (actions: ActionConfig[]) => {
+      updateCurrentComponentEvents("onClick", actions);
+    };
+
+    const addEventAction = (type: ActionConfig["type"]) => {
+      updateEventActions([...eventActions, createDefaultAction(type)]);
+    };
+
+    const updateEventAction = (
+      index: number,
+      nextAction: ActionConfig | Partial<ActionConfig>,
+      preserveType = true,
+    ) => {
+      updateEventActions(
+        eventActions.map((action, actionIndex) => {
+          if (actionIndex !== index) return action;
+          if ("type" in nextAction && !preserveType) {
+            return createDefaultAction(nextAction.type);
+          }
+          return { ...action, ...nextAction } as ActionConfig;
+        }),
+      );
+    };
+
+    const removeEventAction = (index: number) => {
+      updateEventActions(
+        eventActions.filter((_, actionIndex) => actionIndex !== index),
+      );
+    };
+
     return (
       <div className="component-fields-container space-y-3 pb-8">
         <div className="rounded-[22px] border border-slate-200/80 bg-[linear-gradient(135deg,rgba(16,185,129,0.12),rgba(255,255,255,0.98))] p-3.5 shadow-[0_20px_40px_-32px_rgba(16,185,129,0.85)]">
@@ -200,7 +252,7 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
         </div>
 
         <Collapse
-          defaultActiveKey={["props", "structure", "styles"]}
+          defaultActiveKey={["props", "events", "structure", "styles"]}
           ghost
           expandIconPosition="end"
           className="[&_.ant-collapse-item]:mb-2.5 [&_.ant-collapse-item]:overflow-hidden [&_.ant-collapse-item]:rounded-[22px] [&_.ant-collapse-item]:border [&_.ant-collapse-item]:border-slate-200/80 [&_.ant-collapse-item]:bg-white [&_.ant-collapse-header]:!items-center [&_.ant-collapse-header]:!px-4 [&_.ant-collapse-header]:!py-3 [&_.ant-collapse-content-box]:!px-4 [&_.ant-collapse-content-box]:!pb-4 [&_.ant-collapse-content-box]:!pt-1"
@@ -218,6 +270,146 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
           >
             <div className="rounded-[18px] border border-slate-100 bg-slate-50/70 p-3.5">
               <ComponentProps {...toJS(config.props)} id={config.id} />
+            </div>
+          </Panel>
+
+          <Panel
+            header={
+              <div>
+                <div className="font-semibold text-slate-900">交互事件</div>
+                <div className="text-xs text-slate-400">
+                  当前先开放 onClick，动作按顺序串行执行
+                </div>
+              </div>
+            }
+            key="events"
+          >
+            <div className="space-y-3">
+              <div className="rounded-[18px] border border-slate-100 bg-slate-50/70 p-3.5">
+                <div className="flex flex-wrap gap-2">
+                  {actionTypeOptions.map((item) => (
+                    <Button
+                      key={item.value}
+                      size="small"
+                      onClick={() => addEventAction(item.value)}
+                      className="!rounded-xl !border-slate-200 !bg-white !text-slate-600 hover:!border-emerald-300 hover:!text-emerald-600"
+                    >
+                      添加{item.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {eventActions.length ? (
+                eventActions.map((action, index) => (
+                  <div
+                    key={`${action.type}-${index}`}
+                    className="rounded-[18px] border border-slate-100 bg-slate-50/70 p-3.5"
+                  >
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-medium text-emerald-700">
+                          #{index + 1}
+                        </span>
+                        <Select
+                          value={action.type}
+                          options={actionTypeOptions as unknown as Array<{
+                            label: string;
+                            value: ActionConfig["type"];
+                          }>}
+                          onChange={(value) =>
+                            updateEventAction(index, { type: value }, false)
+                          }
+                          className="min-w-[140px]"
+                        />
+                      </div>
+                      <Button
+                        size="small"
+                        danger
+                        type="text"
+                        onClick={() => removeEventAction(index)}
+                      >
+                        删除
+                      </Button>
+                    </div>
+
+                    {action.type === "setState" ? (
+                      <div className="grid grid-cols-2 gap-2.5">
+                        <Input
+                          value={action.key}
+                          onChange={(event) =>
+                            updateEventAction(index, {
+                              key: event.target.value,
+                            })
+                          }
+                          placeholder="状态键，如 activePanel"
+                        />
+                        <Input
+                          value={String(action.value ?? "")}
+                          onChange={(event) =>
+                            updateEventAction(index, {
+                              value: event.target.value,
+                            })
+                          }
+                          placeholder="状态值，如 overview"
+                        />
+                      </div>
+                    ) : null}
+
+                    {action.type === "navigate" ? (
+                      <Input
+                        value={action.path}
+                        onChange={(event) =>
+                          updateEventAction(index, {
+                            path: event.target.value,
+                          })
+                        }
+                        placeholder="站内路径，如 /admin/users"
+                      />
+                    ) : null}
+
+                    {action.type === "openUrl" ? (
+                      <div className="grid grid-cols-[1fr,132px] gap-2.5">
+                        <Input
+                          value={action.url}
+                          onChange={(event) =>
+                            updateEventAction(index, {
+                              url: event.target.value,
+                            })
+                          }
+                          placeholder="https://example.com"
+                        />
+                        <Select
+                          value={action.target ?? "_blank"}
+                          options={[
+                            { label: "新窗口", value: "_blank" },
+                            { label: "当前窗口", value: "_self" },
+                          ]}
+                          onChange={(value) =>
+                            updateEventAction(index, { target: value })
+                          }
+                        />
+                      </div>
+                    ) : null}
+
+                    {action.type === "scrollTo" ? (
+                      <Input
+                        value={action.targetId}
+                        onChange={(event) =>
+                          updateEventAction(index, {
+                            targetId: event.target.value,
+                          })
+                        }
+                        placeholder="目标锚点 ID，如 section-overview"
+                      />
+                    ) : null}
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50/50 px-4 py-6 text-center text-[13px] text-slate-400">
+                  当前组件还没有配置点击事件
+                </div>
+              )}
             </div>
           </Panel>
 

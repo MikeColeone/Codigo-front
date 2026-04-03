@@ -11,16 +11,116 @@ import {
 } from "@codigo/materials";
 import { useRequest } from "ahooks";
 import { useImmer } from "use-immer";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { message, Button } from "antd";
 
 initBuiltinComponents();
 
 const usingInputType = ["input", "textArea", "radio", "checkbox"];
+type RuntimeStateValue = string | number | boolean;
+type RuntimeAction =
+  | {
+      type: "set-state";
+      key: string;
+      value: RuntimeStateValue;
+    }
+  | {
+      type: "setState";
+      key: string;
+      value: RuntimeStateValue;
+    }
+  | {
+      type: "navigate";
+      path: string;
+    }
+  | {
+      type: "openUrl";
+      url: string;
+      target?: "_self" | "_blank";
+    }
+  | {
+      type: "scrollTo";
+      targetId: string;
+    };
+
+function getClickActions(node: ComponentNode): RuntimeAction[] {
+  const configuredActions = Array.isArray(node.events?.onClick)
+    ? node.events.onClick
+    : [];
+  const props = (node.props ?? {}) as Record<string, unknown>;
+  const legacyActions: RuntimeAction[] = [];
+
+  if (
+    props.actionType === "set-state" &&
+    typeof props.stateKey === "string" &&
+    props.stateKey &&
+    props.stateValue !== undefined
+  ) {
+    legacyActions.push({
+      type: "setState",
+      key: props.stateKey,
+      value: props.stateValue as RuntimeStateValue,
+    });
+  }
+
+  if (props.actionType === "open-url" && typeof props.link === "string") {
+    if (props.link.startsWith("#")) {
+      legacyActions.push({
+        type: "scrollTo",
+        targetId: props.link.slice(1),
+      });
+    } else if (props.link) {
+      legacyActions.push({
+        type: "openUrl",
+        url: props.link,
+        target: "_blank",
+      });
+    }
+  }
+
+  if (
+    props.actionType === "scroll-to-id" &&
+    typeof props.targetId === "string" &&
+    props.targetId
+  ) {
+    legacyActions.push({
+      type: "scrollTo",
+      targetId: props.targetId,
+    });
+  }
+
+  return [...configuredActions, ...legacyActions];
+}
+
+function resolveInitialPageState(nodes: ComponentNode[]) {
+  const initialState: Record<string, RuntimeStateValue> = {};
+
+  const visitNodes = (items: ComponentNode[]) => {
+    items.forEach((node) => {
+      getClickActions(node).forEach((action) => {
+        if (
+          action.type === "setState" &&
+          action.key &&
+          initialState[action.key] === undefined
+        ) {
+          initialState[action.key] = action.value;
+        }
+      });
+
+      if (node.children?.length) {
+        visitNodes(node.children);
+      }
+    });
+  };
+
+  visitNodes(nodes);
+  return initialState;
+}
 
 function generateComponent(
   conf: { id: string; type: TComponentTypes; props: Record<string, any> },
   onUpdate: (value: any) => void,
+  onAction: (action: RuntimeAction) => void,
   slots?: Record<string, any[]>,
   editorNodeId?: string,
 ) {
@@ -31,6 +131,7 @@ function generateComponent(
       <Component
         {...conf.props}
         key={conf.id}
+        onAction={onAction}
         slots={slots}
         editorNodeId={editorNodeId}
       />
@@ -41,6 +142,7 @@ function generateComponent(
         {...conf.props}
         key={conf.id}
         onUpdate={onUpdate}
+        onAction={onAction}
         slots={slots}
         editorNodeId={editorNodeId}
       />
@@ -96,8 +198,34 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
       localData.components.map((component) => [component.node_id, component]),
     );
   }, [localData.components]);
+  const initialPageState = useMemo(() => resolveInitialPageState(pageSchema), [
+    pageSchema,
+  ]);
+  const [pageState, setPageState] = useState(initialPageState);
+
+  useEffect(() => {
+    setPageState(initialPageState);
+  }, [initialPageState]);
+
+  const shouldRenderNode = (node: ComponentNode) => {
+    const props = (node.props ?? {}) as Record<string, unknown>;
+    if (
+      typeof props.visibleStateKey !== "string" ||
+      !props.visibleStateKey ||
+      props.visibleStateValue === undefined ||
+      props.visibleStateValue === ""
+    ) {
+      return true;
+    }
+
+    return pageState[props.visibleStateKey] === props.visibleStateValue;
+  };
 
   function renderNode(node: ComponentNode) {
+    if (!shouldRenderNode(node)) {
+      return null;
+    }
+
     const sourceComponent = componentValueMap.get(node.id);
     const runtimeComponent = {
       id: node.id,
@@ -120,6 +248,9 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
       <div
         key={node.id}
         className="relative"
+        onClick={() => {
+          getClickActions(node).forEach((action) => onAction(action));
+        }}
         style={{
           ...(node.styles ?? {}),
         }}
@@ -137,6 +268,35 @@ export default function ComponentRender({ data, id }: ComponentRenderType) {
               if (questionComponentValueField) {
                 target.options[questionComponentValueField] = value;
               }
+            });
+          },
+          (action) => {
+            if (action.type === "set-state" || action.type === "setState") {
+              setPageState((prev) => ({
+                ...prev,
+                [action.key]: action.value,
+              }));
+              return;
+            }
+
+            if (action.type === "navigate") {
+              window.location.assign(action.path);
+              return;
+            }
+
+            if (action.type === "openUrl") {
+              window.open(
+                action.url,
+                action.target ?? "_blank",
+                "noopener,noreferrer",
+              );
+              return;
+            }
+
+            const targetElement = document.getElementById(action.targetId);
+            targetElement?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
             });
           },
           slots,

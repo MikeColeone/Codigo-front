@@ -27,12 +27,6 @@ export default function ButtonComponentProps(_props: IButtonComponentProps) {
     { value: "small", label: "小" },
   ];
 
-  const actionOptions: SegmentedLabeledOption[] = [
-    { value: "none", label: "无动作" },
-    { value: "open-url", label: "打开链接" },
-    { value: "scroll-to-id", label: "滚动到锚点" },
-  ];
-
   return (
     <FormContainer config={props}>
       <FormPropLabel name="text" prop={props.text} label="按钮文案：">
@@ -43,23 +37,6 @@ export default function ButtonComponentProps(_props: IButtonComponentProps) {
       </FormPropLabel>
       <FormPropLabel name="size" prop={props.size} label="按钮尺寸：">
         <Segmented options={sizeOptions} />
-      </FormPropLabel>
-      <FormPropLabel
-        name="actionType"
-        prop={props.actionType}
-        label="点击动作："
-      >
-        <Segmented options={actionOptions} />
-      </FormPropLabel>
-      <FormPropLabel name="link" prop={props.link} label="跳转链接：">
-        <Input placeholder="https://... 或 #section-id" />
-      </FormPropLabel>
-      <FormPropLabel
-        name="targetId"
-        prop={props.targetId}
-        label="目标锚点 ID："
-      >
-        <Input placeholder="section-overview" />
       </FormPropLabel>
       <FormPropLabel
         name="danger"

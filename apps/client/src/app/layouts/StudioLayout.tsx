@@ -11,12 +11,10 @@ export const StudioLayout = observer(() => {
   const navItems = [
     {
       key: "/editor",
-      label: "页面搭建",
       icon: <EditOutlined />,
     },
     {
       key: "/flow",
-      label: "流程设计",
       icon: <ApartmentOutlined />,
     },
   ];
@@ -65,7 +63,7 @@ export const StudioLayout = observer(() => {
                 const active = location.pathname === item.key;
 
                 return (
-                  <Tooltip key={item.key} title={item.label} placement="right">
+                  <Tooltip key={item.key}  placement="right">
                     <button
                       onClick={() => navigate(item.key)}
                       className={`group relative flex w-full flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-2.5 transition-all duration-200 ${
@@ -76,9 +74,6 @@ export const StudioLayout = observer(() => {
                     >
                       <span className="text-base leading-none">
                         {item.icon}
-                      </span>
-                      <span className="text-[10px] font-medium">
-                        {item.label}
                       </span>
                     </button>
                   </Tooltip>

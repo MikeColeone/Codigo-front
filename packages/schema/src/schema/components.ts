@@ -31,10 +31,15 @@ export type TComponentTypes =
   | "lineChart"
   | "pieChart"
   | "radarChart"
-  | "funnelChart";
+  | "funnelChart"
+  | "avatar";
 
 /**
  * 描述组件单个属性在配置面板中的包装结构。
+ * @template T - 组件属性的类型。
+ * @param value - 当前属性值。
+ * @param defaultValue - 默认属性值。
+ * @param isHidden - 是否隐藏该属性在配置面板中。
  */
 export interface IComponentPropWarpper<T> {
   value: T;
@@ -42,6 +47,32 @@ export interface IComponentPropWarpper<T> {
   isHidden: boolean;
 }
 
+/**
+ * 描述组件单个属性在配置面板中的包装结构。
+ * @param type - 操作类型。
+ * @param path - 导航路径。
+ * @param key - 状态设置键。
+ * @param value - 状态设置值。
+ * @param url - 打开 URL。
+ * @param target - 打开 URL 目标窗口。
+ * @param targetId - 滚动到目标元素。
+ */
+export type RuntimeStateValue = string | number | boolean;
+
+export type ActionConfig =
+  | { type: "navigate"; path: string }
+  | { type: "setState"; key: string; value: RuntimeStateValue }
+  | { type: "openUrl"; url: string; target?: "_self" | "_blank" }
+  | { type: "scrollTo"; targetId: string };
+
+
+/**
+ * 描述组件事件映射结构。
+ * @param onClick - 点击事件配置。
+ */
+export interface ComponentEventMap {
+  onClick?: ActionConfig[];
+}
 /**
  * 描述组件在画布中的通用样式配置。
  */
@@ -86,14 +117,18 @@ export interface TBasicComponentConfig<
 /**
  * 描述页面 schema 中的组件树节点结构。
  */
-export interface ComponentNode<
-  T extends string = TComponentTypes,
-  P extends Record<string, any> = object,
-> extends TBasicComponentConfig<T, P> {
-  name?: string;
-  slot?: string;
-  children?: ComponentNode<T, P>[];
-  meta?: ComponentMeta;
+export interface ComponentNode {
+  id: string;
+  type: string;
+  props: Record<string, unknown>;
+  styles?: Record<string, unknown>;
+  children?: ComponentNode[];
+  meta?: Record<string, unknown>;
+  events?: ComponentEventMap;
+  visibleWhen?: {
+    key: string;
+    equals: string | number | boolean;
+  };
 }
 
 /**
@@ -102,7 +137,7 @@ export interface ComponentNode<
 export interface ComponentNodeRecord<
   T extends string = TComponentTypes,
   P extends Record<string, any> = object,
-> extends Omit<ComponentNode<T, P>, "children"> {
+> extends Omit<ComponentNode, "children"> {
   parentId: string | null;
   childIds: string[];
 }

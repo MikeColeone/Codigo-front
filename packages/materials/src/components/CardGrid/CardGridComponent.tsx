@@ -1,5 +1,5 @@
 import { Card, Col, Row, Typography } from "antd";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { getDefaultValueByConfig } from "..";
 import { type ICardGridComponentProps, cardGridComponentDefaultConfig } from ".";
 

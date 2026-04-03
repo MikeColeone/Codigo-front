@@ -11,7 +11,6 @@ import {
   DataTableComponentProps,
   ImageComponentProps,
   SwiperComponentProps,
-  VideoComponentProps,
   CardComponentProps,
   ListComponentProps,
   StatisticComponentProps,
@@ -29,7 +28,6 @@ import {
 } from "..";
 import type { TBasicComponentConfig, TComponentTypes } from "@codigo/schema";
 
-// @ts-ignore
 export const componentPropsList: Record<TComponentTypes, FC<any>> = {
   container: ContainerComponentProps,
   twoColumn: TwoColumnComponentProps,
@@ -40,7 +38,6 @@ export const componentPropsList: Record<TComponentTypes, FC<any>> = {
   statCard: StatCardComponentProps,
   cardGrid: CardGridComponentProps,
   dataTable: DataTableComponentProps,
-  video: VideoComponentProps,
   image: ImageComponentProps,
   swiper: SwiperComponentProps,
   card: CardComponentProps,
@@ -60,6 +57,8 @@ export const componentPropsList: Record<TComponentTypes, FC<any>> = {
   barChart: ChartComponentProps,
   lineChart: ChartComponentProps,
   pieChart: ChartComponentProps,
+  radarChart: ChartComponentProps,
+  funnelChart: ChartComponentProps,
 };
 
 export function getComponentPropsByType(type: TBasicComponentConfig["type"]) {

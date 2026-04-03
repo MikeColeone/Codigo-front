@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from "react";
+import React, { useMemo, type ReactNode } from "react";
 import { Typography } from "antd";
 import { getDefaultValueByConfig } from "..";
 import type { IContainerComponentProps } from ".";

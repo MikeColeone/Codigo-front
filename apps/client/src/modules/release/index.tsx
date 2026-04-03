@@ -2,10 +2,14 @@ import { CaretLeftOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
 import { Empty, FloatButton, QRCode, Result, Spin } from "antd";
 import type { ComponentNode } from "@codigo/schema";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getPublishedPage } from "@/modules/editor/api/low-code";
-import { generateComponent } from "@/modules/editor/components/canvas";
+import {
+  generateComponent,
+  resolveInitialPageState,
+  type RuntimeAction,
+} from "@/modules/editor/components/canvas";
 
 function resolveSchemaFromReleasePayload(
   payload: Record<string, any> | null | undefined,
@@ -41,6 +45,54 @@ function resolveSchemaFromReleasePayload(
 }
 
 function ReleaseCanvas({ nodes }: { nodes: ComponentNode[] }) {
+  const initialPageState = useMemo(() => resolveInitialPageState(nodes), [nodes]);
+  const [pageState, setPageState] = useState(initialPageState);
+
+  useEffect(() => {
+    setPageState(initialPageState);
+  }, [initialPageState]);
+
+  const runtime = useMemo(
+    () => ({
+      pageState,
+      onAction: (action: RuntimeAction) => {
+        if (action.type === "set-state") {
+          setPageState((prev) => ({
+            ...prev,
+            [action.key]: action.value,
+          }));
+          return;
+        }
+
+        if (action.type === "setState") {
+          setPageState((prev) => ({
+            ...prev,
+            [action.key]: action.value,
+          }));
+          return;
+        }
+
+        if (action.type === "navigate") {
+          window.location.assign(action.path);
+          return;
+        }
+
+        if (action.type === "openUrl") {
+          window.open(
+            action.url,
+            action.target ?? "_blank",
+            "noopener,noreferrer",
+          );
+          return;
+        }
+
+        const targetElement = document.getElementById(action.targetId);
+        targetElement?.scrollIntoView({ behavior: "smooth", block: "start" });
+      },
+    }),
+    [pageState],
+  );
+
   if (!nodes.length) {
     return (
       <Empty
@@ -71,7 +123,7 @@ function ReleaseCanvas({ nodes }: { nodes: ComponentNode[] }) {
             }}
           >
             <div className="relative">
-              {generateComponent(node, undefined, renderedChildren)}
+              {generateComponent(node, undefined, renderedChildren, runtime)}
             </div>
           </div>
         );

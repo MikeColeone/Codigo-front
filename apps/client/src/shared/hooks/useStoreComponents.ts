@@ -1,6 +1,7 @@
 import { ulid } from "ulid";
 import { action, computed, toJS } from "mobx";
 import type {
+  ActionConfig,
   ComponentNode,
   ComponentNodeRecord,
   IPageSchema,
@@ -35,6 +36,9 @@ type CodeSyncNode = {
   type: string;
   props?: Record<string, any>;
   styles?: TBasicComponentConfig["styles"];
+  events?: {
+    onClick?: ActionConfig[];
+  };
   slot?: string;
   children?: CodeSyncNode[];
 };
@@ -134,6 +138,9 @@ function createRecordFromNode(
     name: node.name,
     props: JSON.parse(JSON.stringify(node.props ?? {})),
     styles: node.styles ? { ...node.styles } : undefined,
+    events: node.events
+      ? JSON.parse(JSON.stringify(node.events))
+      : undefined,
     slot: node.slot,
     meta: node.meta ? { ...node.meta } : undefined,
     parentId,
@@ -183,6 +190,7 @@ function sanitizeCodeSyncNodes(nodes: CodeSyncNode[]): ComponentNode[] {
       type: item.type as TComponentTypes,
       props: item.props ?? {},
       styles: item.styles,
+      events: item.events,
       slot: item.slot,
       children: sanitizeCodeSyncNodes(item.children ?? []),
     }));
@@ -230,6 +238,7 @@ function duplicateTreeNode(node: ComponentNode): ComponentNode {
     id: ulid(),
     props: JSON.parse(JSON.stringify(node.props ?? {})),
     styles: node.styles ? { ...node.styles } : undefined,
+    events: node.events ? JSON.parse(JSON.stringify(node.events)) : undefined,
     meta: node.meta ? { ...node.meta } : undefined,
     children: (node.children ?? []).map((child) => duplicateTreeNode(child)),
   };
@@ -259,6 +268,9 @@ function buildTreeNode(
     name: current.name,
     props: JSON.parse(JSON.stringify(current.props ?? {})),
     styles: current.styles ? { ...current.styles } : undefined,
+    events: current.events
+      ? JSON.parse(JSON.stringify(current.events))
+      : undefined,
     slot: current.slot,
     meta: current.meta ? { ...current.meta } : undefined,
     children: current.childIds
@@ -620,6 +632,17 @@ export function useStoreComponents() {
       : null;
   });
 
+  const normalizeActionConfig = (actionConfig: ActionConfig): ActionConfig => {
+    if (actionConfig.type !== "setState") {
+      return actionConfig;
+    }
+
+    return {
+      ...actionConfig,
+      value: calcValueByString(actionConfig.value as any),
+    };
+  };
+
   const updateCurrentComponent = action(
     (compConfig: Record<string, unknown>) => {
       if (!ensurePermission("edit_content", "当前角色不能修改组件内容")) return;
@@ -671,6 +694,33 @@ export function useStoreComponents() {
 
     addOperationLog("update_style", curCompConfig.type);
   });
+
+  const updateCurrentComponentEvents = action(
+    (eventName: "onClick", actions: ActionConfig[]) => {
+      if (!ensurePermission("edit_content", "当前角色不能修改组件事件")) return;
+      const curCompConfig = getCurrentComponentConfig.get();
+      if (!curCompConfig) return;
+
+      if (!curCompConfig.events) {
+        curCompConfig.events = {};
+      }
+
+      curCompConfig.events[eventName] = actions.map(normalizeActionConfig);
+
+      const { store: storePermission, broadcastComponentUpdate } =
+        useStorePermission();
+      broadcastComponentUpdate(
+        Number(
+          new URLSearchParams(window.location.hash.split("?")[1]).get("id"),
+        ),
+        Number(storePermission.currentUserId),
+        "update",
+        curCompConfig,
+      );
+
+      addOperationLog("update_component", `${curCompConfig.type}:${eventName}`);
+    },
+  );
 
   const updateComponentPosition = action(
     (id: string, left: number, top: number, silent: boolean = false) => {
@@ -1160,6 +1210,7 @@ export function useStoreComponents() {
     setCurrentComponent,
     store: storeComponents,
     updateCurrentComponent,
+    updateCurrentComponentEvents,
     updateCurrentComponentStyles,
     updateComponentPosition,
     updateCurrentCompConfigWithArray,

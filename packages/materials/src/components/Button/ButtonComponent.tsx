@@ -6,7 +6,17 @@ import {
   buttonComponentDefaultConfig,
 } from "./type";
 
-export default function ButtonComponent(_props: IButtonComponentProps) {
+interface ButtonRuntimeAction {
+  type: "set-state";
+  key: string;
+  value: string;
+}
+
+interface ButtonRuntimeProps extends IButtonComponentProps {
+  onAction?: (action: ButtonRuntimeAction) => void;
+}
+
+export default function ButtonComponent(_props: ButtonRuntimeProps) {
   const props = useMemo(() => {
     return { ...getDefaultValueByConfig(buttonComponentDefaultConfig), ..._props };
   }, [_props]);
@@ -25,6 +35,15 @@ export default function ButtonComponent(_props: IButtonComponentProps) {
     if (props.actionType === "scroll-to-id" && props.targetId) {
       const element = document.getElementById(props.targetId);
       element?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    if (props.actionType === "set-state" && props.stateKey) {
+      props.onAction?.({
+        type: "set-state",
+        key: props.stateKey,
+        value: props.stateValue,
+      });
     }
   }
 
