@@ -169,7 +169,6 @@ const Center = observer(() => {
           <div className="flex items-center gap-2 rounded-lg border border-slate-200/80 bg-slate-50/80 px-2 py-1">
             <span className="flex items-center gap-1 text-[11px] text-slate-500">
               <ApartmentOutlined />
-              大纲树
             </span>
             <Switch
               size="small"

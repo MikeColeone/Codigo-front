@@ -32,10 +32,6 @@ export default function TextComponentProps(_props: ITextComponentProps) {
       value: "lg",
       label: "大",
     },
-    {
-      value: "xl",
-      label: "超大",
-    },
   ];
 
   return (

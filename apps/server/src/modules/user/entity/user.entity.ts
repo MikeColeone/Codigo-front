@@ -21,12 +21,12 @@ export class User {
   @Column()
   open_id: string = '';
 
-  @Column({ default: 'USER' })
+  @Column({ type: 'varchar', length: 20, default: 'USER' })
   global_role: GlobalRole = 'USER';
 
   @Column({ type: 'simple-json', nullable: true })
   admin_permissions: AdminPermission[] | null = null;
 
-  @Column({ default: 'active' })
+  @Column({ type: 'varchar', length: 20, default: 'active' })
   status: 'active' | 'frozen' = 'active';
 }

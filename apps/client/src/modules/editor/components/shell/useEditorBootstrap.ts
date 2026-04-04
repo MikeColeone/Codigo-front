@@ -1,6 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import type { SetURLSearchParams } from "react-router-dom";
 import { getLowCodePage } from "@/modules/editor/api/low-code";
+
+let bootstrappedEditorPageKey: string | null = null;
 
 interface UseEditorBootstrapArgs {
   pageId: number;
@@ -29,13 +31,37 @@ export function useEditorBootstrap({
   authUserId,
   authUsername,
 }: UseEditorBootstrapArgs) {
+  const loadPageDataRef = useRef(loadPageData);
+  const setSearchParamsRef = useRef(setSearchParams);
+
   useEffect(() => {
-    Promise.resolve(loadPageData(getLowCodePage)).then((data) => {
+    loadPageDataRef.current = loadPageData;
+  }, [loadPageData]);
+
+  useEffect(() => {
+    setSearchParamsRef.current = setSearchParams;
+  }, [setSearchParams]);
+
+  useEffect(() => {
+    const pageKey = currentPageQueryId
+      ? `page:${currentPageQueryId}`
+      : pageId
+        ? `page:${pageId}`
+        : "page:draft";
+
+    if (bootstrappedEditorPageKey === pageKey) {
+      return;
+    }
+
+    bootstrappedEditorPageKey = pageKey;
+
+    Promise.resolve(loadPageDataRef.current(getLowCodePage)).then((data) => {
       if (data?.id && !currentPageQueryId) {
-        setSearchParams({ id: String(data.id) }, { replace: true });
+        bootstrappedEditorPageKey = `page:${data.id}`;
+        setSearchParamsRef.current({ id: String(data.id) }, { replace: true });
       }
     });
-  }, [currentPageQueryId, loadPageData, setSearchParams]);
+  }, [currentPageQueryId, pageId]);
 
   useEffect(() => {
     if (pageId && authUserId) {

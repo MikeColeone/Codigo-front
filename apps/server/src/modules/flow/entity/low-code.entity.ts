@@ -26,13 +26,13 @@ export class Page implements ILowCode {
   @Column()
   desc: string = '';
 
-  @Column({ default: 'marketing' })
+  @Column({ type: 'varchar', length: 20, default: 'marketing' })
   pageCategory: 'marketing' | 'admin' = 'marketing';
 
-  @Column({ default: 'absolute' })
+  @Column({ type: 'varchar', length: 20, default: 'absolute' })
   layoutMode: 'absolute' | 'flow' = 'absolute';
 
-  @Column({ default: 'mobile' })
+  @Column({ type: 'varchar', length: 20, default: 'mobile' })
   deviceType: 'mobile' | 'pc' = 'mobile';
 
   @Column({ default: 380 })
@@ -50,7 +50,7 @@ export class Component implements IComponent {
   @PrimaryGeneratedColumn()
   id: number = 0;
 
-  @Column()
+  @Column({ type: 'varchar', length: 50 })
   type: TComponentTypes = 'titleText';
 
   @Column()

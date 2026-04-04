@@ -1,4 +1,4 @@
-﻿import type { UploadType } from '@codigo/schema';
+import type { UploadType } from '@codigo/schema';
 import type { IResources } from '@codigo/schema';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -13,7 +13,7 @@ export class Resources implements IResources {
   @Column()
   account_id: number = 0;
 
-  @Column()
+  @Column({ type: 'varchar', length: 50 })
   type: UploadType = 'image';
 
   @Column()

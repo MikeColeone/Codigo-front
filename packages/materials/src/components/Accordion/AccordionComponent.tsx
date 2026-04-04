@@ -1,10 +1,10 @@
 import { Collapse } from "antd";
-import { useMemo } from "react";
+import { createElement, useMemo } from "react";
 import { getDefaultValueByConfig } from "..";
 import {
   accordionComponentDefaultConfig,
   type IAccordionComponentProps,
-} from ".";
+} from "./type";
 
 /**
  * 渲染手风琴物料，支持单项展开与简洁边框模式。
@@ -21,11 +21,17 @@ export default function AccordionComponent(_props: IAccordionComponentProps) {
     return props.items.map((item) => ({
       key: item.id || item.title,
       label: item.title,
-      children: (
-        <div className="whitespace-pre-wrap break-words">{item.content}</div>
+      children: createElement(
+        "div",
+        { className: "whitespace-pre-wrap break-words" },
+        item.content,
       ),
     }));
   }, [props.items]);
 
-  return <Collapse accordion={props.accordion} ghost={props.ghost} items={items} />;
+  return createElement(Collapse, {
+    accordion: props.accordion,
+    ghost: props.ghost,
+    items,
+  });
 }

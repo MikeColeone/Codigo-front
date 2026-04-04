@@ -24,7 +24,6 @@ import {
   SANDBOX_EVENT_UI_READY,
   type SandboxSchemaNode,
 } from "@codigo/editor-sandbox";
-import OpenSumiEditor from "./OpenSumiEditor";
 
 let esbuildInitPromise: Promise<void> | null = null;
 

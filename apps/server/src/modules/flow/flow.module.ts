@@ -13,13 +13,8 @@ import { OperationLog } from 'src/modules/flow/entity/operation-log.entity';
 import { PageVersion } from 'src/modules/flow/entity/page-version.entity';
 import { CollaborationService } from 'src/modules/flow/service/collaboration.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { OpenSumiConfigService } from 'src/modules/flow/service/opensumi-config.service';
 import { PageAnalyticsService } from 'src/modules/flow/service/page-analytics.service';
 import { PageReleaseService } from 'src/modules/flow/service/page-release.service';
-import { WorkspaceExplorerService } from 'src/modules/flow/service/workspace-explorer.service';
-import { WorkspaceService } from 'src/modules/flow/service/workspace.service';
-import { WorkspaceRuntimeService } from 'src/modules/flow/service/workspace-runtime.service';
-import { WorkspaceSessionService } from 'src/modules/flow/service/workspace-session.service';
 import { User } from 'src/modules/user/entity/user.entity';
 import { SecretTool } from 'src/shared/utils/secret.tool';
 
@@ -46,11 +41,6 @@ import { SecretTool } from 'src/shared/utils/secret.tool';
     PageAnalyticsService,
     CollaborationService,
     CollaborationGateway,
-    OpenSumiConfigService,
-    WorkspaceExplorerService,
-    WorkspaceService,
-    WorkspaceRuntimeService,
-    WorkspaceSessionService,
   ],
 })
 export class FlowModule {}

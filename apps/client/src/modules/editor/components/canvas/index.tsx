@@ -180,19 +180,22 @@ export function generateComponent(
     return null;
   }
   const slotNodes = groupChildrenBySlot(conf);
-  const slotEntries = Object.entries(slotNodes).map(([slotName, items]) => [
-    slotName,
-    items.map((child) =>
-      children?.find((item) => {
-        return (
-          typeof item === "object" &&
-          item !== null &&
-          "key" in item &&
-          String(item.key) === child.id
-        );
-      }),
-    ),
-  ]);
+  const slotEntries = Object.entries(slotNodes).map(([slotName, items]) => {
+    const slotItems = Array.isArray(items) ? (items as ComponentNode[]) : [];
+    return [
+      slotName,
+      slotItems.map((child: ComponentNode) =>
+        children?.find((item) => {
+          return (
+            typeof item === "object" &&
+            item !== null &&
+            "key" in item &&
+            String(item.key) === child.id
+          );
+        }),
+      ),
+    ];
+  });
   const slots = Object.fromEntries(slotEntries);
 
   return (
@@ -233,6 +236,7 @@ interface ComponentWrapperProps {
   children: ReactNode;
   isFlowLayout: boolean;
   isDragable: boolean;
+  isMoving: boolean;
   canDrag: boolean;
   onClick: () => void;
   onMouseDown: (event: ReactMouseEvent) => void;
@@ -247,6 +251,7 @@ const ComponentWrapper: FC<ComponentWrapperProps> = ({
   children,
   isFlowLayout,
   isDragable,
+  isMoving,
   canDrag,
   isCurrentComponent,
   onClick,
@@ -268,7 +273,7 @@ const ComponentWrapper: FC<ComponentWrapperProps> = ({
 
   return (
     <div
-      className={`${isFlowLayout ? "relative mb-4" : "absolute"} component-warpper ${canDrag ? "cursor-move" : "cursor-pointer"}`}
+      className={`${isFlowLayout ? "relative mb-4" : "absolute"} component-warpper ${canDrag ? "cursor-move" : "cursor-pointer"} ${isMoving ? "pointer-events-none" : ""}`}
       onClick={onClick}
       onMouseDown={onMouseDown}
       style={style}
@@ -314,7 +319,7 @@ const EditorChooiseToolbar: FC<{
   const classNames = useMemo(() => {
     return ClassNames({
       hidden: hidden || localHidden,
-      "absolute bg-emerald-600/90 backdrop-blur-md px-3 py-1.5 flex items-center text-xs font-medium text-white gap-2 rounded-r-lg shadow-lg shadow-emerald-500/20 border-l-2 border-emerald-400 z-[1000] transition-all duration-300": true,
+      "editor-choice-toolbar absolute bg-emerald-600/90 backdrop-blur-md px-3 py-1.5 flex items-center text-xs font-medium text-white gap-2 rounded-r-lg shadow-lg shadow-emerald-500/20 border-l-2 border-emerald-400 z-[1000] transition-all duration-300": true,
     });
   }, [hidden, localHidden]);
 
@@ -351,7 +356,7 @@ const EditorChooiseToolbar: FC<{
   }
 
   useEffect(() => {
-    const oCanvasContainer = document.querySelector(".editor-canvas-container");
+    const oCanvasContainer = document.querySelector(".editor-stage-scroll");
     const currentComponent = getCurrentCompConfig();
 
     const _observer = new IntersectionObserver(
@@ -432,15 +437,19 @@ interface MovingComponentState {
   startY: number;
   origLeft: number;
   origTop: number;
+  pointerOffsetX: number;
+  pointerOffsetY: number;
 }
 
-function toNumber(value: string | number | undefined, fallback: number = 0) {
-  if (typeof value === "number") return value;
-  if (typeof value === "string") {
-    const parsed = Number.parseFloat(value);
-    return Number.isNaN(parsed) ? fallback : parsed;
+function getPositioningRect(
+  element: HTMLElement,
+  fallback: HTMLDivElement | null,
+) {
+  const offsetParent = element.offsetParent;
+  if (offsetParent instanceof HTMLElement) {
+    return offsetParent.getBoundingClientRect();
   }
-  return fallback;
+  return fallback?.getBoundingClientRect() ?? null;
 }
 
 const EditorCanvas: FC<{
@@ -468,6 +477,10 @@ const EditorCanvas: FC<{
     useState<MovingComponentState | null>(null);
   const toolbarRef = createRef<any>();
   const canvasRef = useRef<HTMLDivElement>(null);
+  const dragFrameRef = useRef<number | null>(null);
+  const pendingDragPositionRef = useRef<{ left: number; top: number } | null>(
+    null,
+  );
 
   function getWrapperElements(parentId: string | null, slot: string | null) {
     return Array.from(
@@ -546,8 +559,12 @@ const EditorCanvas: FC<{
         parentId: targetParentId,
         slot: targetSlot,
         index: targetIndex,
-        left: clientX - slotRect.left,
-        top: clientY - slotRect.top,
+        left: movingComponent
+          ? clientX - slotRect.left - movingComponent.pointerOffsetX
+          : clientX - slotRect.left,
+        top: movingComponent
+          ? clientY - slotRect.top - movingComponent.pointerOffsetY
+          : clientY - slotRect.top,
       };
     }
 
@@ -563,8 +580,18 @@ const EditorCanvas: FC<{
       parentId: null,
       slot: null,
       index: targetIndex,
-      left: canvasRect ? clientX - canvasRect.left : 0,
-      top: canvasRect ? clientY - canvasRect.top : 0,
+      left:
+        canvasRect && movingComponent
+          ? clientX - canvasRect.left - movingComponent.pointerOffsetX
+          : canvasRect
+            ? clientX - canvasRect.left
+            : 0,
+      top:
+        canvasRect && movingComponent
+          ? clientY - canvasRect.top - movingComponent.pointerOffsetY
+          : canvasRect
+            ? clientY - canvasRect.top
+            : 0,
     };
   }
 
@@ -577,14 +604,19 @@ const EditorCanvas: FC<{
     if (!canEditStructure || event.button !== 0) return;
     const component = getComponentById(id) as ComponentNodeRecord;
     if (!component) return;
+    const element = event.currentTarget as HTMLDivElement;
+    const rect = element.getBoundingClientRect();
+    const positioningRect = getPositioningRect(element, canvasRef.current);
 
     setCurrentComponent(id);
     setMovingComponent({
       id,
       startX: event.clientX,
       startY: event.clientY,
-      origLeft: toNumber(component.styles?.left, 0),
-      origTop: toNumber(component.styles?.top, 0),
+      origLeft: positioningRect ? rect.left - positioningRect.left : 0,
+      origTop: positioningRect ? rect.top - positioningRect.top : 0,
+      pointerOffsetX: event.clientX - rect.left,
+      pointerOffsetY: event.clientY - rect.top,
     });
     setIsDragable(true);
     event.preventDefault();
@@ -599,10 +631,33 @@ const EditorCanvas: FC<{
         movingComponent.origLeft + event.clientX - movingComponent.startX;
       const top =
         movingComponent.origTop + event.clientY - movingComponent.startY;
-      updateComponentPosition(movingComponent.id, left, top, true);
+      pendingDragPositionRef.current = { left, top };
+      if (dragFrameRef.current !== null) {
+        return;
+      }
+
+      dragFrameRef.current = window.requestAnimationFrame(() => {
+        dragFrameRef.current = null;
+        const pendingPosition = pendingDragPositionRef.current;
+        if (!pendingPosition) {
+          return;
+        }
+
+        updateComponentPosition(
+          movingComponent.id,
+          pendingPosition.left,
+          pendingPosition.top,
+          true,
+        );
+      });
     };
 
     const onMouseUp = (event: MouseEvent) => {
+      if (dragFrameRef.current !== null) {
+        window.cancelAnimationFrame(dragFrameRef.current);
+        dragFrameRef.current = null;
+      }
+      pendingDragPositionRef.current = null;
       const target = resolveMoveTarget(
         movingComponent.id,
         event.clientX,
@@ -637,6 +692,11 @@ const EditorCanvas: FC<{
     window.addEventListener("mouseup", onMouseUp);
 
     return () => {
+      if (dragFrameRef.current !== null) {
+        window.cancelAnimationFrame(dragFrameRef.current);
+        dragFrameRef.current = null;
+      }
+      pendingDragPositionRef.current = null;
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
     };
@@ -657,7 +717,10 @@ const EditorCanvas: FC<{
     if (!canEditStructure) return;
     const type = e.dataTransfer.getData("componentType");
     const rect = canvasRef.current?.getBoundingClientRect();
-    const targetElement = e.target as HTMLElement | null;
+    const targetElement = document.elementFromPoint(
+      e.clientX,
+      e.clientY,
+    ) as HTMLElement | null;
     const slotZone = targetElement?.closest(
       "[data-slot-name]",
     ) as HTMLElement | null;
@@ -748,7 +811,11 @@ const EditorCanvas: FC<{
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       style={{
-        minHeight: `${Math.max(700, store.sortableCompConfig.length * 220)}px`,
+        minHeight: `${Math.max(
+          700,
+          storePage.canvasHeight,
+          store.sortableCompConfig.length * 220,
+        )}px`,
       }}
     >
       <EditorChooiseToolbar
@@ -825,7 +892,8 @@ const EditorCanvas: FC<{
       )}
       {getComponentTree.get().map(function renderTreeNode(node: ComponentNode) {
         const renderedChildren =
-          node.children?.map((child) => renderTreeNode(child)) ?? [];
+          node.children?.map((child: ComponentNode) => renderTreeNode(child)) ??
+          [];
         const nodePosition = node.styles?.position;
         const isFlowLayout =
           nodePosition !== undefined
@@ -836,6 +904,7 @@ const EditorCanvas: FC<{
             key={node.id}
             isFlowLayout={isFlowLayout}
             isDragable={isDragable}
+            isMoving={movingComponent?.id === node.id}
             canDrag={canEditStructure}
             onMouseDown={(event) => handleDragComponentStart(event, node.id)}
             onClick={() => handleComponentClick(node)}

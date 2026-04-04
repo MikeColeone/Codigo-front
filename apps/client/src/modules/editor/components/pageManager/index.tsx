@@ -11,7 +11,7 @@ interface EditorPageManagerProps {
   embedded?: boolean;
 }
 
-export default observer(function EditorPageManager({
+const EditorPageManager =  observer(function ({
   embedded = false,
 }: EditorPageManagerProps) {
   const {
@@ -30,9 +30,7 @@ export default observer(function EditorPageManager({
         <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
           <div>
             <div className="text-sm font-semibold text-slate-900">页面管理</div>
-            <div className="mt-1 text-[11px] text-slate-400">
-              切换页面与维护路由标识
-            </div>
+     
           </div>
           <Button
             type="primary"
@@ -250,3 +248,6 @@ export default observer(function EditorPageManager({
     </div>
   );
 });
+
+
+export default EditorPageManager;

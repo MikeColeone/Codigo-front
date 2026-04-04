@@ -12,7 +12,7 @@ export class PageCollaborator {
   @Column()
   user_id: number = 0;
 
-  @Column()
+  @Column({ type: 'varchar', length: 20 })
   role: PermissionRole = 'viewer';
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

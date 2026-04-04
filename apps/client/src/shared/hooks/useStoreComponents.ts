@@ -1239,18 +1239,17 @@ export function useStoreComponents() {
       curCompConfig.styles.width =
         curCompConfig.styles.width ?? getDefaultWidthByType(curCompConfig.type);
 
-      const { store: storePermission, broadcastComponentUpdate } =
-        useStorePermission();
-      broadcastComponentUpdate(
-        Number(
-          new URLSearchParams(window.location.hash.split("?")[1]).get("id"),
-        ),
-        Number(storePermission.currentUserId),
-        "update",
-        curCompConfig,
-      );
-
       if (!silent) {
+        const { store: storePermission, broadcastComponentUpdate } =
+          useStorePermission();
+        broadcastComponentUpdate(
+          Number(
+            new URLSearchParams(window.location.hash.split("?")[1]).get("id"),
+          ),
+          Number(storePermission.currentUserId),
+          "update",
+          curCompConfig,
+        );
         addOperationLog("move_component", curCompConfig.type);
       }
     },

@@ -12,7 +12,6 @@ import EditorRightPanel from "../rightPanel";
 import { EditorOutlineTree } from "../rightPanel/ComponentFields";
 import EditorCanvas from "../canvas";
 import { SandboxCanvas } from "../canvas/SandboxCanvas";
-import { WebIDECanvas } from "../canvas/WebIDECanvas";
 import { useEditorPanelLayout } from "./useEditorPanelLayout";
 import {
   LEFT_PANEL_CONTENT_WIDTH,
@@ -27,6 +26,9 @@ interface EditorViewportProps {
 }
 
 type LeftPanelSection = "pages" | "components";
+
+const WORKSPACE_STAGE_PADDING = 64;
+const MOBILE_FRAME_SIZE = 24;
 
 function PanelResizeHandle({
   side,
@@ -45,7 +47,7 @@ function PanelResizeHandle({
       aria-orientation="vertical"
       aria-label={`调整${side === "left" ? "左侧" : "右侧"}边栏宽度`}
       onPointerDown={onPointerDown}
-      className="group relative z-20 w-2.5 shrink-0 cursor-col-resize bg-transparent touch-none"
+      className="group relative z-30 w-2.5 shrink-0 cursor-col-resize bg-transparent touch-none"
     >
       <div
         className={`absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-slate-200 transition-colors ${lineClassName}`}
@@ -62,57 +64,18 @@ function EditorStage({
   storePage,
   canvasRef,
 }: EditorViewportProps) {
-  const canvasContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const target = canvasContainerRef.current;
-    if (!target) {
-      return;
-    }
-
-    let scrollTimeout: number | null = null;
-
-    const handleScroll = () => {
-      if (scrollTimeout !== null) {
-        window.clearTimeout(scrollTimeout);
-      }
-
-      canvasRef.current?.setShowToolbar(false);
-      scrollTimeout = window.setTimeout(() => {
-        canvasRef.current?.setShowToolbar(true);
-      }, 300);
-    };
-
-    target.addEventListener("scroll", handleScroll);
-
-    return () => {
-      target.removeEventListener("scroll", handleScroll);
-      if (scrollTimeout !== null) {
-        window.clearTimeout(scrollTimeout);
-      }
-    };
-  }, [canvasRef]);
-
   if (storePage.editorMode === "code") {
     return (
-      <div className="relative z-10 h-full w-full overflow-hidden rounded-[24px] border border-slate-200/80 bg-white/95 shadow-[0_24px_60px_-38px_rgba(15,23,42,0.45)]">
+      <div className="relative z-0 h-full w-full overflow-hidden rounded-[24px] border border-slate-200/80 bg-white/95 shadow-[0_24px_60px_-38px_rgba(15,23,42,0.45)]">
         <SandboxCanvas />
       </div>
     );
   }
 
-  if (storePage.editorMode === "webide") {
-    return (
-      <div className="relative z-10 h-full w-full overflow-hidden rounded-[24px] border border-slate-200/80 bg-white/95 shadow-[0_24px_60px_-38px_rgba(15,23,42,0.45)]">
-        <WebIDECanvas />
-      </div>
-    );
-  }
 
   return (
     <div
-      ref={canvasContainerRef}
-      className={`editor-canvas-container relative z-10 overflow-y-auto overflow-x-hidden bg-white text-left ring-1 ring-slate-900/5 transition-all duration-500 ease-out ${
+      className={`editor-canvas-container relative z-0 overflow-hidden bg-white text-left ring-1 ring-slate-900/5 transition-all duration-500 ease-out ${
         storePage.deviceType === "mobile"
           ? "rounded-[42px] border-[12px] border-slate-900 shadow-[0_30px_70px_-30px_rgba(15,23,42,0.45)]"
           : "rounded-[24px] shadow-[0_28px_70px_-42px_rgba(15,23,42,0.45)] hover:shadow-[0_30px_80px_-42px_rgba(15,23,42,0.52)]"
@@ -143,8 +106,21 @@ export const EditorViewport = observer(function EditorViewport(
 ) {
   const { leftPanelWidth, rightPanelWidth, startResize } =
     useEditorPanelLayout();
+  const workspaceViewportRef = useRef<HTMLDivElement>(null);
+  const workspacePanRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    scrollLeft: number;
+    scrollTop: number;
+  } | null>(null);
   const [activeLeftSection, setActiveLeftSection] =
     useState<LeftPanelSection>("components");
+  const [workspaceViewportSize, setWorkspaceViewportSize] = useState({
+    width: 0,
+    height: 0,
+  });
+  const [isWorkspacePanning, setIsWorkspacePanning] = useState(false);
   const outlinePanelWidth = Math.max(
     0,
     leftPanelWidth - LEFT_PANEL_RAIL_WIDTH - LEFT_PANEL_CONTENT_WIDTH,
@@ -155,25 +131,158 @@ export const EditorViewport = observer(function EditorViewport(
     : LEFT_PANEL_RAIL_WIDTH + LEFT_PANEL_CONTENT_WIDTH;
   const leftSectionItems: Array<{
     key: LeftPanelSection;
-    label: string;
     icon: ReactNode;
+    label: string;
   }> = [
     {
       key: "pages",
-      label: "页面",
       icon: <FileTextOutlined className="text-base" />,
+      label: "页面",
     },
     {
       key: "components",
-      label: "组件",
       icon: <AppstoreOutlined className="text-base" />,
+      label: "组件",
     },
   ];
+  const stageFrameWidth =
+    props.storePage.canvasWidth +
+    (props.storePage.deviceType === "mobile" ? MOBILE_FRAME_SIZE : 0);
+  const stageFrameHeight =
+    props.storePage.canvasHeight +
+    (props.storePage.deviceType === "mobile" ? MOBILE_FRAME_SIZE : 0);
+  const workspaceWidth = Math.max(
+    workspaceViewportSize.width,
+    stageFrameWidth + WORKSPACE_STAGE_PADDING * 2,
+  );
+  const workspaceMinHeight = Math.max(
+    workspaceViewportSize.height,
+    stageFrameHeight + WORKSPACE_STAGE_PADDING * 2,
+  );
+
+  useEffect(() => {
+    const target = workspaceViewportRef.current;
+    if (!target) {
+      return;
+    }
+
+    const updateViewportSize = () => {
+      setWorkspaceViewportSize({
+        width: target.clientWidth,
+        height: target.clientHeight,
+      });
+    };
+
+    updateViewportSize();
+
+    const observer = new ResizeObserver(() => {
+      updateViewportSize();
+    });
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const target = workspaceViewportRef.current;
+    if (!target) {
+      return;
+    }
+
+    let scrollTimeout: number | null = null;
+
+    const handleScroll = () => {
+      if (scrollTimeout !== null) {
+        window.clearTimeout(scrollTimeout);
+      }
+
+      props.canvasRef.current?.setShowToolbar(false);
+      scrollTimeout = window.setTimeout(() => {
+        props.canvasRef.current?.setShowToolbar(true);
+      }, 300);
+    };
+
+    target.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      target.removeEventListener("scroll", handleScroll);
+      if (scrollTimeout !== null) {
+        window.clearTimeout(scrollTimeout);
+      }
+    };
+  }, [props.canvasRef]);
+
+  function finishWorkspacePan(event?: ReactPointerEvent<HTMLDivElement>) {
+    const target = workspaceViewportRef.current;
+    const currentPan = workspacePanRef.current;
+    if (target && event && currentPan?.pointerId === event.pointerId) {
+      target.releasePointerCapture(event.pointerId);
+    }
+    workspacePanRef.current = null;
+    setIsWorkspacePanning(false);
+    props.canvasRef.current?.setShowToolbar(true);
+  }
+
+  function canStartWorkspacePan(target: EventTarget | null) {
+    if (!(target instanceof HTMLElement)) {
+      return true;
+    }
+
+    return !target.closest(".component-warpper, .editor-choice-toolbar");
+  }
+
+  function handleWorkspacePointerDown(
+    event: ReactPointerEvent<HTMLDivElement>,
+  ) {
+    if (props.storePage.editorMode !== "visual" || event.button !== 0) {
+      return;
+    }
+
+    if (!canStartWorkspacePan(event.target)) {
+      return;
+    }
+
+    const target = workspaceViewportRef.current;
+    if (!target) {
+      return;
+    }
+
+    workspacePanRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      scrollLeft: target.scrollLeft,
+      scrollTop: target.scrollTop,
+    };
+    setIsWorkspacePanning(true);
+    props.canvasRef.current?.setShowToolbar(false);
+    target.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  }
+
+  function handleWorkspacePointerMove(
+    event: ReactPointerEvent<HTMLDivElement>,
+  ) {
+    const currentPan = workspacePanRef.current;
+    const target = workspaceViewportRef.current;
+    if (!currentPan || !target || currentPan.pointerId !== event.pointerId) {
+      return;
+    }
+
+    const deltaX = event.clientX - currentPan.startX;
+    const deltaY = event.clientY - currentPan.startY;
+
+    target.scrollLeft = currentPan.scrollLeft - deltaX;
+    target.scrollTop = currentPan.scrollTop - deltaY;
+  }
 
   return (
-    <div className="relative flex h-full w-full overflow-hidden bg-[#F8FAFC]">
+    <div className="relative isolate flex h-full w-full overflow-hidden bg-[#F8FAFC]">
       <div
-        className="flex shrink-0 overflow-hidden border-r border-slate-200/80 bg-white/88 text-[13px] shadow-[14px_0_40px_-36px_rgba(15,23,42,0.45)] backdrop-blur-xl transition-[width] duration-150"
+        className="relative z-20 flex shrink-0 overflow-hidden border-r border-slate-200/80 bg-white/88 text-[13px] shadow-[14px_0_40px_-36px_rgba(15,23,42,0.45)] backdrop-blur-xl transition-[width] duration-150"
         style={{ width: effectiveLeftPanelWidth }}
       >
         <div
@@ -242,16 +351,36 @@ export const EditorViewport = observer(function EditorViewport(
         />
       )}
 
-      <div className="relative flex min-w-0 flex-1 flex-col">
+      <div className="relative z-0 flex min-w-0 flex-1 flex-col overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:20px_20px] opacity-32 pointer-events-none" />
         <div className="absolute left-8 top-12 h-36 w-36 rounded-full bg-emerald-400/10 blur-[96px] pointer-events-none" />
         <div className="absolute bottom-8 right-12 h-44 w-44 rounded-full bg-sky-400/10 blur-[120px] pointer-events-none" />
 
-        <div className="relative z-10 flex-1 px-5 pb-5 pt-3">
-          <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-[26px] border border-white/70 bg-white/40 shadow-[0_30px_80px_-52px_rgba(15,23,42,0.65)] backdrop-blur-xl">
-            <div className="relative min-h-0 flex-1 overflow-auto p-5">
+        <div className="relative z-0 flex-1 px-5 pb-5 pt-3">
+          <div className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-[26px] border border-white/70 bg-white/40 shadow-[0_30px_80px_-52px_rgba(15,23,42,0.65)] backdrop-blur-xl">
+            <div
+              ref={workspaceViewportRef}
+              className={`editor-stage-scroll relative min-h-0 flex-1 overflow-auto p-5 touch-none ${
+                isWorkspacePanning
+                  ? "cursor-grabbing select-none"
+                  : props.storePage.editorMode === "visual"
+                    ? "cursor-grab"
+                    : ""
+              }`}
+              onPointerDown={handleWorkspacePointerDown}
+              onPointerMove={handleWorkspacePointerMove}
+              onPointerUp={finishWorkspacePan}
+              onPointerCancel={finishWorkspacePan}
+            >
               <div className="absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/8 blur-[108px] pointer-events-none" />
-              <div className="relative z-10 flex min-h-full min-w-full items-start justify-center">
+              <div
+                className="relative z-0 flex items-start justify-center"
+                style={{
+                  width: workspaceWidth,
+                  minHeight: workspaceMinHeight,
+                  padding: WORKSPACE_STAGE_PADDING,
+                }}
+              >
                 <EditorStage {...props} />
               </div>
             </div>
@@ -267,7 +396,7 @@ export const EditorViewport = observer(function EditorViewport(
       />
 
       <div
-        className="flex shrink-0 flex-col border-l border-slate-200/80 bg-white/88 text-[13px] shadow-[-14px_0_40px_-36px_rgba(15,23,42,0.45)] backdrop-blur-xl transition-[width] duration-150"
+        className="relative z-20 flex shrink-0 flex-col border-l border-slate-200/80 bg-white/88 text-[13px] shadow-[-14px_0_40px_-36px_rgba(15,23,42,0.45)] backdrop-blur-xl transition-[width] duration-150"
         style={{ width: rightPanelWidth }}
       >
         <div className="flex min-h-0 w-full flex-1 flex-col">
