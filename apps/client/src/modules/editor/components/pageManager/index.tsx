@@ -5,7 +5,7 @@ import {
   PlusOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import { useStoreComponents } from "@/shared/hooks";
+import { useEditorComponents } from "@/modules/editor/hooks";
 
 interface EditorPageManagerProps {
   embedded?: boolean;
@@ -20,7 +20,7 @@ const EditorPageManager =  observer(function ({
     createEditorPage,
     switchEditorPage,
     updateEditorPageMeta,
-  } = useStoreComponents();
+  } = useEditorComponents();
   const pages = getPages.get();
   const activePage = getActivePage.get();
 

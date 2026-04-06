@@ -1,9 +1,10 @@
-﻿import { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { Button, Input, List, Select, Switch, Tag, Typography } from "antd";
-import type { PermissionRole } from "@/shared/stores";
-import { useStorePermission, useStoreAuth } from "@/shared/hooks";
+import { useStoreAuth } from "@/shared/hooks";
+import type { PermissionRole } from "@/modules/editor/stores";
+import { useEditorPermission } from "@/modules/editor/hooks";
 
 const { Text } = Typography;
 
@@ -48,7 +49,7 @@ const PermissionPanel = observer(function PermissionPanel() {
     toggleLockEditing,
     getCurrentUser,
     switchCurrentUser,
-  } = useStorePermission();
+  } = useEditorPermission();
 
   const { store: storeAuth } = useStoreAuth();
 

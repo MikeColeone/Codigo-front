@@ -10,14 +10,14 @@ import {
   qrcodeComponentDefaultConfig,
 } from "@codigo/materials";
 import { FormContainer, FormPropLabel } from "../utils/components";
-import { useStoreComponents } from "@/shared/hooks/useStoreComponents";
+import { useEditorComponents } from "@/modules/editor/hooks";
 
 type PickerColor = {
   toHex: () => string;
 };
 
 export default function QrcodeComponentProps(_props: IQrcodeComponentProps) {
-  const { updateCurrentComponent } = useStoreComponents();
+  const { updateCurrentComponent } = useEditorComponents();
   const props = useMemo(() => {
     return fillComponentPropsByConfig(_props, qrcodeComponentDefaultConfig);
   }, [_props]);

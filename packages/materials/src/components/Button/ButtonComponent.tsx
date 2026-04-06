@@ -6,12 +6,18 @@ import {
   buttonComponentDefaultConfig,
 } from "./type";
 
+/**
+ * 描述按钮物料的运行时事件配置。
+ */
 interface ButtonRuntimeAction {
   type: "set-state";
   key: string;
   value: string;
 }
 
+/**
+ * 描述按钮物料的运行时属性。
+ */
 interface ButtonRuntimeProps extends IButtonComponentProps {
   onAction?: (action: ButtonRuntimeAction) => void;
 }

@@ -8,15 +8,19 @@ import { observer } from "mobx-react-lite";
 import type { FC } from "react";
 import { useMemo } from "react";
 
-import { useStoreComponents, useStorePage, useStorePermission } from "@/shared/hooks";
+import {
+  useEditorComponents,
+  useEditorPage,
+  useEditorPermission,
+} from "@/modules/editor/hooks";
 import type { TStorePage } from "@/shared/stores";
 import { getBuiltinEChartsThemeOptions } from "@codigo/materials";
 import { getPageLayoutPresets } from "@/modules/editor/registry/components";
 
 const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
-  const { updatePage } = useStorePage();
-  const { applyLayoutPreset, syncLayoutMode } = useStoreComponents();
-  const { can } = useStorePermission();
+  const { updatePage } = useEditorPage();
+  const { applyLayoutPreset, syncLayoutMode } = useEditorComponents();
+  const { can } = useEditorPermission();
   const canEditStructure = can("edit_structure");
   //todo: 优化图表主题选项 暂时没有统一option
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

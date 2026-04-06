@@ -4,8 +4,11 @@ import { useRequest } from "ahooks";
 import { observer } from "mobx-react-lite";
 import { useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
+import {
+  useEditorComponents,
+  useEditorPermission,
+} from "@/modules/editor/hooks";
 import { getPageVersions, getPageVersionDetail } from "../../api/low-code";
-import { useStoreComponents, useStorePermission } from "@/shared/hooks";
 
 interface Props {
   open: boolean;
@@ -15,8 +18,8 @@ interface Props {
 export const VersionHistoryDrawer = observer(({ open, onClose }: Props) => {
   const [searchParams] = useSearchParams();
   const pageId = Number(searchParams.get("id"));
-  const { initPageData } = useStoreComponents();
-  const { can, ensurePermission } = useStorePermission();
+  const { initPageData } = useEditorComponents();
+  const { can, ensurePermission } = useEditorPermission();
 
   const { data: versions, loading } = useRequest(
     async () => {

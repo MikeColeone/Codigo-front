@@ -1,10 +1,5 @@
 import { useMemo, useEffect, useState, useRef, useCallback } from "react";
 import { observer } from "mobx-react-lite";
-import {
-  useStoreComponents,
-  useStorePage,
-  useStorePermission,
-} from "@/shared/hooks";
 import { Typography } from "antd";
 import * as esbuild from "esbuild-wasm";
 import esbuildWasmUrl from "esbuild-wasm/esbuild.wasm?url";
@@ -24,6 +19,11 @@ import {
   SANDBOX_EVENT_UI_READY,
   type SandboxSchemaNode,
 } from "@codigo/editor-sandbox";
+import {
+  useEditorComponents,
+  useEditorPage,
+  useEditorPermission,
+} from "@/modules/editor/hooks";
 
 let esbuildInitPromise: Promise<void> | null = null;
 
@@ -64,9 +64,9 @@ async function bundleSchema(
 const { Text } = Typography;
 
 export const SandboxCanvas = observer(() => {
-  const { store, getComponentTree, replaceByCode } = useStoreComponents();
-  const { store: pageStore } = useStorePage();
-  const { can, ensurePermission, addOperationLog } = useStorePermission();
+  const { store, getComponentTree, replaceByCode } = useEditorComponents();
+  const { store: pageStore } = useEditorPage();
+  const { can, ensurePermission, addOperationLog } = useEditorPermission();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const workerRef = useRef<Worker | null>(null);
   const latestSchemaRef = useRef<SandboxSchemaNode[]>([]);

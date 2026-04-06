@@ -8,6 +8,7 @@ export interface IButtonComponentProps {
   type: "primary" | "default" | "dashed" | "link" | "text";
   size: "large" | "middle" | "small";
   danger: boolean;
+  active: boolean;
   block: boolean;
   actionType: "none" | "open-url" | "scroll-to-id" | "set-state";
   link: string;

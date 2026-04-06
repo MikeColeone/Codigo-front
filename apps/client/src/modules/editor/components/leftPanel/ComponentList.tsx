@@ -4,10 +4,10 @@ import { getComponentContainerMeta } from "@codigo/materials";
 import type { DragEvent, FC } from "react";
 import { useMemo, useState } from "react";
 import {
-  useStoreComponents,
-  useStorePage,
-  useStorePermission,
-} from "@/shared/hooks";
+  useEditorComponents,
+  useEditorPage,
+  useEditorPermission,
+} from "@/modules/editor/hooks";
 import {
   editorComponentCatalog,
   getEditorComponentSections,
@@ -17,8 +17,8 @@ import {
 export const components = editorComponentCatalog;
 
 const EditorComponent: FC<EditorComponentMeta> = ({ icon, name, type }) => {
-  const store = useStoreComponents();
-  const { can } = useStorePermission();
+  const store = useEditorComponents();
+  const { can } = useEditorPermission();
   const allowInsert = can("edit_structure");
 
   function handleClick() {
@@ -73,7 +73,7 @@ const EditorComponent: FC<EditorComponentMeta> = ({ icon, name, type }) => {
 
 export default function ComponentList() {
   const [keyword, setKeyword] = useState("");
-  const { store: storePage } = useStorePage();
+  const { store: storePage } = useEditorPage();
   const normalizedKeyword = keyword.trim().toLowerCase();
 
   const filteredSections = useMemo(

@@ -1,0 +1,36 @@
+import type { PageCategory, TComponentTypes } from "@codigo/schema";
+import type { ComponentType, FC, ReactNode } from "react";
+
+export type EditorComponentSectionKey = "basic" | "form" | "report";
+
+export interface EditorComponentMeta {
+  type: TComponentTypes;
+  name: string;
+  icon: ReactNode;
+  sectionKey: EditorComponentSectionKey;
+  propsEditor: FC<any>;
+  renderComponent: ComponentType<any>;
+  quickInsert?: boolean;
+  hiddenFromPalette?: boolean;
+  codeSync?: boolean;
+  categories?: PageCategory[];
+}
+
+export interface EditorComponentSection {
+  key: EditorComponentSectionKey;
+  label: string;
+  items: EditorComponentMeta[];
+}
+
+export type PageLayoutPresetKey =
+  | "sectionStack"
+  | "sidebarLayout"
+  | "dashboardLayout";
+
+export interface PageLayoutPresetMeta {
+  key: PageLayoutPresetKey;
+  name: string;
+  description: string;
+  icon: ReactNode;
+  categories?: PageCategory[];
+}

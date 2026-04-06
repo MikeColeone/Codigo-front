@@ -15,7 +15,10 @@ interface IStoreComponents {
   activePageId: string | null;
 }
 
-export function createStoreComponents() {
+/**
+ * 创建编辑器组件状态仓库。
+ */
+export function createEditorComponentsStore() {
   return makeAutoObservable<IStoreComponents>({
     compConfigs: {},
     sortableCompConfig: [],
@@ -27,14 +30,6 @@ export function createStoreComponents() {
   });
 }
 
-export type TStoreComponents = ReturnType<typeof createStoreComponents>;
-
-
-
-
-
-
-
-
-
-
+export type TEditorComponentsStore = ReturnType<
+  typeof createEditorComponentsStore
+>;

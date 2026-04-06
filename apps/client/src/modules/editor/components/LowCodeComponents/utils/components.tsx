@@ -13,7 +13,7 @@ import type { TransformedComponentConfig, IResources } from "@codigo/schema";
 import type { TBasicComponentConfig as TComponentPropsUnion } from "@codigo/schema";
 import { objectOmit } from "@codigo/materials";
 import type { UploadType } from "@codigo/schema";
-import { useStoreComponents } from "@/shared/hooks/useStoreComponents";
+import { useEditorComponents } from "@/modules/editor/hooks";
 import {
   UploadOutlined,
   LoadingOutlined,
@@ -54,7 +54,7 @@ interface IFormContainer extends FormProps {
 }
 export const FormContainer: FC<IFormContainer> = (props) => {
   const [form] = Form.useForm();
-  const { updateCurrentComponent } = useStoreComponents();
+  const { updateCurrentComponent } = useEditorComponents();
 
   // 将数据转成一维，方便设置表单数据 {src:{xxx}} => {src:'xxx'}
   const propValues = useMemo(
@@ -105,7 +105,7 @@ export const FormListItem: FC<FormListItemProps<any>> = (props) => {
     updateCurrentCompConfigWithArray,
     updateCurrentComponent,
     getCurrentComponentConfig,
-  } = useStoreComponents();
+  } = useEditorComponents();
 
   // 每项的值发生改变触发事件修改 store 的值
   function handleValuesChange(changeValues: Record<string, any>) {
@@ -177,7 +177,7 @@ interface FormContainerWithListProps<
 export const FormContainerWithList: FC<FormContainerWithListProps<any>> = (
   props,
 ) => {
-  const { updateCurrentComponent, setItemsExpandIndex } = useStoreComponents();
+  const { updateCurrentComponent, setItemsExpandIndex } = useEditorComponents();
   const [expandIndex, setExpandIndex] = useState(0);
 
   // 新增或者切换轮播图的 id 变化重置第一项为展开
@@ -440,7 +440,7 @@ export const UploadEditOrChooiseInput: FC<UploadEditOrChooiseInputProps> = ({
     updateCurrentCompConfigWithArray,
     getCurrentComponentConfig,
     store,
-  } = useStoreComponents();
+  } = useEditorComponents();
 
   // 选择某个已经上传的资源
   function handleChooise(url: string) {

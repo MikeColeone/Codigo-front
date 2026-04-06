@@ -7,7 +7,7 @@ import {
   breadcrumbBarItem,
   fillComponentPropsByConfig,
 } from "@codigo/materials";
-import { useStoreComponents } from "@/shared/hooks";
+import { useEditorComponents } from "@/modules/editor/hooks";
 import { FormContainerWithList } from "..";
 
 export default function BreadcrumbBarComponentProps(
@@ -19,7 +19,7 @@ export default function BreadcrumbBarComponentProps(
       breadcrumbBarComponentDefaultConfig,
     );
   }, [_props]);
-  const { updateCurrentComponent } = useStoreComponents();
+  const { updateCurrentComponent } = useEditorComponents();
 
   const separatorOptions: SegmentedLabeledOption[] = [
     { label: "斜杠", value: "/" },

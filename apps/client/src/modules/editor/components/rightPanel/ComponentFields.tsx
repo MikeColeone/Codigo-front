@@ -15,8 +15,8 @@ import {
   findEditorComponent,
   getComponentPropsByType,
 } from "@/modules/editor/registry/components";
-import type { TStoreComponents } from "@/shared/stores";
-import { useStoreComponents } from "@/shared/hooks";
+import type { TEditorComponentsStore } from "@/modules/editor/stores";
+import { useEditorComponents } from "@/modules/editor/hooks";
 import { Button, Collapse, Empty, Form, Input, InputNumber, Select } from "antd";
 
 const { Panel } = Collapse;
@@ -47,7 +47,7 @@ export const EditorOutlineTree = observer(function EditorOutlineTree() {
     getComponentTree,
     getCurrentComponentConfig,
     setCurrentComponent,
-  } = useStoreComponents();
+  } = useEditorComponents();
   const activePage = getActivePage.get();
   const currentConfigId = getCurrentComponentConfig.get()?.id ?? null;
   const componentTree = getComponentTree.get();
@@ -137,7 +137,7 @@ export const EditorOutlineTree = observer(function EditorOutlineTree() {
   );
 });
 
-const ComponentFields: FC<{ store: TStoreComponents }> = observer(
+const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
   ({ store }) => {
     if (!store.currentCompConfig)
       return (
@@ -167,7 +167,7 @@ const ComponentFields: FC<{ store: TStoreComponents }> = observer(
       getPages,
       updateCurrentComponentEvents,
       updateCurrentComponentStyles,
-    } = useStoreComponents();
+    } = useEditorComponents();
     const config = getCurrentComponentConfig.get();
 
     if (!config) return null;

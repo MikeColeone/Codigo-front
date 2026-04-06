@@ -4,10 +4,10 @@ import { useState } from "react";
 import type { ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useStorePage } from "@/shared/hooks/useStorePage";
+import { useEditorPage } from "@/modules/editor/hooks";
 
 export default function Left(props: { title: string }) {
-  const { setPageTitle } = useStorePage();
+  const { setPageTitle } = useEditorPage();
   const [isEditState, setIsEditState] = useState(false);
   const navigate = useNavigate();
 

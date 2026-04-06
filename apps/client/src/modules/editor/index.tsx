@@ -2,24 +2,23 @@ import { useEffect, useRef } from "react";
 import { useTitle } from "ahooks";
 import { observer } from "mobx-react-lite";
 import { useSearchParams } from "react-router-dom";
+import { useStoreAuth } from "@/shared/hooks";
+import {
+  useEditorComponents,
+  useEditorPage,
+  useEditorPermission,
+} from "./hooks";
 import { EditorViewport } from "./components/shell/EditorViewport";
 import { useEditorBootstrap } from "./components/shell/useEditorBootstrap";
-
-import {
-  useStoreComponents,
-  useStorePage,
-  useStorePermission,
-  useStoreAuth,
-} from "@/shared/hooks";
 
 const Editor = observer(() => {
   useTitle("codigo - 页面编辑");
   const [searchParams, setSearchParams] = useSearchParams();
   const pageId = Number(searchParams.get("id"));
 
-  const { store: storeComps, loadPageData } = useStoreComponents();
-  const { store: storePage, hydrateOutlineTreeVisible } = useStorePage();
-  const { initCollaboration, cleanupCollaboration } = useStorePermission();
+  const { store: storeComps, loadPageData } = useEditorComponents();
+  const { store: storePage, hydrateOutlineTreeVisible } = useEditorPage();
+  const { initCollaboration, cleanupCollaboration } = useEditorPermission();
   const { store: storeAuth } = useStoreAuth();
   const canvasRef = useRef<any>(null);
 

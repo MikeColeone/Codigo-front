@@ -15,7 +15,6 @@ export type TComponentTypes =
   | "statistic"
   | "table"
   | "swiper"
-  | "qrcode"
   | "card"
   | "list"
   | "image"
@@ -33,7 +32,6 @@ export type TComponentTypes =
   | "pieChart"
   | "radarChart"
   | "funnelChart"
-  | "video"
   | "avatar";
 
 /**
@@ -61,6 +59,9 @@ export interface IComponentPropWarpper<T> {
  */
 export type RuntimeStateValue = string | number | boolean;
 
+/**
+ * 描述组件事件配置结构。
+ */
 export type ActionConfig =
   | { type: "navigate"; path: string }
   | { type: "setState"; key: string; value: RuntimeStateValue }

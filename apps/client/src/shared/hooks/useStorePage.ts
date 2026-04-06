@@ -6,7 +6,6 @@ import type {
   CodeFramework,
   EditorMode,
 } from "@/shared/stores";
-import { useStorePermission } from "./useStorePermission";
 import { setDefaultEChartsTheme } from "@codigo/materials";
 import type {
   PageCategory,
@@ -29,8 +28,6 @@ function getOutlineTreeStorageKey(pageId: number) {
 }
 
 export function useStorePage() {
-  const { ensurePermission, addOperationLog } = useStorePermission();
-
   const syncPageCategoryDefaults = action((category: PageCategory) => {
     if (category === "admin") {
       storePage.deviceType = "pc";
@@ -51,13 +48,10 @@ export function useStorePage() {
    * @param title - 页面标题
    */
   const setPageTitle = action((title: string) => {
-    if (!ensurePermission("edit_content", "当前角色不能修改页面标题")) return;
     storePage.title = title;
-    addOperationLog("update_page", "页面标题");
   });
 
   const setDeviceType = action((type: DeviceType) => {
-    if (!ensurePermission("edit_content", "当前角色不能修改画布设置")) return;
     storePage.deviceType = type;
     if (type === "mobile") {
       storePage.canvasWidth = 380;
@@ -66,36 +60,27 @@ export function useStorePage() {
       storePage.canvasWidth = storePage.pageCategory === "admin" ? 1280 : 1024;
       storePage.canvasHeight = storePage.pageCategory === "admin" ? 900 : 768;
     }
-    addOperationLog("update_page", "终端模式");
   });
 
   const setCanvasSize = action((width: number, height: number) => {
-    if (!ensurePermission("edit_content", "当前角色不能修改画布尺寸")) return;
     storePage.canvasWidth = width;
     storePage.canvasHeight = height;
-    addOperationLog("update_page", "画布尺寸");
   });
 
   const setCodeFramework = action((framework: CodeFramework) => {
-    if (!ensurePermission("edit_content", "当前角色不能修改源码框架")) return;
     storePage.codeFramework = framework;
-    addOperationLog("update_page", "源码框架");
   });
 
   const setPageCategory = action((category: PageCategory) => {
-    if (!ensurePermission("edit_content", "当前角色不能修改页面类型")) return;
     storePage.pageCategory = category;
     syncPageCategoryDefaults(category);
-    addOperationLog("update_page", "页面类型");
   });
 
   const setLayoutMode = action((mode: PageLayoutMode) => {
-    if (!ensurePermission("edit_content", "当前角色不能修改布局模式")) return;
     storePage.layoutMode = mode;
     if (mode === "flow" && storePage.pageCategory === "marketing") {
       storePage.deviceType = "pc";
     }
-    addOperationLog("update_page", "布局模式");
   });
 
   const setEditorMode = action((mode: EditorMode) => {
@@ -212,7 +197,6 @@ export function useStorePage() {
    * @param page - 部分页面信息
    */
   const updatePage = action((page: Partial<TStorePage>) => {
-    if (!ensurePermission("edit_content", "当前角色不能修改页面信息")) return;
     if (!page) return;
     for (const [key, value] of Object.entries(page))
       // @ts-ignore
@@ -233,7 +217,6 @@ export function useStorePage() {
     if (Object.prototype.hasOwnProperty.call(page, "chartTheme")) {
       setDefaultEChartsTheme(storePage.chartTheme || undefined);
     }
-    addOperationLog("update_page", "页面信息");
   });
 
   return {

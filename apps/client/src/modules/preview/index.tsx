@@ -8,7 +8,8 @@ import {
   resolveInitialPageState,
   type RuntimeAction,
 } from "@/modules/editor/components/canvas";
-import { useStoreComponents, useStorePage } from "@/shared/hooks";
+import { useStorePage } from "@/shared/hooks";
+import { useEditorComponents } from "@/modules/editor/hooks";
 import type { ComponentNode, IEditorPageSchema } from "@codigo/schema";
 
 function resolvePreviewPage(
@@ -27,7 +28,7 @@ function resolvePreviewPage(
 }
 
 const PreviewCanvas = observer(() => {
-  const { getPages, loadPageData } = useStoreComponents();
+  const { getPages, loadPageData } = useEditorComponents();
   const [searchParams, setSearchParams] = useSearchParams();
   const pages = getPages.get();
   const activePage = useMemo(

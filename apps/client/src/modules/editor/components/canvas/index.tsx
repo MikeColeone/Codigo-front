@@ -27,12 +27,12 @@ import type {
 } from "@codigo/schema";
 import { groupChildrenBySlot } from "@codigo/schema";
 import {
-  useComponentKeyPress,
-  useStoreComponents,
-  useStorePage,
-  useStorePermission,
-} from "@/shared/hooks";
-import type { TStoreComponents } from "@/shared/stores";
+  useEditorComponentKeyPress,
+  useEditorComponents,
+  useEditorPage,
+  useEditorPermission,
+} from "@/modules/editor/hooks";
+import type { TEditorComponentsStore } from "@/modules/editor/stores";
 import {
   AppstoreOutlined,
   DeleteOutlined,
@@ -317,8 +317,8 @@ const EditorChooiseToolbar: FC<{
   onRef: any;
 }> = observer(({ hidden, onRef }) => {
   const { store, removeCurrentComponent, getCurrentComponentConfig } =
-    useStoreComponents();
-  const { can } = useStorePermission();
+    useEditorComponents();
+  const { can } = useEditorPermission();
   const canEditStructure = can("edit_structure");
   const [currentComponentRect, setCurrentComponentRect] =
     useState<ClientRect>();
@@ -472,7 +472,7 @@ function getPositioningRect(
 }
 
 const EditorCanvas: FC<{
-  store: TStoreComponents;
+  store: TEditorComponentsStore;
   onRef: any;
 }> = observer(({ store, onRef }) => {
   const {
@@ -486,9 +486,9 @@ const EditorCanvas: FC<{
     updateComponentPosition,
     updateComponentSize,
     push,
-  } = useStoreComponents();
-  const { can } = useStorePermission();
-  const { store: storePage } = useStorePage();
+  } = useEditorComponents();
+  const { can } = useEditorPermission();
+  const { store: storePage } = useEditorPage();
   const canEditStructure = can("edit_structure");
 
   const [isDragable, setIsDragable] = useState(false);
@@ -878,7 +878,7 @@ const EditorCanvas: FC<{
     }
   }
 
-  useComponentKeyPress();
+  useEditorComponentKeyPress();
 
   useImperativeHandle(onRef, () => ({
     setShowToolbar,

@@ -28,7 +28,7 @@ export interface PermissionLog {
   createdAt: number;
 }
 
-interface IStorePermission {
+interface IEditorPermissionStore {
   documentId: string;
   currentUserId: string;
   lockEditing: boolean;
@@ -50,8 +50,11 @@ export const roleColorMap: Record<PermissionRole, string> = {
   viewer: "#64748b",
 };
 
-export function createStorePermission() {
-  return makeAutoObservable<IStorePermission>({
+/**
+ * 创建编辑器协作权限状态仓库。
+ */
+export function createEditorPermissionStore() {
+  return makeAutoObservable<IEditorPermissionStore>({
     documentId: "codigo-editor-doc",
     currentUserId: "",
     lockEditing: false,
@@ -60,4 +63,6 @@ export function createStorePermission() {
   });
 }
 
-export type TStorePermission = ReturnType<typeof createStorePermission>;
+export type TEditorPermissionStore = ReturnType<
+  typeof createEditorPermissionStore
+>;

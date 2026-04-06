@@ -4,7 +4,7 @@ import { Button, Input, Switch, Typography } from "antd";
 import { toJS } from "mobx";
 import { ulid } from "ulid";
 import type { TComponentTypes } from "@codigo/schema";
-import { useStoreComponents } from "@/shared/hooks";
+import { useEditorComponents } from "@/modules/editor/hooks";
 
 type ChatRole = "user" | "assistant";
 
@@ -227,7 +227,7 @@ function buildDraftByPrompt(prompt: string): DraftComponent[] {
 const { Text } = Typography;
 
 const AIChatPanel = observer(function AIChatPanel() {
-  const { store, getComponentById, replaceByCode } = useStoreComponents();
+  const { store, getComponentById, replaceByCode } = useEditorComponents();
   const [prompt, setPrompt] = useState("");
   const [appendMode, setAppendMode] = useState(false);
   const [submitting, setSubmitting] = useState(false);

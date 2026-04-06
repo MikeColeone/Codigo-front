@@ -1,11 +1,11 @@
-import { useStorePage } from "@/shared/hooks/useStorePage";
+import { useEditorPage } from "@/modules/editor/hooks";
 import Left from "./Left";
 import { observer } from "mobx-react-lite";
 import Center from "./Center";
 import Right from "./Right";
 
 const Header = observer(() => {
-  const { store: storePage } = useStorePage();
+  const { store: storePage } = useEditorPage();
   return (
     <div className="flex w-full items-center gap-2.5 px-0.5 text-[13px]">
       <div className="min-w-0 flex-[1.1]">

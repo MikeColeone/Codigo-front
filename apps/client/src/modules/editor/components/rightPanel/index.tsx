@@ -10,11 +10,11 @@ import ComponentFields from "./ComponentFields";
 import GlobalFields from "./GlobalFields";
 import AIChatPanel from "./AIChatPanel";
 import PermissionPanel from "./PermissionPanel";
-import { useStoreComponents, useStorePage } from "@/shared/hooks";
+import { useEditorComponents, useEditorPage } from "@/modules/editor/hooks";
 
 export default function EditorRightPanel() {
-  const { store: storePage } = useStorePage();
-  const { store: storeComps } = useStoreComponents();
+  const { store: storePage } = useEditorPage();
+  const { store: storeComps } = useEditorComponents();
   const [activeKey, setActiveKey] = useState("components-fields");
 
   const items = [

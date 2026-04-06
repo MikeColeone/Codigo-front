@@ -18,10 +18,11 @@ import {
   LEFT_PANEL_CONTENT_WIDTH,
   LEFT_PANEL_RAIL_WIDTH,
 } from "./layout";
-import type { TStoreComponents, TStorePage } from "@/shared/stores";
+import type { TStorePage } from "@/shared/stores";
+import type { TEditorComponentsStore } from "@/modules/editor/stores";
 
 interface EditorViewportProps {
-  storeComps: TStoreComponents;
+  storeComps: TEditorComponentsStore;
   storePage: TStorePage;
   canvasRef: RefObject<any>;
 }

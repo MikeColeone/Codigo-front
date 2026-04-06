@@ -7,7 +7,7 @@ import { useMemo, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-import { useStoreComponents } from "@/shared/hooks/useStoreComponents";
+import { useEditorComponents } from "@/modules/editor/hooks";
 
 export default function RichTextComponentProps(
   _props: IRichTextComponentProps,
@@ -15,7 +15,7 @@ export default function RichTextComponentProps(
   const props = useMemo(() => {
     return fillComponentPropsByConfig(_props, richTextComponentDefaultConfig);
   }, [_props]);
-  const { updateCurrentComponent } = useStoreComponents();
+  const { updateCurrentComponent } = useEditorComponents();
 
   // 创建 React Quill 编辑器的实例
   const editorRef = useRef<ReactQuill>(null);
