@@ -10,9 +10,9 @@ import type { TComponentTypes } from "@codigo/schema";
 
 const emptyStateSteps = [
   {
-    key: "setting",
+    key: "container",
     icon: <DragOutlined />,
-    title: "配置布局",
+    title: "添加容器",
   },
   {
     key: "edit",
@@ -43,10 +43,10 @@ export function CanvasEmptyState({
           <AppstoreOutlined />
         </div>
         <div className="text-base font-semibold text-slate-900">
-          先在页面属性配置整体布局，再开始搭建
+          先添加容器组件，再开始搭建
         </div>
         <div className="mt-2 text-sm text-slate-500">
-          右侧页面信息里可以先配置整体布局，再把组件拖入对应容器区域。
+          从左侧资源库拖入容器或双栏布局，再把业务组件放进对应区域。
         </div>
         <div className="mt-6 grid grid-cols-3 gap-3 text-left">
           {emptyStateSteps.map((item) => (
@@ -81,7 +81,7 @@ export function CanvasEmptyState({
 
         <div className="mt-5 text-xs text-slate-400">
           {canEditStructure
-            ? "先到右侧页面信息配置整体布局，再从左侧资源库拖拽组件"
+            ? "优先从左侧资源库添加容器组件，再继续拖拽业务组件"
             : "当前角色没有新增组件权限"}
         </div>
       </div>

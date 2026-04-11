@@ -2,9 +2,7 @@ import { action, computed } from "mobx";
 import { message } from "antd";
 import { ulid } from "ulid";
 import type { ComponentNode, IEditorPageSchema, PageCategory } from "@codigo/schema";
-import type { PageLayoutPresetKey } from "@/modules/editor/registry/components";
 import type { TEditorComponentsStore } from "@/modules/editor/stores";
-import { createPageLayoutPreset } from "@/modules/editor/utils/pageLayout";
 import {
   createEditorPageDefinition,
   ensureUniquePagePath,
@@ -202,41 +200,6 @@ export function createEditorComponentPageActions(
   );
 
   /**
-   * 套用页面布局骨架预设。
-   */
-  const applyLayoutPreset = action((preset: PageLayoutPresetKey) => {
-    if (!ensurePermission("edit_structure", "当前角色不能创建页面布局")) {
-      return;
-    }
-
-    const wasEmpty = storeComponents.sortableCompConfig.length === 0;
-    const presetTree = createPageLayoutPreset(
-      preset,
-      pageStore.pageCategory,
-      pageStore.canvasWidth,
-    );
-    const insertStartIndex = storeComponents.sortableCompConfig.length;
-
-    presetTree.nodes.forEach((node, index) => {
-      insertNodeTree(node, {
-        index: insertStartIndex + index,
-      });
-    });
-
-    if (presetTree.focusId) {
-      setCurrentComponent(presetTree.focusId);
-    }
-
-    broadcastReplaceAll();
-    message.success(
-      wasEmpty
-        ? "已创建页面布局，直接把组件拖到布局区域即可"
-        : "已插入布局骨架，可把现有组件拖到新的布局区域",
-    );
-    addOperationLog("add_component", `layout:${preset}`);
-  });
-
-  /**
    * 清空当前页面的全部画布节点。
    */
   const clearActivePageCanvas = action(() => {
@@ -268,7 +231,6 @@ export function createEditorComponentPageActions(
   });
 
   return {
-    applyLayoutPreset,
     clearActivePageCanvas,
     createEditorPage,
     ensureEditorPages,

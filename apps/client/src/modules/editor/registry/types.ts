@@ -24,16 +24,3 @@ export interface EditorComponentSection {
   label: string;
   items: EditorComponentMeta[];
 }
-
-export type PageLayoutPresetKey =
-  | "sectionStack"
-  | "sidebarLayout"
-  | "dashboardLayout";
-
-export interface PageLayoutPresetMeta {
-  key: PageLayoutPresetKey;
-  name: string;
-  description: string;
-  icon: ReactNode;
-  categories?: PageCategory[];
-}

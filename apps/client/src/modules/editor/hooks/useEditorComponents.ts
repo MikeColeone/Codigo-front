@@ -127,7 +127,6 @@ export function useEditorComponents() {
   });
 
   const {
-    applyLayoutPreset,
     clearActivePageCanvas,
     createEditorPage,
     ensureEditorPages,
@@ -294,7 +293,6 @@ export function useEditorComponents() {
 
   return {
     _replace,
-    applyLayoutPreset,
     replaceByCode,
     push,
     getPages,
