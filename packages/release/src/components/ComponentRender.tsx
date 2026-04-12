@@ -14,6 +14,7 @@ import { useRequest } from "ahooks";
 import { useImmer } from "use-immer";
 import { useEffect, useMemo, useState } from "react";
 import { message, Button } from "antd";
+import AdminShell from "./AdminShell";
 
 initBuiltinComponents();
 
@@ -435,7 +436,7 @@ export default function ComponentRender({
     },
   );
 
-  return (
+  const content = (
     <div
       className={`${isPosted && "opacity-50 select-none pointer-events-none"}`}
     >
@@ -449,5 +450,20 @@ export default function ComponentRender({
         </div>
       )}
     </div>
+  );
+
+  if (!Array.isArray(runtimeSchema.pages) || !runtimeSchema.pages.length) {
+    return content;
+  }
+
+  return (
+    <AdminShell
+      pages={runtimeSchema.pages}
+      activePagePath={activePage?.path ?? null}
+      onSelectPagePath={(path) => setCurrentPagePath(path)}
+      title={localData.page_name || "管理后台"}
+    >
+      {content}
+    </AdminShell>
   );
 }

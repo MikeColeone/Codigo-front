@@ -11,6 +11,7 @@ import {
 import { useStorePage } from "@/shared/hooks";
 import { useEditorComponents } from "@/modules/editor/hooks";
 import type { ComponentNode, IEditorPageSchema, RuntimeStateValue } from "@codigo/schema";
+import { AdminShell } from "./components/AdminShell";
 
 function resolvePreviewPage(
   pages: IEditorPageSchema[],
@@ -130,7 +131,15 @@ const PreviewCanvas = observer(() => {
     [pageState, setSearchParams],
   );
 
-  return (
+  const handleSelectPagePath = (path: string) => {
+    setSearchParams((prev) => {
+      const nextParams = new URLSearchParams(prev);
+      nextParams.set("page", path);
+      return nextParams;
+    });
+  };
+
+  const canvas = (
     <div
       className="relative"
       style={{
@@ -156,6 +165,20 @@ const PreviewCanvas = observer(() => {
         );
       })}
     </div>
+  );
+
+  return (
+    pages.length ? (
+      <AdminShell
+        pages={pages}
+        activePagePath={activePage?.path ?? null}
+        onSelectPagePath={handleSelectPagePath}
+      >
+        {canvas}
+      </AdminShell>
+    ) : (
+      canvas
+    )
   );
 });
 
