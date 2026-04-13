@@ -6,7 +6,6 @@ import type {
 
 const CANVAS_WIDTH = 1280;
 const CANVAS_HEIGHT = 900;
-const SIDEBAR_WIDTH = 272;
 
 /**
  * 将数字值转换为 px 字符串，字符串值原样返回。
@@ -52,29 +51,6 @@ function createText(
     props: {
       title,
       size,
-    },
-  };
-}
-
-/**
- * 创建带站内页面跳转的侧边栏按钮。
- */
-function createNavButton(
-  label: string,
-  pagePath: string,
-  active: boolean,
-): TemplateComponent {
-  return {
-    type: "button",
-    props: {
-      text: label,
-      size: "large",
-      type: active ? "primary" : "default",
-      block: true,
-      active,
-    },
-    events: {
-      onClick: [{ type: "navigate", path: `page:${pagePath}` }],
     },
   };
 }
@@ -145,164 +121,6 @@ function createPlainTwoColumn(
       })),
     ],
   };
-}
-
-/**
- * 创建后台模板的顶部信息栏。
- */
-function createTopBar(sectionTitle: string, sectionHint: string): TemplateComponent {
-  return createPlainContainer(
-    [
-      place(createText(sectionTitle, "sm"), {
-        left: 20,
-        top: 14,
-        width: "520px",
-        height: 24,
-      }),
-      place(createText(sectionHint, "xs"), {
-        left: 20,
-        top: 40,
-        width: "560px",
-        height: 20,
-      }),
-      place(
-        {
-          type: "button",
-          props: {
-            text: "Support & Consulting",
-            type: "text",
-            size: "small",
-            danger: false,
-            active: false,
-            block: false,
-            actionType: "none",
-            link: "",
-            targetId: "",
-            stateKey: "",
-            stateValue: "",
-          },
-        },
-        {
-          left: 560,
-          top: 18,
-          width: 160,
-          height: 32,
-        },
-      ),
-      place(
-        {
-          type: "button",
-          props: {
-            text: "About",
-            type: "text",
-            size: "small",
-            danger: false,
-            active: false,
-            block: false,
-            actionType: "none",
-            link: "",
-            targetId: "",
-            stateKey: "",
-            stateValue: "",
-          },
-        },
-        {
-          left: 736,
-          top: 18,
-          width: 72,
-          height: 32,
-        },
-      ),
-      place(
-        {
-          type: "avatar",
-          props: {
-            name: "MH",
-            size: 36,
-            shape: "circle",
-          },
-        },
-        {
-          left: 892,
-          top: 16,
-          width: 40,
-          height: 40,
-        },
-      ),
-    ],
-    {
-      backgroundColor: "#ffffff",
-      borderColor: "#e2e8f0",
-      borderRadius: 0,
-      padding: 0,
-      minHeight: 64,
-    },
-  );
-}
-
-/**
- * 创建后台模板的左侧导航区域。
- */
-function createSidebar(activePagePath: string): TemplateComponent {
-  return createPlainContainer(
-    [
-      place(createText("VUESTIC ADMIN", "lg"), {
-        left: 18,
-        top: 18,
-        width: 220,
-        height: 28,
-      }),
-      place(createNavButton("Dashboard", "home", activePagePath === "home"), {
-        left: 12,
-        top: 76,
-        width: 248,
-        height: 44,
-      }),
-      place(createNavButton("Users", "auth", false), {
-        left: 12,
-        top: 128,
-        width: 248,
-        height: 44,
-      }),
-      place(createNavButton("Projects", "project", activePagePath === "project"), {
-        left: 12,
-        top: 180,
-        width: 248,
-        height: 44,
-      }),
-      place(createNavButton("Payments", "project", false), {
-        left: 12,
-        top: 232,
-        width: 248,
-        height: 44,
-      }),
-      place(createNavButton("Auth", "auth", activePagePath === "auth"), {
-        left: 12,
-        top: 284,
-        width: 248,
-        height: 44,
-      }),
-      place(createNavButton("Account preferences", "setting", false), {
-        left: 12,
-        top: 336,
-        width: 248,
-        height: 44,
-      }),
-      place(createNavButton("Application settings", "setting", activePagePath === "setting"), {
-        left: 12,
-        top: 388,
-        width: 248,
-        height: 44,
-      }),
-    ],
-    {
-      backgroundColor: "#ffffff",
-      borderColor: "#e2e8f0",
-      borderRadius: 0,
-      padding: 0,
-      minHeight: CANVAS_HEIGHT,
-    },
-  );
 }
 
 /**
@@ -961,82 +779,30 @@ function createSettingContent(): TemplateComponent[] {
 }
 
 /**
- * 创建带统一后台壳子的页面模板。
+ * 创建仅包含“内容区”的后台页面模板。
  */
-function createShellPage(
+function createContentPage(
   name: string,
   path: string,
-  sectionHint: string,
   content: TemplateComponent[],
 ): TemplatePagePreset {
-  const topBarHeight = 64;
-
   return {
     name,
     path,
     components: [
-      createPlainTwoColumn(
-        [
-          place(createSidebar(path), {
-            left: 0,
-            top: 0,
-            width: "100%",
-            height: "100%",
-          }),
-        ],
-        [
-          place(
-            createPlainContainer(
-              [
-                place(createTopBar(name, sectionHint), {
-                  left: 0,
-                  top: 0,
-                  width: "100%",
-                  height: topBarHeight,
-                }),
-                place(
-                  createPlainContainer(content, {
-                    backgroundColor: "#f1f5f9",
-                    borderColor: "transparent",
-                    borderRadius: 0,
-                    padding: 24,
-                    minHeight: CANVAS_HEIGHT - topBarHeight,
-                  }),
-                  {
-                    left: 0,
-                    top: topBarHeight,
-                    width: "100%",
-                    height: CANVAS_HEIGHT - topBarHeight,
-                  },
-                ),
-              ],
-              {
-                backgroundColor: "transparent",
-                borderColor: "transparent",
-                borderRadius: 0,
-                padding: 0,
-                minHeight: CANVAS_HEIGHT,
-              },
-            ),
-            {
-              left: 0,
-              top: 0,
-              width: "100%",
-              height: "100%",
-            },
-          ),
-        ],
+      place(
+        createPlainContainer(content, {
+          backgroundColor: "#f1f5f9",
+          borderColor: "transparent",
+          borderRadius: 0,
+          padding: 24,
+          minHeight: CANVAS_HEIGHT,
+        }),
         {
-          leftWidth: SIDEBAR_WIDTH,
-          gap: 20,
-          minHeight: CANVAS_HEIGHT - 64,
-          backgroundColor: "#f8fafc",
-          styles: {
-            left: 0,
-            top: 0,
-            width: "100%",
-            height: "100%",
-          },
+          left: 0,
+          top: 0,
+          width: "100%",
+          height: "100%",
         },
       ),
     ],
@@ -1050,7 +816,7 @@ export function createAdminConsoleTemplate(): TemplatePreset {
   return {
     key: "admin-console-workspace",
     name: "通用后台管理模板",
-    desc: "提供左侧导航、顶部用户区和多页面内容区的常规后台骨架，适合作为管理系统模板起点。",
+    desc: "提供多页面内容区的常规后台模板骨架（侧边栏等应用壳由预览/发布端统一固定渲染），适合作为管理系统模板起点。",
     tags: ["后台管理", "多页面", "PC"],
     pageTitle: "Codigo Admin Console",
     pageCategory: "admin",
@@ -1060,10 +826,10 @@ export function createAdminConsoleTemplate(): TemplatePreset {
     canvasHeight: CANVAS_HEIGHT,
     activePagePath: "home",
     pages: [
-      createShellPage("Overview", "home", "业务总览与运行概况", createOverviewContent()),
-      createShellPage("Project", "project", "项目列表与团队分工", createProjectContent()),
-      createShellPage("Auth", "auth", "角色授权与权限审计", createAuthContent()),
-      createShellPage("Setting", "setting", "平台配置与发布策略", createSettingContent()),
+      createContentPage("Overview", "home", createOverviewContent()),
+      createContentPage("Project", "project", createProjectContent()),
+      createContentPage("Auth", "auth", createAuthContent()),
+      createContentPage("Setting", "setting", createSettingContent()),
     ],
   };
 }
