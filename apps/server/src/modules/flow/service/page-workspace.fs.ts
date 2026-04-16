@@ -196,9 +196,23 @@ export class PageWorkspaceFs {
 
   private async resolveWorkspaceBaseDir() {
     const repoRoot = await this.resolveRepoRoot();
-    const workspaceDir = path.join(repoRoot, '.codigo-workspaces', 'pages');
+    const workspaceDir = path.join(repoRoot, '.cache', 'codigo', 'workspaces', 'pages');
+    await this.migrateLegacyWorkspaceDir(repoRoot, workspaceDir);
     await fsp.mkdir(workspaceDir, { recursive: true });
     return workspaceDir;
+  }
+
+  /**
+   * 将旧版根目录下的源码工作区迁移到 `.cache/codigo/workspaces/pages`，避免仓库根目录出现噪音文件夹。
+   */
+  private async migrateLegacyWorkspaceDir(repoRoot: string, targetDir: string) {
+    const legacyDir = path.join(repoRoot, '.codigo-workspaces', 'pages');
+    if (!fs.existsSync(legacyDir) || fs.existsSync(targetDir)) {
+      return;
+    }
+
+    await fsp.mkdir(path.dirname(targetDir), { recursive: true });
+    await fsp.rename(legacyDir, targetDir);
   }
 
   private async resolveRepoRoot() {

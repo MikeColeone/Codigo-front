@@ -40,5 +40,9 @@ tempdist/*
 *.pfx
 .turbo
 
+# workplace
+.codigo-workspaces/*
+.cache/codigo/workspaces/*
+
 # worktrees
-.worktrees/*
+.worktrees
