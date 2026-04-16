@@ -16,13 +16,13 @@ export const DeviceModeSwitch = observer(function DeviceModeSwitch() {
   };
 
   return (
-    <div className="flex items-center gap-0.5 rounded-sm bg-[#3c3c3c] p-0.5">
+    <div className="flex items-center gap-0.5 rounded-sm bg-[var(--ide-active)] p-0.5">
       <Button
         type={store.deviceType === "mobile" ? "primary" : "text"}
         icon={<MobileOutlined />}
         size="small"
         onClick={() => handleSwitch("mobile")}
-        className={`!h-6 !rounded-sm !px-2 !text-[11px] ${store.deviceType === "mobile" ? "!bg-[#0e639c]" : "!text-[#858585]"}`}
+        className={`!h-6 !rounded-sm !px-2 !text-[11px] ${store.deviceType === "mobile" ? "!bg-[var(--ide-accent)] !text-white" : "!text-[var(--ide-text-muted)] hover:!bg-[var(--ide-hover)]"}`}
       >
         移动端
       </Button>
@@ -31,7 +31,7 @@ export const DeviceModeSwitch = observer(function DeviceModeSwitch() {
         icon={<DesktopOutlined />}
         size="small"
         onClick={() => handleSwitch("pc")}
-        className={`!h-6 !rounded-sm !px-2 !text-[11px] ${store.deviceType === "pc" ? "!bg-[#0e639c]" : "!text-[#858585]"}`}
+        className={`!h-6 !rounded-sm !px-2 !text-[11px] ${store.deviceType === "pc" ? "!bg-[var(--ide-accent)] !text-white" : "!text-[var(--ide-text-muted)] hover:!bg-[var(--ide-hover)]"}`}
       >
         桌面端
       </Button>

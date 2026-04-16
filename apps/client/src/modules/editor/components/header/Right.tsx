@@ -44,7 +44,7 @@ export default observer(function Right() {
         placement="bottomRight"
         trigger={["click"]}
       >
-        <button className="rounded-sm border border-[#3c3c3c] bg-[#3c3c3c] px-2 py-0.5 transition-colors hover:bg-[#454545] hover:border-[#555555]">
+        <button className="rounded-sm border border-[var(--ide-control-border)] bg-[var(--ide-control-bg)] px-2 py-0.5 transition-colors hover:bg-[var(--ide-hover)]">
           <Space size={6}>
             <Avatar
               src={
@@ -59,12 +59,12 @@ export default observer(function Right() {
               icon={!storeAuth.details?.head_img && <UserOutlined />}
               className={
                 !storeAuth.details?.head_img
-                  ? "!h-6 !w-6 bg-[#0e639c] border border-[#3c3c3c]"
-                  : "!h-6 !w-6 border border-[#3c3c3c]"
+                  ? "!h-6 !w-6 bg-[var(--ide-accent)] border border-[var(--ide-border)]"
+                  : "!h-6 !w-6 border border-[var(--ide-border)]"
               }
             />
             <div className="text-left">
-              <div className="max-w-[80px] truncate text-[12px] font-medium leading-4 text-[#cccccc]">
+              <div className="max-w-[80px] truncate text-[12px] font-medium leading-4 text-[var(--ide-text)]">
                 {storeAuth.details?.username || "未登录"}
               </div>
             </div>

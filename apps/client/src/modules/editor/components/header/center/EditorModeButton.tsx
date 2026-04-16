@@ -70,8 +70,8 @@ export const EditorModeButton = observer(function EditorModeButton() {
       loading={loading}
       className={`!ml-0 !h-6 !rounded-sm !px-2 !text-[11px] !font-medium ${
         store.editorMode === "webide"
-          ? "!border-[#0e639c] !bg-[#0e639c] !text-white hover:!bg-[#1177bb]"
-          : "!border-[#3c3c3c] !bg-[#3c3c3c] !text-[#cccccc] hover:!bg-[#454545]"
+          ? "!border-[var(--ide-accent)] !bg-[var(--ide-accent)] !text-white hover:opacity-90"
+          : "!border-[var(--ide-control-border)] !bg-[var(--ide-control-bg)] !text-[var(--ide-text)] hover:!bg-[var(--ide-hover)]"
       }`}
       onClick={() => run()}
       disabled={!pageId}

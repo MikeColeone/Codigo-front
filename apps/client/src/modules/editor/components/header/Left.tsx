@@ -21,7 +21,7 @@ export default function Left(props: { title: string }) {
 
   const publicProps = {
     className:
-      "cursor-pointer text-[#858585] hover:text-[#cccccc] transition-colors",
+      "cursor-pointer text-[var(--ide-text-muted)] transition-colors hover:text-[var(--ide-text)]",
     onClick: () => setIsEditState(!isEditState),
   };
 
@@ -32,10 +32,10 @@ export default function Left(props: { title: string }) {
           value={props.title}
           onChange={handleEdit}
           size="small"
-          className="w-52 !rounded-sm !border-[#3c3c3c] !bg-[#3c3c3c] !text-[13px] !text-[#cccccc] focus:!border-[#0e639c]"
+          className="w-52 !rounded-sm !border-[var(--ide-control-border)] !bg-[var(--ide-control-bg)] !text-[13px] !text-[var(--ide-text)] focus:!border-[var(--ide-accent)]"
         />
         <div
-          className="flex h-7 w-7 items-center justify-center rounded-sm bg-[#0e639c] text-white transition-all hover:bg-[#1177bb] cursor-pointer"
+          className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-sm bg-[var(--ide-accent)] text-white transition-opacity hover:opacity-90"
           onClick={() => setIsEditState(false)}
         >
           <CheckOutlined />
@@ -46,7 +46,7 @@ export default function Left(props: { title: string }) {
     return (
       <div className="flex items-center gap-2">
         <button
-          className="flex h-7 w-7 items-center justify-center rounded-sm bg-[#0e639c] text-white transition-all hover:bg-[#1177bb]"
+          className="flex h-7 w-7 items-center justify-center rounded-sm bg-[var(--ide-accent)] text-white transition-opacity hover:opacity-90"
           onClick={() => navigate("/")}
         >
           <span className="font-mono text-xs font-bold">
@@ -56,7 +56,7 @@ export default function Left(props: { title: string }) {
         <WorkspaceSwitcher />
         <div className="min-w-0 ml-1">
           <div className="flex items-center gap-2">
-            <h1 className="truncate text-xs font-medium tracking-tight text-[#cccccc]">
+            <h1 className="truncate text-xs font-medium tracking-tight text-[var(--ide-text)]">
               {displayTitle}
             </h1>
             {!isFlowWorkspace && <EditOutlined {...publicProps} />}

@@ -56,15 +56,15 @@ const EditorComponent: FC<EditorComponentMeta> = ({ icon, name, type }) => {
       onDragStart={handleDragStart}
       className={`group relative overflow-hidden border p-2 text-left select-none transition-all ${
         allowInsert
-          ? "cursor-grab border-[#3c3c3c] bg-[#2d2d2d] hover:border-[#0e639c] hover:bg-[#37373d] active:cursor-grabbing"
-          : "cursor-not-allowed border-[#2d2d2d] bg-[#252526] opacity-40"
+          ? "cursor-grab border-[var(--ide-border)] bg-[var(--ide-control-bg)] hover:border-[var(--ide-accent)] hover:bg-[var(--ide-hover)] active:cursor-grabbing"
+          : "cursor-not-allowed border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] opacity-40"
       }`}
     >
-      <div className="pointer-events-none mb-1.5 flex h-7 w-7 items-center justify-center rounded-sm bg-[#3c3c3c] text-sm text-[#cccccc] transition-colors group-hover:bg-[#0e639c] group-hover:text-white">
+      <div className="pointer-events-none mb-1.5 flex h-7 w-7 items-center justify-center rounded-sm bg-[var(--ide-active)] text-sm text-[var(--ide-text)] transition-colors group-hover:bg-[var(--ide-accent)] group-hover:text-white">
         {icon}
       </div>
       <div className="pointer-events-none">
-        <div className="truncate text-[11px] font-medium text-[#bbbbbb]">{name}</div>
+        <div className="truncate text-[11px] font-medium text-[var(--ide-text)]">{name}</div>
       </div>
     </div>
   );
@@ -96,8 +96,8 @@ export default function ComponentList() {
     key: section.key,
     label: (
       <div className="flex items-center justify-between pr-2">
-        <span className="text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">{section.label}</span>
-        <span className="text-[10px] text-[#858585]">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text)]">{section.label}</span>
+        <span className="text-[10px] text-[var(--ide-text-muted)]">
           {section.items.length}
         </span>
       </div>
@@ -112,33 +112,33 @@ export default function ComponentList() {
   }));
 
   return (
-    <div className="flex h-full flex-col bg-[#252526]">
+    <div className="flex h-full flex-col bg-[var(--ide-sidebar-bg)]">
       <div className="px-2 pb-2">
         <Input
           value={keyword}
           onChange={(event) => setKeyword(event.target.value)}
           placeholder="搜索组件..."
-          prefix={<SearchOutlined className="text-[#858585]" />}
+          prefix={<SearchOutlined className="text-[var(--ide-text-muted)]" />}
           allowClear
           size="small"
-          className="!rounded-sm !border-[#3c3c3c] !bg-[#3c3c3c] !text-[#cccccc]"
+          className="!rounded-sm !border-[var(--ide-control-border)] !bg-[var(--ide-control-bg)] !text-[var(--ide-text)]"
         />
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-3 scrollbar-thin scrollbar-thumb-[#3c3c3c] hover:scrollbar-thumb-[#454545] scrollbar-track-transparent">
+      <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-3 scrollbar-thin scrollbar-thumb-[var(--ide-border)] hover:scrollbar-thumb-[var(--ide-text-muted)] scrollbar-track-transparent">
         {collapseItems.length ? (
           <Collapse
             defaultActiveKey={filteredSections.map((section) => section.key)}
             ghost
             items={collapseItems}
             expandIconPosition="end"
-            className="[&_.ant-collapse-item]:mb-1 [&_.ant-collapse-item]:border-b [&_.ant-collapse-item]:border-[#3c3c3c] [&_.ant-collapse-header]:!items-center [&_.ant-collapse-header]:!px-2 [&_.ant-collapse-header]:!py-1.5 [&_.ant-collapse-header]:text-[12px] [&_.ant-collapse-content-box]:!px-1 [&_.ant-collapse-content-box]:!pb-2 [&_.ant-collapse-content-box]:!pt-1"
+            className="[&_.ant-collapse-item]:mb-1 [&_.ant-collapse-item]:border-b [&_.ant-collapse-item]:border-[var(--ide-border)] [&_.ant-collapse-header]:!items-center [&_.ant-collapse-header]:!px-2 [&_.ant-collapse-header]:!py-1.5 [&_.ant-collapse-header]:text-[12px] [&_.ant-collapse-content-box]:!px-1 [&_.ant-collapse-content-box]:!pb-2 [&_.ant-collapse-content-box]:!pt-1"
           />
         ) : (
-          <div className="border border-dashed border-[#3c3c3c] bg-[#2d2d2d] py-10">
+          <div className="border border-dashed border-[var(--ide-border)] bg-[var(--ide-hover)] py-10">
             <Empty
               image={Empty.PRESENTED_IMAGE_SIMPLE}
-              description={<span className="text-[#858585]">无匹配组件</span>}
+              description={<span className="text-[var(--ide-text-muted)]">无匹配组件</span>}
             />
           </div>
         )}

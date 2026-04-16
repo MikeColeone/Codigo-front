@@ -69,10 +69,10 @@ export default function EditorRightPanel() {
   };
 
   return (
-    <div className="flex h-full min-h-0 w-full flex-col bg-[#252526]">
-      <div className="border-b border-[#3c3c3c] px-4 py-2">
+    <div className="flex h-full min-h-0 w-full flex-col bg-[var(--ide-sidebar-bg)]">
+      <div className="border-b border-[var(--ide-border)] px-4 py-2">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#858585]">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
             MODE: {storePage.editorMode}
           </span>
         </div>
@@ -83,7 +83,7 @@ export default function EditorRightPanel() {
         onChange={handleTabChange}
         items={items}
         centered
-        className="editor-right-tabs flex min-h-0 flex-1 flex-col [&>.ant-tabs-nav]:mb-0 [&>.ant-tabs-nav]:shrink-0 [&>.ant-tabs-nav::before]:border-b-[#3c3c3c] [&>.ant-tabs-content-holder]:min-h-0 [&>.ant-tabs-content-holder]:flex-1 [&>.ant-tabs-content-holder]:overflow-y-auto [&>.ant-tabs-content-holder]:px-3 [&>.ant-tabs-content-holder]:py-2 [&>.ant-tabs-content-holder]:scrollbar-thin [&>.ant-tabs-content-holder]:scrollbar-thumb-[#3c3c3c] hover:[&>.ant-tabs-content-holder]:scrollbar-thumb-[#454545] [&>.ant-tabs-content-holder]:scrollbar-track-transparent [&_.ant-tabs-content]:h-full [&_.ant-tabs-content]:min-h-0 [&_.ant-tabs-tabpane]:h-full [&_.ant-tabs-tabpane]:min-h-0 [&_.ant-tabs-nav-list]:gap-0 [&_.ant-tabs-tab]:!m-0 [&_.ant-tabs-tab]:!p-2 [&_.ant-tabs-tab-active]:text-white [&_.ant-tabs-ink-bar]:bg-[#0e639c]"
+        className="editor-right-tabs flex min-h-0 flex-1 flex-col [&>.ant-tabs-nav]:mb-0 [&>.ant-tabs-nav]:shrink-0 [&>.ant-tabs-nav::before]:border-b-[var(--ide-border)] [&>.ant-tabs-content-holder]:min-h-0 [&>.ant-tabs-content-holder]:flex-1 [&>.ant-tabs-content-holder]:overflow-y-auto [&>.ant-tabs-content-holder]:px-3 [&>.ant-tabs-content-holder]:py-2 [&>.ant-tabs-content-holder]:scrollbar-thin [&>.ant-tabs-content-holder]:scrollbar-thumb-[var(--ide-border)] hover:[&>.ant-tabs-content-holder]:scrollbar-thumb-[var(--ide-text-muted)] [&>.ant-tabs-content-holder]:scrollbar-track-transparent [&_.ant-tabs-content]:h-full [&_.ant-tabs-content]:min-h-0 [&_.ant-tabs-tabpane]:h-full [&_.ant-tabs-tabpane]:min-h-0 [&_.ant-tabs-nav-list]:gap-0 [&_.ant-tabs-tab]:!m-0 [&_.ant-tabs-tab]:!p-2 [&_.ant-tabs-tab-active]:text-[var(--ide-text)] [&_.ant-tabs-ink-bar]:bg-[var(--ide-accent)]"
       />
     </div>
   );

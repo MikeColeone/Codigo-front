@@ -51,7 +51,7 @@ export const PublishButton = observer(function PublishButton() {
   return (
     <Button
       loading={loading}
-      className="!h-6 !rounded-sm !border-none !bg-[#0e639c] !px-2 !text-[11px] !font-medium !text-white hover:!bg-[#1177bb]"
+      className="!h-6 !rounded-sm !border-none !bg-[var(--ide-accent)] !px-2 !text-[11px] !font-medium !text-white hover:opacity-90"
       type="primary"
       onClick={handlePublish}
       disabled={!can("publish")}

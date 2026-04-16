@@ -10,18 +10,18 @@ import { VersionHistoryAction } from "./center/VersionHistoryAction";
 
 const Center = observer(() => {
   return (
-    <div className="flex items-center gap-2 bg-[#2d2d2d] px-1 py-0.5">
+    <div className="flex items-center gap-2 bg-[var(--ide-hover)] px-1 py-0.5">
       <DeviceModeSwitch />
-      <div className="hidden h-4 w-px bg-[#3c3c3c] xl:block" />
+      <div className="hidden h-4 w-px bg-[var(--ide-border)] xl:block" />
       <CanvasSettings />
-      <div className="hidden h-4 w-px bg-[#3c3c3c] lg:block" />
+      <div className="hidden h-4 w-px bg-[var(--ide-border)] lg:block" />
       <div className="flex items-center gap-0.5">
         <TemplateLibraryAction />
         <VersionHistoryAction />
         <PreviewDraftActions />
         <CanvasEditActions />
       </div>
-      <div className="hidden h-4 w-px bg-[#3c3c3c] sm:block" />
+      <div className="hidden h-4 w-px bg-[var(--ide-border)] sm:block" />
       <EditorModeButton />
       <PublishButton />
     </div>

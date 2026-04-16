@@ -26,10 +26,10 @@ const EditorPageManager =  observer(function ({
 
   if (embedded) {
     return (
-      <div className="flex h-full min-h-0 flex-col overflow-hidden bg-[#252526]">
-        <div className="flex items-center justify-between border-b border-[#3c3c3c] px-4 py-2">
+      <div className="flex h-full min-h-0 flex-col overflow-hidden bg-[var(--ide-sidebar-bg)]">
+        <div className="flex items-center justify-between border-b border-[var(--ide-border)] px-4 py-2">
           <div>
-            <div className="text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">页面管理</div>
+            <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">页面管理</div>
           </div>
           <Button
             type="primary"
@@ -42,7 +42,7 @@ const EditorPageManager =  observer(function ({
           </Button>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-2 py-2 scrollbar-thin scrollbar-thumb-[#3c3c3c] hover:scrollbar-thumb-[#454545] scrollbar-track-transparent">
+        <div className="min-h-0 flex-1 overflow-y-auto px-2 py-2 scrollbar-thin scrollbar-thumb-[var(--ide-border)] hover:scrollbar-thumb-[var(--ide-text-muted)] scrollbar-track-transparent">
           <div className="space-y-1">
             {pages.map((page, index) => {
               const isActive = page.id === activePage?.id;
@@ -54,12 +54,18 @@ const EditorPageManager =  observer(function ({
                   onClick={() => switchEditorPage(page.id)}
                   className={`w-full border-0 px-2 py-1.5 text-left transition-colors ${
                     isActive
-                      ? "bg-[#37373d] text-white"
-                      : "text-[#cccccc] hover:bg-[#2a2d2e]"
+                      ? "bg-[var(--ide-active)] text-[var(--ide-text)]"
+                      : "text-[var(--ide-text)] hover:bg-[var(--ide-hover)]"
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <FileTextOutlined className={isActive ? "text-[#007acc]" : "text-[#858585]"} />
+                    <FileTextOutlined
+                      className={
+                        isActive
+                          ? "text-[var(--ide-accent)]"
+                          : "text-[var(--ide-text-muted)]"
+                      }
+                    />
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-[12px] font-medium">
                         {page.name}
@@ -76,9 +82,9 @@ const EditorPageManager =  observer(function ({
         </div>
 
         {activePage ? (
-          <div className="border-t border-[#3c3c3c] p-3">
+          <div className="border-t border-[var(--ide-border)] p-3">
             <div className="space-y-2">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-[#858585]">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
                 当前页面配置
               </div>
               <Input
@@ -90,7 +96,7 @@ const EditorPageManager =  observer(function ({
                     name: event.target.value,
                   })
                 }
-                className="!bg-[#3c3c3c] !border-[#3c3c3c] !text-[#cccccc]"
+                className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
               />
               <Input
                 key={`${activePage.id}-${activePage.path}-embedded-path`}
@@ -101,7 +107,7 @@ const EditorPageManager =  observer(function ({
                     path: event.target.value,
                   })
                 }
-                className="!bg-[#3c3c3c] !border-[#3c3c3c] !text-[#cccccc]"
+                className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
               />
             </div>
           </div>

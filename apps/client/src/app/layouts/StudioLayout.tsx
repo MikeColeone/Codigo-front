@@ -7,14 +7,14 @@ export const StudioLayout = observer(() => {
   return (
     <ConfigProvider
       theme={{
-        algorithm: theme.darkAlgorithm,
+        algorithm: theme.defaultAlgorithm,
         token: {
-          colorPrimary: "#0e639c",
-          colorBgContainer: "#1e1e1e",
-          colorBgLayout: "#1e1e1e",
-          colorBorder: "#3c3c3c",
-          colorText: "#cccccc",
-          colorTextSecondary: "#858585",
+          colorPrimary: "var(--ide-accent)",
+          colorBgContainer: "var(--ide-sidebar-bg)",
+          colorBgLayout: "var(--ide-bg)",
+          colorBorder: "var(--ide-border)",
+          colorText: "var(--ide-text)",
+          colorTextSecondary: "var(--ide-text-muted)",
           borderRadius: 2,
           fontSize: 13,
         },
@@ -24,22 +24,22 @@ export const StudioLayout = observer(() => {
             controlHeight: 28,
           },
           Layout: {
-            bodyBg: "#1e1e1e",
-            headerBg: "#2d2d2d",
-            siderBg: "#252526",
+            bodyBg: "var(--ide-bg)",
+            headerBg: "var(--ide-header-bg)",
+            siderBg: "var(--ide-sidebar-bg)",
           },
           Tabs: {
-            itemColor: "#858585",
-            itemSelectedColor: "#ffffff",
-            itemHoverColor: "#cccccc",
-            cardBg: "#2d2d2d",
-            headerBg: "#252526",
+            itemColor: "var(--ide-text-muted)",
+            itemSelectedColor: "var(--ide-text)",
+            itemHoverColor: "var(--ide-text)",
+            cardBg: "var(--ide-header-bg)",
+            headerBg: "var(--ide-sidebar-bg)",
           },
         },
       }}
     >
-      <div className="flex flex-col h-full bg-[#1e1e1e] text-[#cccccc] overflow-hidden font-sans">
-        <header className="relative z-20 flex h-[35px] items-center border-b border-[#3c3c3c] bg-[#2d2d2d] px-2 shadow-sm">
+      <div className="studio-root studio-theme-light flex h-full flex-col overflow-hidden bg-[var(--ide-bg)] text-[var(--ide-text)] font-sans">
+        <header className="relative z-20 flex h-[var(--header-height)] items-center border-b border-[var(--ide-border)] bg-[var(--ide-header-bg)] px-2 shadow-sm">
           <div className="w-full">
             <EditorHeader />
           </div>

@@ -63,18 +63,18 @@ export const EditorOutlineTree = observer(function EditorOutlineTree() {
         style={{ marginLeft: depth * 12 }}
       >
         {depth > 0 ? (
-          <span className="pointer-events-none absolute -left-2 top-0 h-full w-px bg-[#3c3c3c]" />
+          <span className="pointer-events-none absolute -left-2 top-0 h-full w-px bg-[var(--ide-border)]" />
         ) : null}
         <button
           type="button"
           onClick={() => setCurrentComponent(node.id)}
           className={`mb-0.5 flex w-full items-center gap-2 px-2 py-1 text-left transition-colors ${
             isActive
-              ? "bg-[#37373d] text-white"
-              : "text-[#cccccc] hover:bg-[#2a2d2e]"
+              ? "bg-[var(--ide-active)] text-[var(--ide-text)]"
+              : "text-[var(--ide-text)] hover:bg-[var(--ide-hover)]"
           }`}
         >
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center text-[10px] text-[#858585]">
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center text-[10px] text-[var(--ide-text-muted)]">
             <NodeIndexOutlined />
           </span>
           <span className="min-w-0 flex-1">
@@ -92,30 +92,30 @@ export const EditorOutlineTree = observer(function EditorOutlineTree() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[#252526]">
-      <div className="border-b border-[#3c3c3c] px-3 py-2">
+    <div className="flex h-full min-h-0 flex-col bg-[var(--ide-sidebar-bg)]">
+      <div className="border-b border-[var(--ide-border)] px-3 py-2">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <div className="text-[10px] font-bold uppercase tracking-wider text-[#858585]">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
               Outline Tree
             </div>
           </div>
-          <span className="text-[10px] text-[#858585]">
+          <span className="text-[10px] text-[var(--ide-text-muted)]">
             {componentTree.length} Nodes
           </span>
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-1 py-1 scrollbar-thin scrollbar-thumb-[#3c3c3c] hover:scrollbar-thumb-[#454545] scrollbar-track-transparent">
+      <div className="min-h-0 flex-1 overflow-y-auto px-1 py-1 scrollbar-thin scrollbar-thumb-[var(--ide-border)] hover:scrollbar-thumb-[var(--ide-text-muted)] scrollbar-track-transparent">
         {componentTree.length ? (
           <div className="space-y-0">
             {componentTree.map((node) => renderTree(node))}
           </div>
         ) : (
-          <div className="flex h-full items-center justify-center border border-dashed border-[#3c3c3c] bg-[#2d2d2d] py-10">
+          <div className="flex h-full items-center justify-center border border-dashed border-[var(--ide-border)] bg-[var(--ide-hover)] py-10">
             <Empty
               image={Empty.PRESENTED_IMAGE_SIMPLE}
-              description={<span className="text-[#858585]">No Components</span>}
+              description={<span className="text-[var(--ide-text-muted)]">No Components</span>}
             />
           </div>
         )}
@@ -129,14 +129,14 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
     if (!store.currentCompConfig)
       return (
         <div className="p-4">
-          <div className="border border-dashed border-[#3c3c3c] bg-[#2d2d2d] p-5 text-center">
-            <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-sm bg-[#3c3c3c] text-xl text-[#858585]">
+          <div className="border border-dashed border-[var(--ide-border)] bg-[var(--ide-hover)] p-5 text-center">
+            <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-sm bg-[var(--ide-active)] text-xl text-[var(--ide-text-muted)]">
               <AppstoreOutlined />
             </div>
-            <div className="mb-1.5 text-xs font-semibold text-[#cccccc]">
+            <div className="mb-1.5 text-xs font-semibold text-[var(--ide-text)]">
               暂未选中组件
             </div>
-            <div className="mb-4 text-[11px] leading-relaxed text-[#858585]">
+            <div className="mb-4 text-[11px] leading-relaxed text-[var(--ide-text-muted)]">
               在画布中点击组件进行配置
             </div>
             <Empty
@@ -273,16 +273,16 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
 
     return (
       <div className="component-fields-container space-y-2 px-3 pb-8">
-        <div className="border-b border-[#3c3c3c] py-2">
+        <div className="border-b border-[var(--ide-border)] py-2">
           <div className="mb-1 flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#007acc]">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--ide-accent)]">
               Active Component
             </span>
-            <span className="text-[10px] text-[#858585] font-mono">
+            <span className="text-[10px] font-mono text-[var(--ide-text-muted)]">
               {config.id.slice(-6)}
             </span>
           </div>
-          <div className="text-[12px] font-medium text-white">
+          <div className="text-[12px] font-medium text-[var(--ide-text)]">
             {config.type}
           </div>
         </div>
@@ -291,19 +291,21 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
           defaultActiveKey={["props", "events", "structure", "styles"]}
           ghost
           expandIconPosition="end"
-          className="[&_.ant-collapse-item]:mb-1 [&_.ant-collapse-item]:border-b [&_.ant-collapse-item]:border-[#3c3c3c] [&_.ant-collapse-header]:!px-1 [&_.ant-collapse-header]:!py-2 [&_.ant-collapse-content-box]:!px-1 [&_.ant-collapse-content-box]:!pb-3 [&_.ant-collapse-content-box]:!pt-1"
+          className="[&_.ant-collapse-item]:mb-1 [&_.ant-collapse-item]:border-b [&_.ant-collapse-item]:border-[var(--ide-border)] [&_.ant-collapse-header]:!px-1 [&_.ant-collapse-header]:!py-2 [&_.ant-collapse-content-box]:!px-1 [&_.ant-collapse-content-box]:!pb-3 [&_.ant-collapse-content-box]:!pt-1"
         >
           <Panel
             header={
-              <div className="text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">组件属性</div>
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text)]">
+                组件属性
+              </div>
             }
             key="props"
           >
-            <div className="bg-[#2d2d2d] p-2 border border-[#3c3c3c] rounded-sm">
+            <div className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] p-2">
               {ComponentProps ? (
                 <ComponentProps {...toJS(config.props)} id={config.id} />
               ) : (
-                <div className="py-4 text-center text-[11px] text-[#858585]">
+                <div className="py-4 text-center text-[11px] text-[var(--ide-text-muted)]">
                   无属性配置
                 </div>
               )}
@@ -312,19 +314,21 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
 
           <Panel
             header={
-              <div className="text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">交互事件</div>
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text)]">
+                交互事件
+              </div>
             }
             key="events"
           >
             <div className="space-y-2">
-              <div className="bg-[#2d2d2d] p-2 border border-[#3c3c3c] rounded-sm">
+              <div className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] p-2">
                 <div className="flex flex-wrap gap-1">
                   {actionTypeOptions.map((item) => (
                     <Button
                       key={item.value}
                       size="small"
                       onClick={() => addEventAction(item.value)}
-                      className="!text-[11px] !bg-[#3c3c3c] !border-[#3c3c3c] !text-[#cccccc] hover:!bg-[#454545]"
+                      className="!bg-[var(--ide-control-bg)] !text-[11px] !text-[var(--ide-text)] !border-[var(--ide-control-border)] hover:!bg-[var(--ide-active)]"
                     >
                       {item.label}
                     </Button>
@@ -336,10 +340,10 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
                 eventActions.map((action, index) => (
                   <div
                     key={`${action.type}-${index}`}
-                    className="bg-[#2d2d2d] p-2 border border-[#3c3c3c] rounded-sm"
+                    className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] p-2"
                   >
                     <div className="mb-2 flex items-center justify-between gap-2">
-                      <span className="text-[10px] font-bold text-[#007acc]">
+                      <span className="text-[10px] font-bold text-[var(--ide-accent)]">
                         #{index + 1}
                       </span>
                       <Select
@@ -374,7 +378,7 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
                             })
                           }
                           placeholder="键"
-                          className="!bg-[#3c3c3c] !border-[#3c3c3c] !text-[#cccccc]"
+                          className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
                         />
                         <Input
                           value={String(action.value ?? "")}
@@ -385,7 +389,7 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
                             })
                           }
                           placeholder="值"
-                          className="!bg-[#3c3c3c] !border-[#3c3c3c] !text-[#cccccc]"
+                          className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
                         />
                       </div>
                     ) : null}
@@ -418,7 +422,7 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
                             })
                           }
                           placeholder="路径"
-                          className="!bg-[#3c3c3c] !border-[#3c3c3c] !text-[#cccccc]"
+                          className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
                         />
                       </div>
                     ) : null}
@@ -434,7 +438,7 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
                             })
                           }
                           placeholder="https://..."
-                          className="!bg-[#3c3c3c] !border-[#3c3c3c] !text-[#cccccc]"
+                          className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
                         />
                         <Select
                           value={action.target ?? "_blank"}
@@ -461,13 +465,13 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
                           })
                         }
                         placeholder="锚点 ID"
-                        className="!bg-[#3c3c3c] !border-[#3c3c3c] !text-[#cccccc]"
+                        className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
                       />
                     ) : null}
                   </div>
                 ))
               ) : (
-                <div className="py-4 text-center text-[11px] text-[#858585]">
+                <div className="py-4 text-center text-[11px] text-[var(--ide-text-muted)]">
                   无交互事件
                 </div>
               )}
@@ -476,32 +480,34 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
 
           <Panel
             header={
-              <div className="text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">结构与插槽</div>
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text)]">
+                结构与插槽
+              </div>
             }
             key="structure"
           >
             <div className="space-y-1.5">
               <div className="grid grid-cols-2 gap-1.5">
-                <div className="bg-[#2d2d2d] p-2 border border-[#3c3c3c] rounded-sm">
-                  <div className="mb-1 text-[10px] text-[#858585]">插槽</div>
-                  <div className="text-[12px] font-medium text-[#cccccc]">
+                <div className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] p-2">
+                  <div className="mb-1 text-[10px] text-[var(--ide-text-muted)]">插槽</div>
+                  <div className="text-[12px] font-medium text-[var(--ide-text)]">
                     {config.slot ?? "root"}
                   </div>
                 </div>
-                <div className="bg-[#2d2d2d] p-2 border border-[#3c3c3c] rounded-sm">
-                  <div className="mb-1 text-[10px] text-[#858585]">子节点</div>
-                  <div className="text-[12px] font-medium text-[#cccccc]">
+                <div className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] p-2">
+                  <div className="mb-1 text-[10px] text-[var(--ide-text-muted)]">子节点</div>
+                  <div className="text-[12px] font-medium text-[var(--ide-text)]">
                     {childrenCount}
                   </div>
                 </div>
               </div>
 
-              <div className="bg-[#2d2d2d] p-2 border border-[#3c3c3c] rounded-sm">
-                <div className="mb-1 text-[11px] font-bold text-[#bbbbbb] flex items-center gap-1.5">
-                  <NodeIndexOutlined className="text-[#007acc]" />
+              <div className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] p-2">
+                <div className="mb-1 flex items-center gap-1.5 text-[11px] font-bold text-[var(--ide-text)]">
+                  <NodeIndexOutlined className="text-[var(--ide-accent)]" />
                   容器信息
                 </div>
-                <div className="space-y-1 text-[11px] text-[#858585]">
+                <div className="space-y-1 text-[11px] text-[var(--ide-text-muted)]">
                   <div>类型：{containerMeta.isContainer ? "容器" : "普通"}</div>
                   <div>
                     插槽：{containerMeta.isContainer
@@ -515,7 +521,9 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
 
           <Panel
             header={
-              <div className="text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">布局与间距</div>
+              <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text)]">
+                布局与间距
+              </div>
             }
             key="styles"
           >
@@ -523,17 +531,17 @@ const ComponentFields: FC<{ store: TEditorComponentsStore }> = observer(
               layout="vertical"
               initialValues={initialValues}
               onValuesChange={handleStyleChange}
-              className="[&_.ant-form-item]:mb-2 [&_.ant-form-item-label>label]:text-[11px] [&_.ant-form-item-label>label]:text-[#858585] [&_.ant-input-number]:!h-7 [&_.ant-input-number]:!w-full [&_.ant-input-number]:!rounded-sm [&_.ant-input-number]:!border-[#3c3c3c] [&_.ant-input-number]:!bg-[#3c3c3c] [&_.ant-input-number-input]:!text-[#cccccc]"
+              className="[&_.ant-form-item]:mb-2 [&_.ant-form-item-label>label]:text-[11px] [&_.ant-form-item-label>label]:text-[var(--ide-text-muted)] [&_.ant-input-number]:!h-7 [&_.ant-input-number]:!w-full [&_.ant-input-number]:!rounded-sm [&_.ant-input-number]:!border-[var(--ide-control-border)] [&_.ant-input-number]:!bg-[var(--ide-control-bg)] [&_.ant-input-number-input]:!text-[var(--ide-text)]"
             >
               <div className="space-y-1.5">
                 {styleSections.map((section) => (
                   <div
                     key={section.key}
-                    className="bg-[#2d2d2d] p-2 border border-[#3c3c3c] rounded-sm"
+                    className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] p-2"
                   >
                     <div className="mb-2 flex items-center gap-2">
-                      <span className="text-[#007acc]">{section.icon}</span>
-                      <div className="text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">
+                      <span className="text-[var(--ide-accent)]">{section.icon}</span>
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text)]">
                         {section.title}
                       </div>
                     </div>

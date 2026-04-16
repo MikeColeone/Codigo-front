@@ -44,12 +44,12 @@ export function WorkspaceSwitcher() {
       placement="bottomLeft"
       trigger={["click"]}
     >
-      <button className="flex h-6 items-center gap-2 rounded-sm border border-[#3c3c3c] bg-[#3c3c3c] px-2 text-[12px] font-medium text-[#cccccc] transition-colors hover:bg-[#454545] hover:border-[#555555]">
-        <span className="text-xs leading-none text-[#0e639c]">
+      <button className="flex h-6 items-center gap-2 rounded-sm border border-[var(--ide-control-border)] bg-[var(--ide-control-bg)] px-2 text-[12px] font-medium text-[var(--ide-text)] transition-colors hover:bg-[var(--ide-hover)]">
+        <span className="text-xs leading-none text-[var(--ide-accent)]">
           {activeWorkspace.icon}
         </span>
         <span>{activeWorkspace.label}</span>
-        <DownOutlined className="text-[8px] text-[#858585]" />
+        <DownOutlined className="text-[8px] text-[var(--ide-text-muted)]" />
       </button>
     </Dropdown>
   );

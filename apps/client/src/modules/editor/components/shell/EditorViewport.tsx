@@ -45,9 +45,9 @@ function PanelResizeHandle({
     <div
       role="separator"
       onPointerDown={onPointerDown}
-      className={`group relative z-30 w-1 shrink-0 cursor-col-resize bg-transparent touch-none hover:bg-[#0e639c] transition-colors`}
+      className="group relative z-30 w-1 shrink-0 cursor-col-resize bg-transparent touch-none transition-colors hover:bg-[var(--ide-accent)]"
     >
-      <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-[#3c3c3c]" />
+      <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-[var(--ide-border)]" />
     </div>
   );
 }
@@ -59,7 +59,7 @@ function EditorStage({
 }: EditorViewportProps) {
   if (storePage.editorMode === "code") {
     return (
-      <div className="relative z-0 h-full w-full overflow-hidden border border-[#3c3c3c] bg-[#1e1e1e]">
+      <div className="relative z-0 h-full w-full overflow-hidden border border-[var(--ide-border)] bg-[var(--ide-bg)]">
         <SandboxCanvas />
       </div>
     );
@@ -70,7 +70,7 @@ function EditorStage({
       className={`editor-canvas-container relative z-0 overflow-hidden bg-white text-left transition-all duration-300 ease-out shadow-lg ${
         storePage.deviceType === "mobile"
           ? "border-[12px] border-[#000000] rounded-[32px]"
-          : "border border-[#3c3c3c]"
+          : "border border-[var(--ide-border)]"
       }`}
       style={{
         width: storePage.canvasWidth,
@@ -330,11 +330,11 @@ export const EditorViewport = observer(function EditorViewport(
   }
 
   return (
-    <div className="relative isolate flex flex-col h-full w-full overflow-hidden bg-[#1e1e1e] text-[#cccccc]">
+    <div className="relative isolate flex h-full w-full flex-col overflow-hidden bg-[var(--ide-bg)] text-[var(--ide-text)]">
       <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Activity Bar (Left Rail) */}
         <div
-          className="flex h-full shrink-0 flex-col items-center bg-[#333333] py-2 z-30"
+          className="z-30 flex h-full shrink-0 flex-col items-center bg-[var(--ide-activitybar-bg)] py-2"
           style={{ width: LEFT_PANEL_RAIL_WIDTH }}
         >
           <div className="flex flex-col gap-1 w-full">
@@ -347,10 +347,10 @@ export const EditorViewport = observer(function EditorViewport(
                   type="button"
                   onClick={() => setActiveLeftSection(item.key)}
                   title={item.label}
-                  className={`relative flex h-12 w-full items-center justify-center transition-colors hover:text-white ${
+                  className={`relative flex h-12 w-full items-center justify-center transition-colors hover:text-[var(--ide-text)] ${
                     isActive
-                      ? "text-white border-l-2 border-[#007acc]"
-                      : "text-[#858585]"
+                      ? "border-l-2 border-[var(--ide-accent)] text-[var(--ide-text)]"
+                      : "text-[var(--ide-text-muted)]"
                   }`}
                 >
                   {item.icon}
@@ -362,13 +362,13 @@ export const EditorViewport = observer(function EditorViewport(
 
         {/* Side Bar (Panel) */}
         <div
-          className="relative z-20 flex shrink-0 overflow-hidden border-r border-[#3c3c3c] bg-[#252526] transition-[width] duration-150"
+          className="relative z-20 flex shrink-0 overflow-hidden border-r border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] transition-[width] duration-150"
           style={{ width: effectiveLeftPanelWidth - LEFT_PANEL_RAIL_WIDTH }}
         >
           <div
             className="flex min-h-0 flex-1 flex-col"
           >
-            <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">
+            <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
               {activeLeftSection === "pages" ? "资源管理器" : "组件库"}
             </div>
             <div className="flex-1 overflow-auto">
@@ -382,10 +382,10 @@ export const EditorViewport = observer(function EditorViewport(
 
           {showOutlineTree && (
             <div
-              className="min-h-0 shrink-0 border-l border-[#3c3c3c] bg-[#252526]"
+              className="min-h-0 shrink-0 border-l border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)]"
               style={{ width: outlinePanelWidth }}
             >
-              <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">
+              <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
                 大纲
               </div>
               <div className="flex-1 overflow-auto">
@@ -403,9 +403,9 @@ export const EditorViewport = observer(function EditorViewport(
         )}
 
         {/* Main Editor Area */}
-        <div className="relative z-0 flex min-w-0 flex-1 flex-col overflow-hidden bg-[#1e1e1e]">
+        <div className="relative z-0 flex min-w-0 flex-1 flex-col overflow-hidden bg-[var(--ide-bg)]">
           {/* Editor Grid Background */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(var(--ide-grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--ide-grid-line)_1px,transparent_1px)] bg-[size:20px_20px]" />
           
           <div className="relative z-10 flex-1 overflow-hidden">
             <div
@@ -441,10 +441,10 @@ export const EditorViewport = observer(function EditorViewport(
 
         {/* Right Panel */}
         <div
-          className="relative z-20 flex shrink-0 flex-col border-l border-[#3c3c3c] bg-[#252526] transition-[width] duration-150"
+          className="relative z-20 flex shrink-0 flex-col border-l border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] transition-[width] duration-150"
           style={{ width: rightPanelWidth }}
         >
-          <div className="flex h-9 items-center px-4 border-b border-[#3c3c3c] text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">
+          <div className="flex h-9 items-center border-b border-[var(--ide-border)] px-4 text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
             属性设置
           </div>
           <div className="flex min-h-0 w-full flex-1 flex-col overflow-auto">
@@ -454,7 +454,7 @@ export const EditorViewport = observer(function EditorViewport(
       </div>
 
       {/* Status Bar */}
-      <div className="flex h-[22px] flex-shrink-0 items-center justify-between bg-[#007acc] px-3 text-[11px] text-white z-40 select-none">
+      <div className="z-40 flex h-[var(--status-bar-height)] flex-shrink-0 select-none items-center justify-between bg-[var(--ide-statusbar-bg)] px-3 text-[11px] text-[var(--ide-statusbar-text)]">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5 hover:bg-white/10 px-1 cursor-default">
             <span className="opacity-80 font-mono">WORKSPACE:</span>

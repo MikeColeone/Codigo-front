@@ -30,7 +30,7 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
         {
           label: "搭建场景",
           node: (
-            <div className="bg-[#2d2d2d] border border-[#3c3c3c] px-3 py-2 text-[11px] leading-relaxed text-[#858585] rounded-sm">
+            <div className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] px-3 py-2 text-[11px] leading-relaxed text-[var(--ide-text-muted)]">
               当前编辑器已收口为管理系统搭建场景。
             </div>
           ),
@@ -42,7 +42,7 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
             <Input
               size="small"
               placeholder="例如：客户列表页"
-              className="!bg-[#3c3c3c] !border-[#3c3c3c] !text-[#cccccc]"
+              className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
             />
           ),
         },
@@ -54,7 +54,7 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
               size="small"
               placeholder="输入用途说明"
               autoSize={{ minRows: 2, maxRows: 4 }}
-              className="!bg-[#3c3c3c] !border-[#3c3c3c] !text-[#cccccc]"
+              className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
             />
           ),
         },
@@ -70,7 +70,11 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
           label: "关键字",
           name: "tdk",
           node: (
-            <Input size="small" placeholder="admin, list" className="!bg-[#3c3c3c] !border-[#3c3c3c] !text-[#cccccc]" />
+            <Input
+              size="small"
+              placeholder="admin, list"
+              className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
+            />
           ),
         },
       ],
@@ -94,16 +98,16 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
 
   return (
     <div className="space-y-2 px-3 pb-8">
-      <div className="border-b border-[#3c3c3c] py-2">
+      <div className="border-b border-[var(--ide-border)] py-2">
         <div className="mb-1 flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#007acc]">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--ide-accent)]">
             Global Configuration
           </span>
-          <span className="text-[10px] text-[#858585]">
+          <span className="text-[10px] text-[var(--ide-text-muted)]">
             {store.deviceType === "mobile" ? "MOBILE" : "DESKTOP"}
           </span>
         </div>
-        <div className="text-[12px] font-medium text-white">
+        <div className="text-[12px] font-medium text-[var(--ide-text)]">
           {store.title || "未命名页面"}
         </div>
       </div>
@@ -113,24 +117,24 @@ const GlobalFields: FC<{ store: TStorePage }> = observer(({ store }) => {
         layout="vertical"
         initialValues={store}
         onValuesChange={handleValuesChange}
-        className="[&_.ant-form-item]:mb-3 [&_.ant-form-item-label>label]:text-[11px] [&_.ant-form-item-label>label]:text-[#858585]"
+        className="[&_.ant-form-item]:mb-3 [&_.ant-form-item-label>label]:text-[11px] [&_.ant-form-item-label>label]:text-[var(--ide-text-muted)]"
       >
         <div className="space-y-2">
           {fieldGroups.map((group) => (
             <div
               key={group.key}
-              className="bg-[#2d2d2d] p-3 border border-[#3c3c3c] rounded-sm"
+              className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] p-3"
             >
               <div className="mb-2 flex items-start gap-2">
-                <span className="text-[#007acc] mt-0.5">
+                <span className="mt-0.5 text-[var(--ide-accent)]">
                   {group.icon}
                 </span>
                 <div>
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-[#bbbbbb]">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text)]">
                     {group.title}
                   </div>
                   {group.description && (
-                    <div className="text-[10px] text-[#858585]">
+                    <div className="text-[10px] text-[var(--ide-text-muted)]">
                       {group.description}
                     </div>
                   )}
