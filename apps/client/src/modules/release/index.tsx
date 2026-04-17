@@ -3,6 +3,7 @@ import { useRequest } from "ahooks";
 import { Empty, FloatButton, QRCode, Result, Spin } from "antd";
 import type { ComponentNode, IPageSchema } from "@codigo/schema";
 import { useEffect, useMemo, useState } from "react";
+import type { AxiosError } from "axios";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { getPublishedPage } from "@/modules/editor/api/low-code";
 import {
@@ -176,6 +177,9 @@ export default function Release() {
       ready: isValidPageId,
     },
   );
+  const errorMessage =
+    ((error as AxiosError<{ msg?: string }>)?.response?.data?.msg as string | undefined) ??
+    "";
 
   const schema = useMemo(() => resolveSchemaFromReleasePayload(data), [data]);
   const activePage = useMemo(
@@ -221,8 +225,16 @@ export default function Release() {
       return (
         <Result
           status="error"
-          title="发布页加载失败"
-          subTitle="未能读取已发布内容，请确认页面已成功发布后重试"
+          title={
+            errorMessage.includes("过期")
+              ? "发布链接已过期"
+              : errorMessage.includes("登录")
+                ? "当前内容需要登录"
+                : errorMessage.includes("不可访问")
+                  ? "当前内容无权访问"
+                  : "发布页加载失败"
+          }
+          subTitle={errorMessage || "未能读取已发布内容，请确认页面已成功发布后重试"}
         />
       );
     }

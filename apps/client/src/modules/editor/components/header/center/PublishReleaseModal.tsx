@@ -22,8 +22,10 @@ import {
 
 interface PublishReleaseModalProps {
   open: boolean;
+  loading?: boolean;
   shareUrl: string;
   pageName: string;
+  onSubmit: (values: PublishReleaseModalValues) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -32,8 +34,10 @@ interface PublishReleaseModalProps {
  */
 export function PublishReleaseModal({
   open,
+  loading = false,
   shareUrl,
   pageName,
+  onSubmit,
   onCancel,
 }: PublishReleaseModalProps) {
   const [form] = Form.useForm<PublishReleaseModalValues>();
@@ -83,16 +87,25 @@ export function PublishReleaseModal({
     window.open(shareUrl, "_blank", "noopener,noreferrer");
   }
 
+  /**
+   * 提交当前发布配置。
+   */
+  async function handleSubmit() {
+    const values = await form.validateFields();
+    await onSubmit(values);
+  }
+
   return (
     <Modal
       open={open}
       title="发布成功"
       onCancel={onCancel}
+      confirmLoading={loading}
       footer={
         <Space size={8}>
           <Button onClick={handleCopyLink}>复制链接</Button>
           <Button onClick={handleOpenLink}>打开链接</Button>
-          <Button type="primary" onClick={onCancel}>
+          <Button type="primary" loading={loading} onClick={handleSubmit}>
             完成
           </Button>
         </Space>
@@ -133,7 +146,7 @@ export function PublishReleaseModal({
                 buttonStyle="solid"
                 options={[
                   { label: "公开访问", value: "public" },
-                  { label: "私密访问", value: "private", disabled: true },
+                  { label: "私密访问", value: "private" },
                 ]}
               />
             </Form.Item>
@@ -171,8 +184,8 @@ export function PublishReleaseModal({
         <Alert
           type="info"
           showIcon
-          message="配置预留"
-          description={`当前已提供过期时间与权限配置 UI，默认公开访问；实际鉴权与失效控制待服务端字段接入后生效。当前状态：${expireSummary}`}
+          message="访问说明"
+          description={`当前状态：${expireSummary}；公开访问可直接打开链接，私密访问仅允许发布者登录后访问。`}
         />
       </div>
     </Modal>

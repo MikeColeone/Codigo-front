@@ -10,9 +10,13 @@ import type { MenuProps } from "antd";
 import { useRequest } from "ahooks";
 import { Button, Dropdown, message, Space } from "antd";
 import { observer } from "mobx-react-lite";
-import { postRelease } from "@/modules/editor/api/low-code";
+import {
+  postRelease,
+  updatePublishedPageConfig,
+} from "@/modules/editor/api/low-code";
 import { PublishReleaseModal } from "@/modules/editor/components/header/center/PublishReleaseModal";
 import { PublishTemplateModal } from "@/modules/editor/components/header/center/PublishTemplateModal";
+import type { PublishReleaseModalValues } from "@/modules/editor/components/header/center/publishReleaseModal.config";
 import {
   useEditorComponents,
   useEditorPage,
@@ -31,6 +35,7 @@ export const PublishButton = observer(function PublishButton() {
   const { addOperationLog, can, ensurePermission } = useEditorPermission();
   const { store: authStore } = useStoreAuth();
   const [publishResult, setPublishResult] = useState({
+    pageId: 0,
     open: false,
     shareUrl: "",
     pageName: "",
@@ -49,6 +54,7 @@ export const PublishButton = observer(function PublishButton() {
       onSuccess: ({ data }) => {
         const shareUrl = buildReleaseShareUrl(Number(data));
         setPublishResult({
+          pageId: Number(data),
           open: true,
           shareUrl,
           pageName: store.title?.trim() || "未命名应用",
@@ -63,6 +69,30 @@ export const PublishButton = observer(function PublishButton() {
       manual: true,
     },
   );
+  const { runAsync: runUpdateReleaseConfig, loading: publishConfigLoading } =
+    useRequest(
+      async (values: PublishReleaseModalValues) => {
+        if (!publishResult.pageId) {
+          throw new Error("缺少发布页面编号");
+        }
+        const expireAt =
+          values.expirePreset === "never"
+            ? null
+            : values.expirePreset === "7d"
+              ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+              : values.expirePreset === "30d"
+                ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+                : values.expireAt?.toISOString() ?? null;
+
+        return updatePublishedPageConfig(publishResult.pageId, {
+          visibility: values.visibility,
+          expire_at: expireAt,
+        });
+      },
+      {
+        manual: true,
+      },
+    );
   const canPublish = can("publish");
   const canPublishTemplate =
     canPublish &&
@@ -123,6 +153,17 @@ export const PublishButton = observer(function PublishButton() {
 
     runPublish(buildReleasePayload());
     addOperationLog("publish", store.title);
+  }
+
+  /**
+   * 保存发布链接的可见性和过期策略。
+   */
+  async function handleSubmitPublishResult(values: PublishReleaseModalValues) {
+    await runUpdateReleaseConfig(values);
+    setPublishResult((prev) => ({
+      ...prev,
+      open: false,
+    }));
   }
 
   /**
@@ -244,8 +285,10 @@ export const PublishButton = observer(function PublishButton() {
       />
       <PublishReleaseModal
         open={publishResult.open}
+        loading={publishConfigLoading}
         shareUrl={publishResult.shareUrl}
         pageName={publishResult.pageName}
+        onSubmit={handleSubmitPublishResult}
         onCancel={() =>
           setPublishResult((prev) => ({
             ...prev,

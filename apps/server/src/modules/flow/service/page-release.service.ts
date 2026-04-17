@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -11,6 +12,7 @@ import {
   type ComponentNode,
   type IPageSchema,
   type PostReleaseRequest,
+  type UpdateReleaseConfigRequest,
 } from '@codigo/schema';
 import type { TCurrentUser } from 'src/shared/helpers/current-user.helper';
 import {
@@ -151,6 +153,31 @@ export class PageReleaseService {
     return page;
   }
 
+  private resolveExpireAt(expireAt?: string | Date | null) {
+    if (!expireAt) {
+      return null;
+    }
+    const parsed = expireAt instanceof Date ? expireAt : new Date(expireAt);
+    if (Number.isNaN(parsed.getTime())) {
+      throw new BadRequestException('过期时间格式不正确');
+    }
+    return parsed;
+  }
+
+  private assertPageAccessible(page: Page, user?: TCurrentUser) {
+    if (page.expire_at && page.expire_at.getTime() <= Date.now()) {
+      throw new BadRequestException('当前发布链接已过期');
+    }
+    if (page.visibility === 'private') {
+      if (!user) {
+        throw new UnauthorizedException('当前发布内容仅限登录后访问');
+      }
+      if (Number(user.id) !== Number(page.account_id)) {
+        throw new ForbiddenException('当前发布内容不可访问');
+      }
+    }
+  }
+
   async release(body: PostReleaseRequest, user: TCurrentUser) {
     const { schema, components, schema_version, ...otherBody } = body;
     const resolvedSchema = this.resolveReleaseSchema(body);
@@ -265,6 +292,26 @@ export class PageReleaseService {
     };
   }
 
+  async updateReleaseConfig(
+    pageId: number,
+    config: UpdateReleaseConfigRequest,
+    user: TCurrentUser,
+  ) {
+    const page = await this.ensurePageOwner(pageId, user);
+    const expireAt = this.resolveExpireAt(config.expire_at ?? null);
+
+    await this.pageRepository.update(page.id, {
+      visibility: config.visibility,
+      expire_at: expireAt,
+    });
+
+    return this.buildReleaseData({
+      ...page,
+      visibility: config.visibility,
+      expire_at: expireAt,
+    });
+  }
+
   async getPublicPageList(limit: number = 12) {
     const rows = await this.pageRepository
       .createQueryBuilder('page')
@@ -358,10 +405,10 @@ export class PageReleaseService {
     const page = user
       ? await this.pageRepository.findOneBy({
           id,
-          account_id: Number(user.id),
         })
       : await this.pageRepository.findOneBy({ id });
     if (!page) return null;
+    this.assertPageAccessible(page, user);
 
     return this.buildReleaseData(page);
   }

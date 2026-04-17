@@ -43,6 +43,12 @@ export class Page implements ILowCode {
 
   @Column({ default: false })
   lockEditing: boolean = false;
+
+  @Column({ type: 'varchar', length: 20, default: 'public' })
+  visibility: 'public' | 'private' = 'public';
+
+  @Column({ type: 'timestamp', nullable: true })
+  expire_at: Date | null = null;
 }
 
 @Entity({ name: 'component' })

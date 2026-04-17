@@ -8,6 +8,7 @@ import type {
   PostReleaseRequest,
   PutPageWorkspaceFileRequest,
   PutPageWorkspaceFileResponse,
+  UpdateReleaseConfigRequest,
   getQuestionDataByIdRequest,
 } from "@codigo/materials";
 import request from "@/shared/utils/request";
@@ -29,6 +30,16 @@ export async function getPublicPages() {
 
 export async function getPublishedPage(id: number) {
   return request(`/pages/${id}`, { method: "GET" });
+}
+
+export async function updatePublishedPageConfig(
+  id: number,
+  data: UpdateReleaseConfigRequest,
+) {
+  return request(`/pages/${id}/config`, {
+    data,
+    method: "PUT",
+  });
 }
 
 export async function getQuestionComponents() {

@@ -22,6 +22,7 @@ import type {
   PostReleaseRequest,
   PutPageWorkspaceFileRequest,
   PutPageWorkspaceFileResponse,
+  UpdateReleaseConfigRequest,
 } from '@codigo/schema';
 import {
   GetUserAgent,
@@ -54,6 +55,16 @@ export class PagesController {
   @UseGuards(AuthGuard('jwt'))
   getMyPage(@getUserMess() user: TCurrentUser) {
     return this.pageReleaseService.getMyReleaseData(user);
+  }
+
+  @Put(':id/config')
+  @UseGuards(AuthGuard('jwt'))
+  updatePageConfig(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateReleaseConfigRequest,
+    @getUserMess() user: TCurrentUser,
+  ) {
+    return this.pageReleaseService.updateReleaseConfig(id, body, user);
   }
 
   @Get('public')

@@ -4,6 +4,7 @@ import type {
   ILowCode,
   IPageSchema,
   IPageVersion,
+  ReleaseVisibility,
 } from "../schema/low-code";
 import type { SyncSchemaItem } from "../schema/render";
 
@@ -18,6 +19,14 @@ export type PostReleaseRequest = Omit<
   schema_version?: number;
   schema?: IPageSchema;
 };
+
+/**
+ * 描述更新发布配置时提交的请求数据结构。
+ */
+export interface UpdateReleaseConfigRequest {
+  visibility: ReleaseVisibility;
+  expire_at?: string | null;
+}
 
 /**
  * 描述提交组件问卷或业务数据时的请求结构。

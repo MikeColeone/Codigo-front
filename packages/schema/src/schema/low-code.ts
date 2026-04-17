@@ -16,6 +16,11 @@ export type PageCategory = "admin";
 export type PageLayoutMode = "absolute";
 
 /**
+ * 描述发布链接的可见范围。
+ */
+export type ReleaseVisibility = "public" | "private";
+
+/**
  * 描述低代码页面实体的基础信息。
  */
 export interface ILowCode {
@@ -32,6 +37,8 @@ export interface ILowCode {
   lockEditing?: boolean; // 编辑锁状态
   pageCategory?: PageCategory;
   layoutMode?: PageLayoutMode;
+  visibility?: ReleaseVisibility;
+  expire_at?: string | Date | null;
 }
 
 /**
