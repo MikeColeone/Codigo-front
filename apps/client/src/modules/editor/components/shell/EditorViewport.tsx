@@ -453,10 +453,10 @@ export const EditorViewport = observer(function EditorViewport(
 
         {/* Right Panel */}
         <div
-          className="relative z-20 flex shrink-0 flex-col border-l border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] transition-[width] duration-150"
+          className="relative z-20 flex shrink-0 flex-col bg-[var(--ide-sidebar-bg)] shadow-[-10px_0_20px_rgba(15,23,42,0.06)] transition-[width] duration-150"
           style={{ width: rightPanelWidth }}
         >
-          <div className="flex h-9 items-center border-b border-[var(--ide-border)] px-4 text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
+          <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
             属性设置
           </div>
           <div className="flex min-h-0 w-full flex-1 flex-col overflow-auto">

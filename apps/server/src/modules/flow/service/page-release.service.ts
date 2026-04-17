@@ -124,10 +124,9 @@ export class PageReleaseService {
     const schema = schemaFromVersion
       ? {
           version: schemaFromVersion.version ?? schemaFromDb.version,
-          components:
-            schemaFromVersion.components?.length
-              ? schemaFromVersion.components
-              : schemaFromDb.components,
+          components: schemaFromVersion.components?.length
+            ? schemaFromVersion.components
+            : schemaFromDb.components,
           pages: schemaFromVersion.pages,
           activePageId: schemaFromVersion.activePageId,
         }

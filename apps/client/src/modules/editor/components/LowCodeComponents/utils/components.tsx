@@ -150,13 +150,16 @@ export const FormListItem: FC<FormListItemProps<any>> = (props) => {
   }, [values]);
 
   return (
-    <div className="border my-1 p-2" onClick={props.onClick}>
+    <div
+      className="my-1 rounded-sm border border-[var(--ide-border)] bg-[var(--ide-control-bg)] p-2"
+      onClick={props.onClick}
+    >
       {props.isExpand ? (
         <Form form={form} layout="vertical" onValuesChange={handleValuesChange}>
           {props.children}
         </Form>
       ) : (
-        <span className="cursor-pointer flex items-center justify-center">
+        <span className="cursor-pointer flex items-center justify-center py-2 text-[var(--ide-text-muted)]">
           点击展开
         </span>
       )}
@@ -257,7 +260,7 @@ export const LoadResource: FC<LoadResourceProps> = ({
   );
 
   return (
-    <div className="relative w-full h-full border">
+    <div className="relative h-full w-full overflow-hidden rounded-sm border border-[var(--ide-border)] bg-[var(--ide-control-bg)]">
       <div
         onClick={onClicked}
         onMouseLeave={() => setHover(false)}
@@ -375,7 +378,7 @@ export const UploadComponent: FC<UploadComponentProps> = ({
         <div className="grid grid-cols-3 grid-rows-3 gap-x-4 gap-y-10 mt-6">
           <div
             onClick={() => uploadRef.current?.click()}
-            className={`cursor-pointer text-gray-600 border select-none hover:border-dashed flex flex-col justify-center items-center ${
+            className={`cursor-pointer text-gray-600 border border-[var(--ide-border)] select-none hover:border-dashed hover:border-[var(--ide-accent)] flex flex-col justify-center items-center ${
               resources.length <= 0 && "py-4"
             } ${"opacity-50 cursor-not-allowed"}`}
           >
