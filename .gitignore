@@ -18,6 +18,13 @@ dist-ssr
 .vscode/*
 .trae/*
 .node_modules/*
+!.trae/
+!.trae/rules/
+!.trae/rules/**
+!.trae/bad-cases.md
+!.trae/task-logging.md
+!.trae/task-logs/
+!.trae/task-logs/**
 !.vscode/extensions.json
 .idea
 .DS_Store

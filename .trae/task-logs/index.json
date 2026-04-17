@@ -1,0 +1,35 @@
+[
+  {
+    "taskId": "TASK20260417200425",
+    "title": "配置任务结束后自动写工作日志规则",
+    "scope": "repository",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-17T12:04:25.815Z",
+    "gitBranch": "main",
+    "gitCommit": "5ae7c51",
+    "markdownPath": ".trae/task-logs/2026-04-17/TASK20260417200425-task.md",
+    "snapshotPath": ".trae/task-logs/2026-04-17/TASK20260417200425-task.json"
+  },
+  {
+    "taskId": "TASK20260417194915",
+    "title": "将工作日志纳入 Git 管理",
+    "scope": "repository",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-17T11:49:15.280Z",
+    "gitBranch": "main",
+    "gitCommit": "5ae7c51",
+    "markdownPath": ".trae/task-logs/2026-04-17/TASK20260417194915-git.md",
+    "snapshotPath": ".trae/task-logs/2026-04-17/TASK20260417194915-git.json"
+  },
+  {
+    "taskId": "TASK20260417194451",
+    "title": "建立研发工作日志系统",
+    "scope": "repository",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-17T11:44:51.017Z",
+    "gitBranch": "main",
+    "gitCommit": "5ae7c51",
+    "markdownPath": ".trae/task-logs/2026-04-17/TASK20260417194451-task.md",
+    "snapshotPath": ".trae/task-logs/2026-04-17/TASK20260417194451-task.json"
+  }
+]

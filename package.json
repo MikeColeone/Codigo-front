@@ -11,6 +11,7 @@
   "scripts": {
     "prepare": "husky",
     "release": "standard-version",
+    "task:log": "node scripts/task-log.mjs",
     "dev": "turbo run dev start:dev start --parallel",
     "build": "turbo run build",
     "build:apps": "turbo run build --filter=@codigo/client --filter=@codigo/admin --filter=@codigo/server --filter=@codigo/opensumi-app --filter=@codigo/release",
