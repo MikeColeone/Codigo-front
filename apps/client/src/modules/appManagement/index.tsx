@@ -1,12 +1,10 @@
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
-import { IdeThemeLayout } from "@/app/layouts/IdeThemeLayout";
 import { TemplatePreviewModal } from "@/modules/templateCenter/components/TemplatePreviewModal";
+import { TopNavLayout } from "@/app/layouts/TopNavLayout";
 import { useAppManagementController } from "./hooks/useAppManagementController";
 import { useAppManagementViewModel } from "./hooks/useAppManagementViewModel";
-import AppManagementFootnote from "./components/layout/AppManagementFootnote";
 import AppManagementHero from "./components/layout/AppManagementHero";
-import AppManagementPage from "./components/layout/AppManagementPage";
 import AppManagementWorkspace from "./components/layout/AppManagementWorkspace";
 import AppManagementSectionContent from "./components/sections/AppManagementSectionContent";
 
@@ -44,42 +42,33 @@ const AppManagement = observer(() => {
   });
 
   return (
-    <IdeThemeLayout className="h-screen overflow-hidden">
-      <AppManagementPage
-        avatarUrl={avatarUrl}
-        isLoggedIn={isLoggedIn}
-        openLogin={openLogin}
-        userMenuItems={userMenuItems}
-        username={username}
+    <TopNavLayout>
+      <AppManagementWorkspace
+        currentTab={currentTab}
+        hero={<AppManagementHero isLoggedIn={isLoggedIn} metrics={metrics} />}
+        items={navigationItems}
+        onChange={handleTabChange}
       >
-        <AppManagementWorkspace
+        <AppManagementSectionContent
           currentTab={currentTab}
-          footer={<AppManagementFootnote />}
-          hero={<AppManagementHero isLoggedIn={isLoggedIn} metrics={metrics} />}
-          items={navigationItems}
-          onChange={handleTabChange}
-        >
-          <AppManagementSectionContent
-            currentTab={currentTab}
-            draftMeta={localDraftMeta}
-            isLoggedIn={isLoggedIn}
-            myPageData={myPageData}
-            myPageLoading={myPageLoading}
-            publicLoading={publicLoading}
-            publicPages={publicPages}
-            templates={templates}
-            onContinue={() =>
-              navigate(
-                myPageData?.page?.id ? `/editor?id=${myPageData.page.id}` : "/editor",
-              )
-            }
-            onPreviewPublished={handleOpenPublishedPage}
-            onPreviewTemplate={handleOpenTemplatePreview}
-            onPreviewVersion={handleOpenVersion}
-            onUseTemplate={handleUseTemplate}
-          />
-        </AppManagementWorkspace>
-      </AppManagementPage>
+          draftMeta={localDraftMeta}
+          isLoggedIn={isLoggedIn}
+          myPageData={myPageData}
+          myPageLoading={myPageLoading}
+          publicLoading={publicLoading}
+          publicPages={publicPages}
+          templates={templates}
+          onContinue={() =>
+            navigate(
+              myPageData?.page?.id ? `/editor?id=${myPageData.page.id}` : "/editor",
+            )
+          }
+          onPreviewPublished={handleOpenPublishedPage}
+          onPreviewTemplate={handleOpenTemplatePreview}
+          onPreviewVersion={handleOpenVersion}
+          onUseTemplate={handleUseTemplate}
+        />
+      </AppManagementWorkspace>
       <TemplatePreviewModal
         loading={previewLoading}
         open={Boolean(previewState)}
@@ -88,7 +77,7 @@ const AppManagement = observer(() => {
         schema={previewState?.schema ?? null}
         onClose={() => setPreviewState(null)}
       />
-    </IdeThemeLayout>
+    </TopNavLayout>
   );
 });
 

@@ -8,7 +8,7 @@ import AppManagementSidebar from "../navigation/AppManagementSidebar";
 interface AppManagementWorkspaceProps {
   children: ReactNode;
   currentTab: AppManagementTab;
-  footer: ReactNode;
+  footer?: ReactNode;
   hero: ReactNode;
   items: AppManagementNavItem[];
   onChange: (tab: AppManagementTab) => void;
@@ -52,7 +52,7 @@ function AppManagementWorkspace({
             <div className="flex-1">{children}</div>
           </section>
 
-          <div className="mt-auto shrink-0">{footer}</div>
+          {footer ? <div className="mt-auto shrink-0">{footer}</div> : null}
         </div>
       </main>
     </section>

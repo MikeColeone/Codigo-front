@@ -5,9 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { useStoreAuth } from "@/shared/hooks/useStoreAuth";
 
 const navigationItems = [
+  { label: "首页", path: "/" },
+  { label: "模板广场", path: "/?view=templates" },
+  { label: "物料广场", path: "/?view=materials" },
+  { label: "开发文档", path: "/?view=doc" },
   { label: "应用管理", path: "/app-management?tab=published" },
   { label: "后台管理", path: "/console" },
-  { label: "开发文档", path: "/doc" },
 ] as const;
 
 /** 提供首页导航与账户入口动作。 */

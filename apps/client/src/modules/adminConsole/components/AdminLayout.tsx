@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { ConfigProvider, theme } from "antd";
-import AdminHeader from "./AdminHeader";
+import { HomeHeader } from "@/modules/home/components/layout/HomeHeader";
 import AdminSidebar from "./AdminSidebar";
 
 /** 页面管理工作台 Layout：复用 IDE 主题变量，提供顶部导航与侧边栏。 */
@@ -54,13 +54,8 @@ export default function AdminLayout() {
       }}
     >
       <div className="studio-root studio-theme-light flex h-full flex-col overflow-hidden bg-[var(--ide-bg)] text-[var(--ide-text)] font-sans">
-        <header className="relative z-20 flex h-[var(--header-height)] items-center border-b border-[var(--ide-border)] bg-[var(--ide-header-bg)] px-2 shadow-sm">
-          <div className="w-full">
-            <AdminHeader />
-          </div>
-        </header>
-
-        <main className="relative z-10 flex flex-1 overflow-hidden">
+        <HomeHeader />
+        <main className="relative z-10 flex flex-1 overflow-hidden pt-[var(--header-height)]">
           <aside className="w-[220px] flex-none border-r border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)]">
             <AdminSidebar />
           </aside>

@@ -1,4 +1,7 @@
 import { observer } from "mobx-react-lite";
+import { MenuOutlined } from "@ant-design/icons";
+import { Dropdown } from "antd";
+import { createElement, useMemo } from "react";
 import { useHomeNavigation } from "../../hooks/useHomeNavigation";
 import { HomeUserEntry } from "./HomeUserEntry";
 
@@ -14,6 +17,16 @@ export const HomeHeader = observer(() => {
     userMenuItems,
     username,
   } = useHomeNavigation();
+
+  const navMenuItems = useMemo(
+    () =>
+      navigationItems.map((item) => ({
+        key: item.label,
+        label: item.label,
+        onClick: () => openRoute(item.path),
+      })),
+    [navigationItems, openRoute],
+  );
 
   return (
     <nav className="fixed left-0 right-0 top-0 z-50 border-b border-[var(--ide-border)] bg-[var(--ide-header-bg)]">
@@ -44,13 +57,25 @@ export const HomeHeader = observer(() => {
           </ul>
         </div>
 
-        <HomeUserEntry
-          avatarUrl={avatarUrl}
-          isLoggedIn={isLoggedIn}
-          openLogin={openLogin}
-          userMenuItems={userMenuItems}
-          username={username}
-        />
+        <div className="flex items-center gap-2">
+          <Dropdown menu={{ items: navMenuItems }} placement="bottomRight" arrow>
+            <button
+              type="button"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-sm border border-transparent bg-transparent text-[var(--ide-text)] transition-colors hover:border-[var(--ide-control-border)] hover:bg-[var(--ide-hover)] lg:hidden"
+              aria-label="打开导航菜单"
+            >
+              {createElement(MenuOutlined)}
+            </button>
+          </Dropdown>
+
+          <HomeUserEntry
+            avatarUrl={avatarUrl}
+            isLoggedIn={isLoggedIn}
+            openLogin={openLogin}
+            userMenuItems={userMenuItems}
+            username={username}
+          />
+        </div>
       </div>
     </nav>
   );

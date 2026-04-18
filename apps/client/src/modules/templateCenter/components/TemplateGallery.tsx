@@ -1,6 +1,7 @@
 import { EyeOutlined, RocketOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import type { TemplateListItem } from "@codigo/schema";
+import { useState } from "react";
 
 interface TemplateGalleryProps {
   canUseTemplate: boolean;
@@ -15,12 +16,18 @@ export function TemplateGallery({
   onUse,
   templates,
 }: TemplateGalleryProps) {
+  const [activeTemplateId, setActiveTemplateId] = useState<number | null>(null);
+
   return (
     <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
       {templates.map((template) => (
+        <div key={template.id} className="relative">
         <article
-          key={template.id}
           className="rounded-md border border-[var(--ide-border)] bg-[var(--ide-control-bg)] p-4 shadow-[var(--ide-panel-shadow)] transition-colors hover:border-[var(--ide-control-border)]"
+          onMouseEnter={() => setActiveTemplateId(template.id)}
+          onMouseLeave={() => setActiveTemplateId((prev) => (prev === template.id ? null : prev))}
+          onFocus={() => setActiveTemplateId(template.id)}
+          onBlur={() => setActiveTemplateId((prev) => (prev === template.id ? null : prev))}
         >
           <div className="mb-3 flex flex-wrap gap-2">
             {template.tags.map((tag) => (
@@ -49,26 +56,29 @@ export function TemplateGallery({
               默认页 page:{template.activePagePath}
             </span>
           </div>
-          <div className="mt-6 flex gap-3">
-            <Button
-              icon={<EyeOutlined />}
-              onClick={() => onPreview(template)}
-              className="!rounded-sm"
-            >
-              查看模板
-            </Button>
-            {canUseTemplate && (
+          {activeTemplateId === template.id ? (
+            <div className="mt-6 flex gap-3">
               <Button
-                icon={<RocketOutlined />}
-                type="primary"
-                onClick={() => onUse(template)}
+                icon={<EyeOutlined />}
+                onClick={() => onPreview(template)}
                 className="!rounded-sm"
               >
-                使用模板
+                预览模板
               </Button>
-            )}
-          </div>
+              {canUseTemplate && (
+                <Button
+                  icon={<RocketOutlined />}
+                  type="primary"
+                  onClick={() => onUse(template)}
+                  className="!rounded-sm"
+                >
+                  使用模板
+                </Button>
+              )}
+            </div>
+          ) : null}
         </article>
+        </div>
       ))}
     </div>
   );
