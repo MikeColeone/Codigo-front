@@ -17,14 +17,12 @@ const Editor = observer(() => {
   const pageId = Number(searchParams.get("id"));
 
   const { store: storeComps, loadPageData } = useEditorComponents();
-  const { store: storePage, hydrateOutlineTreeVisible, hydrateGridDashedLinesVisible } =
-    useEditorPage();
+  const { store: storePage, hydrateGridDashedLinesVisible } = useEditorPage();
   const { initCollaboration, cleanupCollaboration } = useEditorPermission();
   const { store: storeAuth } = useStoreAuth();
   const canvasRef = useRef<any>(null);
 
   useEffect(() => {
-    hydrateOutlineTreeVisible(pageId || null);
     hydrateGridDashedLinesVisible(pageId || null);
   }, [pageId]);
 

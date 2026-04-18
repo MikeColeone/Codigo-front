@@ -4,6 +4,7 @@ import {
   parseCanvasSize,
   resolveCollisionFreeRect,
 } from "./collision";
+import { resolveSlotZoneFromPoint } from "./resolveSlotZone";
 
 export interface MovingComponentState {
   id: string;
@@ -131,11 +132,11 @@ export function resolveMoveTarget({
   movingComponent,
   getComponentById,
 }: ResolveMoveTargetOptions): CanvasMoveTarget | null {
-  const targetElement = document.elementFromPoint(
+  const slotZone = resolveSlotZoneFromPoint({
     clientX,
     clientY,
-  ) as HTMLElement | null;
-  const slotZone = targetElement?.closest("[data-slot-name]") as HTMLElement | null;
+    excludeContainerId: movingId,
+  });
   const current = getComponentById(movingId);
   if (!current) {
     return null;

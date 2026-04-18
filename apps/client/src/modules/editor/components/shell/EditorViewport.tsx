@@ -1,4 +1,4 @@
-import { AppstoreOutlined, FileTextOutlined } from "@ant-design/icons";
+import { ApartmentOutlined, AppstoreOutlined, FileTextOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import type {
   MouseEvent as ReactMouseEvent,
@@ -15,10 +15,7 @@ import EditorCanvas from "../canvas";
 import { SandboxCanvas } from "../canvas/SandboxCanvas";
 import { useEditorPanelLayout } from "./useEditorPanelLayout";
 import { WebIDEFrame } from "./WebIDEFrame";
-import {
-  LEFT_PANEL_CONTENT_WIDTH,
-  LEFT_PANEL_RAIL_WIDTH,
-} from "./layout";
+import { LEFT_PANEL_RAIL_WIDTH } from "./layout";
 import type { TStorePage } from "@/shared/stores";
 import type { TEditorComponentsStore } from "@/modules/editor/stores";
 
@@ -28,7 +25,7 @@ interface EditorViewportProps {
   canvasRef: RefObject<any>;
 }
 
-type LeftPanelSection = "pages" | "components";
+type LeftPanelSection = "pages" | "components" | "outline";
 
 const WORKSPACE_STAGE_PADDING = 64;
 const MOBILE_FRAME_SIZE = 24;
@@ -117,19 +114,11 @@ export const EditorViewport = observer(function EditorViewport(
     height: 0,
   });
   const [isWorkspacePanning, setIsWorkspacePanning] = useState(false);
-  const outlinePanelWidth = Math.max(
-    0,
-    leftPanelWidth - LEFT_PANEL_RAIL_WIDTH - LEFT_PANEL_CONTENT_WIDTH,
-  );
-  const showOutlineTree = props.storePage.showOutlineTree;
   const activePagePath =
     props.storeComps.pages.find((page) => page.id === props.storeComps.activePageId)
       ?.path ??
     props.storeComps.pages[0]?.path ??
     "-";
-  const effectiveLeftPanelWidth = showOutlineTree
-    ? leftPanelWidth
-    : LEFT_PANEL_RAIL_WIDTH + LEFT_PANEL_CONTENT_WIDTH;
   const leftSectionItems: Array<{
     key: LeftPanelSection;
     icon: ReactNode;
@@ -144,6 +133,11 @@ export const EditorViewport = observer(function EditorViewport(
       key: "components",
       icon: <AppstoreOutlined className="text-xl" />,
       label: "组件",
+    },
+    {
+      key: "outline",
+      icon: <ApartmentOutlined className="text-xl" />,
+      label: "大纲",
     },
   ];
 
@@ -494,44 +488,31 @@ export const EditorViewport = observer(function EditorViewport(
         {/* Side Bar (Panel) */}
         <div
           className="relative z-20 flex shrink-0 overflow-hidden border-r border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] transition-[width] duration-150"
-          style={{ width: effectiveLeftPanelWidth - LEFT_PANEL_RAIL_WIDTH }}
+          style={{ width: leftPanelWidth - LEFT_PANEL_RAIL_WIDTH }}
         >
           <div
             className="flex min-h-0 flex-1 flex-col"
           >
             <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
-              {activeLeftSection === "pages" ? "资源管理器" : "组件库"}
+              {activeLeftSection === "pages"
+                ? "资源管理器"
+                : activeLeftSection === "components"
+                  ? "组件库"
+                  : "大纲"}
             </div>
             <div className="flex-1 overflow-auto">
               {activeLeftSection === "pages" ? (
                 <EditorPageManager embedded />
-              ) : (
+              ) : activeLeftSection === "components" ? (
                 <EditorLeftPanel embedded />
+              ) : (
+                <EditorOutlineTree />
               )}
             </div>
           </div>
-
-          {showOutlineTree && (
-            <div
-              className="min-h-0 shrink-0 border-l border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)]"
-              style={{ width: outlinePanelWidth }}
-            >
-              <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
-                大纲
-              </div>
-              <div className="flex-1 overflow-auto">
-                <EditorOutlineTree />
-              </div>
-            </div>
-          )}
         </div>
 
-        {showOutlineTree && (
-          <PanelResizeHandle
-            side="left"
-            onPointerDown={startResize("left")}
-          />
-        )}
+        <PanelResizeHandle side="left" onPointerDown={startResize("left")} />
 
         {/* Main Editor Area */}
         <div className="relative z-0 flex min-w-0 flex-1 flex-col overflow-hidden bg-[var(--ide-bg)]">

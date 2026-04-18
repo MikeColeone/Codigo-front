@@ -1,29 +1,13 @@
-import { ApartmentOutlined } from "@ant-design/icons";
-import { InputNumber, Space, Switch } from "antd";
+import { InputNumber, Space } from "antd";
 import { observer } from "mobx-react-lite";
-import { useSearchParams } from "react-router-dom";
 import { useEditorPage, useEditorPermission } from "@/modules/editor/hooks";
 
 export const CanvasSettings = observer(function CanvasSettings() {
-  const [searchParams] = useSearchParams();
-  const pageId = Number(searchParams.get("id"));
-  const { store, setCanvasSize, setOutlineTreeVisible } = useEditorPage();
+  const { store, setCanvasSize } = useEditorPage();
   const { ensurePermission } = useEditorPermission();
 
   return (
     <div className="hidden items-center gap-2 xl:flex">
-      <div className="flex items-center gap-2 rounded-lg border border-slate-200/80 bg-slate-50/80 px-2 py-1">
-        <span className="flex items-center gap-1 text-[11px] text-slate-500">
-          <ApartmentOutlined />
-        </span>
-        <Switch
-          size="small"
-          checked={store.showOutlineTree}
-          onChange={(checked) => setOutlineTreeVisible(checked, pageId)}
-          disabled={store.editorMode !== "visual"}
-        />
-      </div>
-
       {store.deviceType === "pc" && (
         <Space size="small">
           <InputNumber

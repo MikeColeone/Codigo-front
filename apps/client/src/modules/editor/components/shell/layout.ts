@@ -1,25 +1,12 @@
 export const LEFT_PANEL_RAIL_WIDTH = 48;
-export const LEFT_PANEL_CONTENT_WIDTH = 260;
-export const OUTLINE_PANEL_DEFAULT_WIDTH = 192;
-export const OUTLINE_PANEL_MIN_WIDTH = 160;
-export const OUTLINE_PANEL_MAX_WIDTH = 300;
-export const LEFT_PANEL_DEFAULT_WIDTH =
-  LEFT_PANEL_RAIL_WIDTH +
-  LEFT_PANEL_CONTENT_WIDTH +
-  OUTLINE_PANEL_DEFAULT_WIDTH;
+export const LEFT_PANEL_DEFAULT_WIDTH = LEFT_PANEL_RAIL_WIDTH + 260;
 export const RIGHT_PANEL_DEFAULT_WIDTH = 320;
-export const LEFT_PANEL_MIN_WIDTH =
-  LEFT_PANEL_RAIL_WIDTH +
-  LEFT_PANEL_CONTENT_WIDTH +
-  OUTLINE_PANEL_MIN_WIDTH;
+export const LEFT_PANEL_MIN_WIDTH = LEFT_PANEL_RAIL_WIDTH + 240;
 export const RIGHT_PANEL_MIN_WIDTH = 288;
-export const LEFT_PANEL_MAX_WIDTH =
-  LEFT_PANEL_RAIL_WIDTH +
-  LEFT_PANEL_CONTENT_WIDTH +
-  OUTLINE_PANEL_MAX_WIDTH;
+export const LEFT_PANEL_MAX_WIDTH = LEFT_PANEL_RAIL_WIDTH + 360;
 export const RIGHT_PANEL_MAX_WIDTH = 460;
 export const CENTER_MIN_WIDTH = 420;
-export const LEFT_PANEL_STORAGE_KEY = "codigo:editor:left-panel-width:v4";
+export const LEFT_PANEL_STORAGE_KEY = "codigo:editor:left-panel-width:v5";
 export const RIGHT_PANEL_STORAGE_KEY = "codigo:editor:right-panel-width:v2";
 
 export type ResizeSide = "left" | "right";

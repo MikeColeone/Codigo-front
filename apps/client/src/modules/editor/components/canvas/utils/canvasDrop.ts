@@ -5,6 +5,7 @@ import {
   getEstimatedRectByType,
   resolveCollisionFreeRect,
 } from "./collision";
+import { resolveSlotZoneFromPoint } from "./resolveSlotZone";
 
 export interface CanvasDropResult {
   type: TComponentTypes;
@@ -73,11 +74,7 @@ export function resolveCanvasDropResult({
       top: safeRect.top,
     };
   }
-  const targetElement = document.elementFromPoint(
-    clientX,
-    clientY,
-  ) as HTMLElement | null;
-  const slotZone = targetElement?.closest("[data-slot-name]") as HTMLElement | null;
+  const slotZone = resolveSlotZoneFromPoint({ clientX, clientY });
 
   if (slotZone) {
     const slotRect = slotZone.getBoundingClientRect();

@@ -1,7 +1,8 @@
 import type { ComponentNodeRecord, TComponentTypes } from "@codigo/schema";
 import type { DragEvent, RefObject } from "react";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { resolveCanvasDropResult } from "../utils/canvasDrop";
+import { resolveSlotZoneFromPoint } from "../utils/resolveSlotZone";
 
 interface UseCanvasDropOptions {
   canEditStructure: boolean;
@@ -37,6 +38,34 @@ export function useCanvasDrop({
     }
   }, []);
 
+  useEffect(() => {
+    const clear = () => clearDropHover();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        clearDropHover();
+      }
+    };
+
+    if (!canEditStructure) {
+      clearDropHover();
+      return;
+    }
+
+    document.addEventListener("dragend", clear, true);
+    document.addEventListener("drop", clear, true);
+    window.addEventListener("blur", clear);
+    window.addEventListener("keydown", onKeyDown);
+    document.addEventListener("visibilitychange", clear);
+
+    return () => {
+      document.removeEventListener("dragend", clear, true);
+      document.removeEventListener("drop", clear, true);
+      window.removeEventListener("blur", clear);
+      window.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("visibilitychange", clear);
+    };
+  }, [canEditStructure, clearDropHover]);
+
   /**
    * 允许浏览器持续派发 drop 事件。
    */
@@ -53,9 +82,9 @@ export function useCanvasDrop({
       event.clientX,
       event.clientY,
     ) as HTMLElement | null;
-    const slotZone = targetElement?.closest(
-      "[data-slot-name]",
-    ) as HTMLElement | null;
+    const slotZone =
+      resolveSlotZoneFromPoint({ clientX: event.clientX, clientY: event.clientY }) ??
+      (targetElement?.closest("[data-slot-name]") as HTMLElement | null);
 
     if (slotZone === lastSlotZoneRef.current) {
       return;

@@ -30,7 +30,7 @@ interface ComponentWrapperProps {
   isDragable: boolean;
   isMoving: boolean;
   canDrag: boolean;
-  onClick: () => void;
+  onClick: (event: ReactMouseEvent) => void;
   onMouseDownCapture: (event: ReactMouseEvent) => void;
   onMouseDown: (event: ReactMouseEvent) => void;
   onResizeMouseDown: (event: ReactMouseEvent) => void;
@@ -179,9 +179,38 @@ const EditorCanvas: FC<{
     push,
   });
 
-  function handleComponentClick(conf: { id: string }) {
-    if (isCurrentComponent(conf)) return;
+  function isDirectWrapperHit(event: ReactMouseEvent, id: string) {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      return false;
+    }
+    const closestWrapper = target.closest(".component-warpper") as HTMLElement | null;
+    return closestWrapper?.dataset.id === id;
+  }
+
+  function handleComponentMouseDownCapture(event: ReactMouseEvent, conf: { id: string }) {
+    if (event.button !== 0) {
+      return;
+    }
+    if (!isDirectWrapperHit(event, conf.id)) {
+      return;
+    }
+    if (isCurrentComponent(conf)) {
+      return;
+    }
     setCurrentComponent(conf.id);
+  }
+
+  function handleComponentClick(event: ReactMouseEvent, conf: { id: string }) {
+    if (!isDirectWrapperHit(event, conf.id)) {
+      return;
+    }
+    if (isCurrentComponent(conf)) {
+      event.stopPropagation();
+      return;
+    }
+    setCurrentComponent(conf.id);
+    event.stopPropagation();
   }
 
   useEditorComponentKeyPress();
@@ -236,7 +265,7 @@ const EditorCanvas: FC<{
         minHeight: `${Math.max(
           700,
           storePage.canvasHeight,
-          store.sortableCompConfig.length * 220,
+          getComponentTree.get().length * 220,
         )}px`,
         ...(storePage.layoutMode === "grid"
           ? {
@@ -292,12 +321,14 @@ const EditorCanvas: FC<{
             isDragable={isDragging}
             isMoving={movingComponentId === node.id}
             canDrag={canEditStructure}
-            onMouseDownCapture={() => handleComponentClick(node)}
+            onMouseDownCapture={(event) =>
+              handleComponentMouseDownCapture(event, node)
+            }
             onMouseDown={(event) => handleDragComponentStart(event, node.id)}
             onResizeMouseDown={(event) =>
               handleResizeComponentStart(event, node.id)
             }
-            onClick={() => handleComponentClick(node)}
+            onClick={(event) => handleComponentClick(event, node)}
             isCurrentComponent={isCurrentComponent(node)}
             id={node.id}
             parentId={record?.parentId ?? null}
