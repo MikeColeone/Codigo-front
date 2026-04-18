@@ -1,7 +1,8 @@
-import { HistoryOutlined, QuestionCircleOutlined, RollbackOutlined } from "@ant-design/icons";
+import { BookOutlined, HistoryOutlined, QuestionCircleOutlined, RollbackOutlined } from "@ant-design/icons";
 import { Button, List, Modal, Tag, Typography } from "antd";
 import { observer } from "mobx-react-lite";
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { EDITOR_COMPONENT_SHORTCUTS } from "@/modules/editor/hooks/useEditorComponentKeyPress";
 import { useEditorComponents } from "@/modules/editor/hooks/useEditorComponents";
 
@@ -166,6 +167,7 @@ const OperationHistoryModal = observer(function OperationHistoryModal({
 export const EditorStatusBarActions = observer(function EditorStatusBarActions() {
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -189,10 +191,19 @@ export const EditorStatusBarActions = observer(function EditorStatusBarActions()
           <span>操作记录</span>
         </button>
       </div>
+      <div className="flex items-center gap-1.5 hover:bg-white/10 px-1">
+        <button
+          type="button"
+          className="flex items-center gap-1 text-[11px] text-[var(--ide-statusbar-text)]"
+          onClick={() => navigate("/doc")}
+        >
+          <BookOutlined />
+          <span>开发文档</span>
+        </button>
+      </div>
 
       <ShortcutsModal open={isShortcutsOpen} onClose={() => setIsShortcutsOpen(false)} />
       <OperationHistoryModal open={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} />
     </>
   );
 });
-

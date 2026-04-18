@@ -32,19 +32,19 @@ function AppManagementWorkspace({
         onChange={onChange}
       />
 
-      <main className="flex-1 overflow-y-auto bg-slate-50">
+      <main className="flex-1 overflow-y-auto bg-[var(--ide-bg)]">
         <div className="mx-auto flex min-h-full max-w-5xl flex-col p-6">
           <div className="shrink-0">{hero}</div>
 
-          <section className="flex-1 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="mb-6 border-b border-slate-100 pb-4">
-              <span className="inline-flex rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-500">
+          <section className="flex-1 rounded-md border border-[var(--ide-border)] bg-[var(--ide-control-bg)] p-6 shadow-[var(--ide-panel-shadow)]">
+            <div className="mb-6 border-b border-[var(--ide-border)] pb-4">
+              <span className="inline-flex rounded-full border border-[var(--ide-control-border)] bg-[var(--ide-hover)] px-2.5 py-0.5 text-xs font-medium text-[var(--ide-text-muted)]">
                 {currentItem.label}
               </span>
-              <h2 className="mt-2 text-xl font-semibold text-slate-900">
+              <h2 className="mt-2 text-xl font-semibold text-[var(--ide-text)]">
                 {currentItem.title}
               </h2>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-[var(--ide-text-muted)]">
                 {currentItem.description}
               </p>
             </div>

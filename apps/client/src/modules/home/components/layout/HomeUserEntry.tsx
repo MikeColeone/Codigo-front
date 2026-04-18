@@ -21,7 +21,7 @@ export function HomeUserEntry({
   if (!isLoggedIn) {
     return (
       <button
-        className="text-sm font-medium text-slate-500 transition hover:text-slate-900"
+        className="text-sm font-medium text-[var(--ide-text-muted)] transition-colors hover:text-[var(--ide-text)]"
         onClick={openLogin}
       >
         登录
@@ -31,13 +31,13 @@ export function HomeUserEntry({
 
   return (
     <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" arrow>
-      <button className="flex items-center gap-3 rounded-full border border-slate-200 bg-white/80 px-2.5 py-1.5 transition hover:border-emerald-200 hover:bg-white">
+      <button className="flex items-center gap-2 rounded-sm border border-[var(--ide-control-border)] bg-[var(--ide-control-bg)] px-2.5 py-1 transition-colors hover:bg-[var(--ide-hover)]">
         <Avatar
           src={avatarUrl ? <img src={avatarUrl} alt={username || "avatar"} referrerPolicy="no-referrer" /> : undefined}
           icon={!avatarUrl && <UserOutlined />}
-          className={!avatarUrl ? "bg-emerald-500" : ""}
+          className={!avatarUrl ? "bg-[var(--ide-accent)]" : ""}
         />
-        <span className="hidden text-sm font-medium text-slate-600 sm:inline">
+        <span className="hidden text-sm font-medium text-[var(--ide-text)] sm:inline">
           {username || "已登录"}
         </span>
       </button>

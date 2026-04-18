@@ -1,4 +1,5 @@
-﻿import { useTitle } from "ahooks";
+import { useTitle } from "ahooks";
+import { IdeThemeLayout } from "@/app/layouts/IdeThemeLayout";
 import Header from "./components/Header";
 import Center from "./components/Center";
 import Footer from "./components/Footer";
@@ -7,14 +8,13 @@ export default function DevDoc() {
   useTitle("Codigo - 开发文档");
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <IdeThemeLayout className="flex flex-col">
       <Header />
       <Center />
       <Footer />
-    </div>
+    </IdeThemeLayout>
   );
 }
-
 
 
 

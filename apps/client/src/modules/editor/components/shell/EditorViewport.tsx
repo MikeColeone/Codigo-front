@@ -3,6 +3,7 @@ import {
   AppstoreOutlined,
   LeftOutlined,
   RightOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import type {
@@ -12,6 +13,7 @@ import type {
   RefObject,
 } from "react";
 import { observer } from "mobx-react-lite";
+import { useNavigate } from "react-router-dom";
 import EditorLeftPanel from "../leftPanel";
 import EditorRightPanel from "../rightPanel";
 import { EditorOutlineTree } from "../rightPanel/ComponentFields";
@@ -120,6 +122,7 @@ function EditorStage({
 export const EditorViewport = observer(function EditorViewport(
   props: EditorViewportProps,
 ) {
+  const navigate = useNavigate();
   const {
     isLeftPanelCollapsed,
     isRightPanelCollapsed,
@@ -497,7 +500,7 @@ export const EditorViewport = observer(function EditorViewport(
           className="z-30 flex h-full shrink-0 flex-col items-center bg-[var(--ide-activitybar-bg)] py-2"
           style={{ width: LEFT_PANEL_RAIL_WIDTH }}
         >
-          <div className="flex flex-col gap-1 w-full">
+          <div className="flex flex-1 flex-col gap-1 w-full">
             {leftSectionItems.map((item) => {
               const isActive = item.key === activeLeftSection;
 
@@ -522,6 +525,18 @@ export const EditorViewport = observer(function EditorViewport(
                 </button>
               );
             })}
+          </div>
+          <div className="flex flex-col gap-1 w-full pt-2">
+            <button
+              type="button"
+              onClick={() => {
+                navigate("/admin");
+              }}
+              title="后台管理"
+              className="relative flex h-12 w-full items-center justify-center text-[var(--ide-text-muted)] transition-colors hover:text-[var(--ide-text)]"
+            >
+              <SettingOutlined className="text-xl" />
+            </button>
           </div>
         </div>
 

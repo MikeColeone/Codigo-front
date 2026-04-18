@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
+import { IdeThemeLayout } from "@/app/layouts/IdeThemeLayout";
 import { TemplatePreviewModal } from "@/modules/templateCenter/components/TemplatePreviewModal";
 import { useAppManagementController } from "./hooks/useAppManagementController";
 import { useAppManagementViewModel } from "./hooks/useAppManagementViewModel";
@@ -43,7 +44,7 @@ const AppManagement = observer(() => {
   });
 
   return (
-    <>
+    <IdeThemeLayout className="h-screen overflow-hidden">
       <AppManagementPage
         avatarUrl={avatarUrl}
         isLoggedIn={isLoggedIn}
@@ -81,13 +82,13 @@ const AppManagement = observer(() => {
       </AppManagementPage>
       <TemplatePreviewModal
         loading={previewLoading}
-        open={Boolean(previewState)}
-        title={previewState?.title}
-        subtitle={previewState?.subtitle}
-        schema={previewState?.schema ?? null}
-        onClose={() => setPreviewState(null)}
+        open={previewState.open}
+        title={previewState.title}
+        subtitle={previewState.subtitle}
+        schema={previewState.schema}
+        onClose={() => setPreviewState({ open: false })}
       />
-    </>
+    </IdeThemeLayout>
   );
 });
 

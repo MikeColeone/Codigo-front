@@ -23,18 +23,18 @@ export function HomeFeatureGrid() {
       {features.map((feature) => (
         <article
           key={feature.title}
-          className="group relative rounded-2xl border border-white/10 bg-[#0A0C14]/80 p-8 transition-all hover:-translate-y-1 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/10"
+          className="group relative rounded-md border border-[var(--ide-border)] bg-[var(--ide-control-bg)] p-6 shadow-[var(--ide-panel-shadow)] transition-colors hover:bg-[var(--ide-hover)]"
         >
           <div className="relative z-10">
-            <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 transition-colors group-hover:bg-emerald-500 group-hover:text-white">
+            <div className="mb-5 inline-flex h-10 w-10 items-center justify-center rounded-sm border border-[var(--ide-control-border)] bg-[var(--ide-control-bg)] text-[var(--ide-accent)] transition-colors group-hover:bg-[var(--ide-active)]">
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={feature.path} />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-white transition-colors group-hover:text-emerald-300">
+            <h3 className="text-base font-semibold text-[var(--ide-text)]">
               {feature.title}
             </h3>
-            <p className="mt-4 text-sm leading-relaxed text-gray-400">
+            <p className="mt-3 text-sm leading-relaxed text-[var(--ide-text-muted)]">
               {feature.description}
             </p>
           </div>

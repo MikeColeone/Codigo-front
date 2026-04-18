@@ -89,14 +89,14 @@ function PublishedSection({
       {publicPages.map((page) => (
         <article
           key={page.id}
-          className="rounded-lg border border-slate-200/80 bg-white p-3"
+          className="rounded-md border border-[var(--ide-border)] bg-[var(--ide-control-bg)] p-3 shadow-[var(--ide-panel-shadow)]"
         >
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
-              <h3 className="truncate text-sm font-semibold text-slate-900">
+              <h3 className="truncate text-sm font-semibold text-[var(--ide-text)]">
                 {page.page_name}
               </h3>
-              <p className="mt-1 text-xs leading-4 text-slate-500">
+              <p className="mt-1 text-xs leading-4 text-[var(--ide-text-muted)]">
                 {page.desc || "该页面已完成发布，可供访客查看页面内容。"}
               </p>
             </div>
@@ -108,10 +108,10 @@ function PublishedSection({
             />
           </div>
           <div className="mt-2 flex flex-wrap gap-1.5">
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-500">
+            <span className="rounded-full border border-[var(--ide-border)] bg-[var(--ide-hover)] px-2 py-0.5 text-[10px] text-[var(--ide-text-muted)]">
               {page.owner_name}
             </span>
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-500">
+            <span className="rounded-full border border-[var(--ide-border)] bg-[var(--ide-hover)] px-2 py-0.5 text-[10px] text-[var(--ide-text-muted)]">
               v{page.latest_version}
             </span>
           </div>
@@ -120,6 +120,7 @@ function PublishedSection({
               icon={<EyeOutlined />}
               size="small"
               type="primary"
+              className="!rounded-sm"
               onClick={() =>
                 onPreview(
                   page.id,

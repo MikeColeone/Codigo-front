@@ -29,6 +29,35 @@ export function useParticleCanvas(
       return;
     }
 
+    const readCssVar = (name: string) => {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    };
+
+    const hexToRgb = (value: string) => {
+      const hex = value.replace("#", "").trim();
+      const normalized =
+        hex.length === 3
+          ? hex
+              .split("")
+              .map((ch) => `${ch}${ch}`)
+              .join("")
+          : hex;
+      if (normalized.length !== 6) {
+        return null;
+      }
+      const r = Number.parseInt(normalized.slice(0, 2), 16);
+      const g = Number.parseInt(normalized.slice(2, 4), 16);
+      const b = Number.parseInt(normalized.slice(4, 6), 16);
+      if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) {
+        return null;
+      }
+      return { r, g, b };
+    };
+
+    const accent = readCssVar("--ide-accent") || "#0f6cbd";
+    const gridLine = readCssVar("--ide-grid-line") || "rgba(31, 35, 40, 0.05)";
+    const accentRgb = hexToRgb(accent) ?? { r: 15, g: 108, b: 189 };
+
     let animationFrameId = 0;
     let mouseX = 0;
     let mouseY = 0;
@@ -53,7 +82,7 @@ export function useParticleCanvas(
     };
 
     const drawGrid = () => {
-      context.strokeStyle = "rgba(100, 116, 139, 0.05)";
+      context.strokeStyle = gridLine;
       context.lineWidth = 1;
 
       for (let x = 0; x <= canvas.width; x += gridSize) {
@@ -99,7 +128,7 @@ export function useParticleCanvas(
 
         context.beginPath();
         context.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        context.fillStyle = "rgba(16, 185, 129, 0.4)";
+        context.fillStyle = `rgba(${accentRgb.r}, ${accentRgb.g}, ${accentRgb.b}, 0.35)`;
         context.fill();
       });
 
@@ -111,7 +140,7 @@ export function useParticleCanvas(
 
           if (distance < connectionDistance) {
             context.beginPath();
-            context.strokeStyle = `rgba(16, 185, 129, ${(1 - distance / connectionDistance) * 0.4})`;
+            context.strokeStyle = `rgba(${accentRgb.r}, ${accentRgb.g}, ${accentRgb.b}, ${(1 - distance / connectionDistance) * 0.25})`;
             context.lineWidth = 1;
             context.moveTo(particles[index].x, particles[index].y);
             context.lineTo(particles[nextIndex].x, particles[nextIndex].y);

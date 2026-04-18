@@ -41,18 +41,18 @@ function HistorySection({
               查看
             </Button>,
           ]}
-          className="hover:bg-slate-50"
+          className="hover:bg-[var(--ide-hover)]"
         >
           <List.Item.Meta
             avatar={
               <Avatar
-                className="bg-emerald-500/90"
+                className="bg-[var(--ide-accent)]"
                 icon={<HistoryOutlined />}
                 size="small"
               />
             }
             description={`${item.desc || "历史版本"} · ${dayjs(item.created_at).format("YYYY-MM-DD HH:mm")}`}
-            title={<span className="text-sm">v{item.version}</span>}
+            title={<span className="text-sm text-[var(--ide-text)]">v{item.version}</span>}
           />
         </List.Item>
       )}
