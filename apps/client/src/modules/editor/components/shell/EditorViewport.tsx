@@ -1,7 +1,6 @@
 import {
   ApartmentOutlined,
   AppstoreOutlined,
-  FileTextOutlined,
   LeftOutlined,
   RightOutlined,
 } from "@ant-design/icons";
@@ -14,7 +13,6 @@ import type {
 } from "react";
 import { observer } from "mobx-react-lite";
 import EditorLeftPanel from "../leftPanel";
-import EditorPageManager from "../pageManager";
 import EditorRightPanel from "../rightPanel";
 import { EditorOutlineTree } from "../rightPanel/ComponentFields";
 import EditorCanvas from "../canvas";
@@ -32,7 +30,7 @@ interface EditorViewportProps {
   canvasRef: RefObject<any>;
 }
 
-type LeftPanelSection = "pages" | "components" | "outline";
+type LeftPanelSection = "components" | "outline";
 
 const WORKSPACE_STAGE_PADDING = 64;
 const MOBILE_FRAME_SIZE = 24;
@@ -158,11 +156,6 @@ export const EditorViewport = observer(function EditorViewport(
     icon: ReactNode;
     label: string;
   }> = [
-    {
-      key: "pages",
-      icon: <FileTextOutlined className="text-xl" />,
-      label: "页面",
-    },
     {
       key: "components",
       icon: <AppstoreOutlined className="text-xl" />,
@@ -542,16 +535,10 @@ export const EditorViewport = observer(function EditorViewport(
           {!isLeftPanelCollapsed && (
             <div className="flex min-h-0 flex-1 flex-col">
               <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
-                {activeLeftSection === "pages"
-                  ? "资源管理器"
-                  : activeLeftSection === "components"
-                    ? "组件库"
-                    : "大纲"}
+                {activeLeftSection === "components" ? "组件库" : "大纲"}
               </div>
               <div className="flex-1 overflow-auto">
-                {activeLeftSection === "pages" ? (
-                  <EditorPageManager embedded />
-                ) : activeLeftSection === "components" ? (
+                {activeLeftSection === "components" ? (
                   <EditorLeftPanel embedded />
                 ) : (
                   <EditorOutlineTree />

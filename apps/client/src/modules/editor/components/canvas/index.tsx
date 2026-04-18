@@ -8,6 +8,7 @@ import type {
 } from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import type { ComponentNode, ComponentNodeRecord } from "@codigo/schema";
+import { groupChildrenBySlot } from "@codigo/schema";
 import {
   useEditorComponentKeyPress,
   useEditorComponents,
@@ -104,6 +105,7 @@ const EditorCanvas: FC<{
     isCurrentComponent,
     moveExistingNode,
     setCurrentComponent,
+    clearCurrentComponent,
     syncLayoutMode,
     updateComponentPosition,
     updateComponentSize,
@@ -219,6 +221,25 @@ const EditorCanvas: FC<{
     event.stopPropagation();
   }
 
+  function handleCanvasClick(event: ReactMouseEvent<HTMLDivElement>) {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      return;
+    }
+    const wrapper = target.closest(".component-warpper") as HTMLElement | null;
+    if (!wrapper) {
+      clearCurrentComponent();
+      return;
+    }
+    const wrapperId = wrapper.dataset.id;
+    if (!wrapperId) {
+      return;
+    }
+    if (getComponentById(wrapperId)?.type === "container") {
+      clearCurrentComponent();
+    }
+  }
+
   useEditorComponentKeyPress();
 
   useImperativeHandle(onRef, () => ({}));
@@ -263,6 +284,7 @@ const EditorCanvas: FC<{
     <div
       ref={canvasRef}
       className="relative min-h-[700px] bg-white"
+      onClick={handleCanvasClick}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -294,9 +316,63 @@ const EditorCanvas: FC<{
       )}
 
       {getComponentTree.get().map(function renderTreeNode(node: ComponentNode) {
-        const renderedChildren =
-          node.children?.map((child: ComponentNode) => renderTreeNode(child)) ??
-          [];
+        const renderedChildren = (() => {
+          if (node.type !== "viewGroup") {
+            return node.children?.map((child: ComponentNode) => renderTreeNode(child)) ?? [];
+          }
+
+          const props = (node.props ?? {}) as Record<string, unknown>;
+          const slotNodes = groupChildrenBySlot(node);
+          const slotKeys = Object.keys(slotNodes).filter(Boolean);
+
+          const containers = (() => {
+            const configured = props.containers;
+            if (Array.isArray(configured) && configured.length) {
+              return configured
+                .map((item) => {
+                  if (!item || typeof item !== "object") {
+                    return null;
+                  }
+                  const raw = item as Record<string, unknown>;
+                  const id = typeof raw.id === "string" ? raw.id : "";
+                  if (!id) {
+                    return null;
+                  }
+                  return { id };
+                })
+                .filter((item): item is { id: string } => item != null);
+            }
+
+            const derivedKeys =
+              slotKeys.filter((key) => key !== "default").length > 0
+                ? slotKeys.filter((key) => key !== "default")
+                : slotKeys;
+            if (!derivedKeys.length) {
+              return [{ id: "default" }];
+            }
+            return derivedKeys.map((key) => ({ id: key }));
+          })();
+
+          const known = new Set(containers.map((item) => item.id));
+          const controlled = typeof props.activeId === "string" ? props.activeId : "";
+          if (controlled && known.has(controlled)) {
+            return (slotNodes[controlled] ?? []).map((child) => renderTreeNode(child));
+          }
+
+          const runtimeActive = (runtime.pageState.__viewGroupActive ?? {})[node.id];
+          if (typeof runtimeActive === "string" && runtimeActive && known.has(runtimeActive)) {
+            return (slotNodes[runtimeActive] ?? []).map((child) => renderTreeNode(child));
+          }
+
+          const fallback =
+            typeof props.defaultActiveId === "string" ? props.defaultActiveId : "";
+          if (fallback && known.has(fallback)) {
+            return (slotNodes[fallback] ?? []).map((child) => renderTreeNode(child));
+          }
+
+          const resolvedActiveId = containers[0]?.id ?? "default";
+          return (slotNodes[resolvedActiveId] ?? []).map((child) => renderTreeNode(child));
+        })();
         const isAbsoluteNode =
           node.styles?.position === "absolute" ||
           node.styles?.left !== undefined ||

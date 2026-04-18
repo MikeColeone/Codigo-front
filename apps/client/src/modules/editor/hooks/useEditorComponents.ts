@@ -207,6 +207,13 @@ export function useEditorComponents() {
   });
 
   /**
+   * 清空当前选中的组件。
+   */
+  const clearCurrentComponent = action(() => {
+    storeComponents.currentCompConfig = null;
+  });
+
+  /**
    * 广播 replace_all 类型的协作变更。
    */
   const broadcastReplaceAll = () => {
@@ -525,6 +532,7 @@ export function useEditorComponents() {
     isCurrentComponent,
     getCurrentComponentConfig,
     setCurrentComponent,
+    clearCurrentComponent,
     createEditorPage,
     switchEditorPage,
     updateEditorPageMeta,

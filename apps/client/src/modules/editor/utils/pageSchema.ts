@@ -90,15 +90,24 @@ export function serializeComponentTree(store: TEditorComponentsStore) {
  * 规范化页面路径。
  */
 export function sanitizePagePath(path: string) {
-  const normalized = path
-    .trim()
-    .toLowerCase()
-    .replace(/^page:/, "")
-    .replace(/[^\w-]+/g, "-")
-    .replace(/-{2,}/g, "-")
-    .replace(/^-+|-+$/g, "");
+  const sanitizeSegment = (segment: string) => {
+    const normalized = segment
+      .trim()
+      .toLowerCase()
+      .replace(/[^\w-]+/g, "-")
+      .replace(/-{2,}/g, "-")
+      .replace(/^-+|-+$/g, "");
+    return normalized || "page";
+  };
 
-  return normalized || "page";
+  const raw = path.trim().toLowerCase().replace(/^page:/, "");
+  const segments = raw
+    .split("/")
+    .map((segment) => segment.trim())
+    .filter(Boolean)
+    .map(sanitizeSegment);
+
+  return segments.length ? segments.join("/") : "page";
 }
 
 /**

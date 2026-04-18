@@ -152,24 +152,30 @@ export function generateComponent(
     return null;
   }
 
+  const childMap = new Map<string, ReactNode>();
+  if (Array.isArray(children) && children.length) {
+    for (const item of children) {
+      if (
+        typeof item === "object" &&
+        item !== null &&
+        "key" in item &&
+        (item as any).key != null
+      ) {
+        childMap.set(String((item as any).key), item);
+      }
+    }
+  }
+
   const slotNodes = groupChildrenBySlot(conf);
-  const slotEntries = Object.entries(slotNodes).map(([slotName, items]) => {
-    const slotItems = Array.isArray(items) ? (items as ComponentNode[]) : [];
-    return [
-      slotName,
-      slotItems.map((child: ComponentNode) =>
-        children?.find((item) => {
-          return (
-            typeof item === "object" &&
-            item !== null &&
-            "key" in item &&
-            String(item.key) === child.id
-          );
-        }),
-      ),
-    ];
-  });
-  const slots = Object.fromEntries(slotEntries);
+  const slots = Object.fromEntries(
+    Object.entries(slotNodes).map(([slotName, items]) => {
+      const slotItems = Array.isArray(items) ? (items as ComponentNode[]) : [];
+      const rendered = slotItems
+        .map((child: ComponentNode) => childMap.get(child.id))
+        .filter((item): item is ReactNode => item !== undefined);
+      return [slotName, rendered];
+    }),
+  );
 
   return (
     <div

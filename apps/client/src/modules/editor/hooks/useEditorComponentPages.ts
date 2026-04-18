@@ -13,6 +13,7 @@ import {
   createEditorPageDefinition,
   ensureUniquePagePath,
   normalizeFromSchema,
+  sanitizePagePath,
   serializeComponentTree,
   serializeStore,
 } from "@/modules/editor/utils/pageSchema";
@@ -158,7 +159,7 @@ export function createEditorComponentPageActions(
   /**
    * 新建一个 editor 页面并切换过去。
    */
-  const createEditorPage = action(() => {
+  const createEditorPage = action((options?: { parentPath?: string | null }) => {
     if (!ensurePermission("edit_structure", "当前角色不能新增页面")) {
       return null;
     }
@@ -167,6 +168,11 @@ export function createEditorComponentPageActions(
     persistActivePageSnapshot();
     const pages = getPages.get();
     const nextPage = createEditorPageDefinition(pages);
+    if (options?.parentPath) {
+      const parentPath = sanitizePagePath(options.parentPath);
+      const candidatePath = `${parentPath}/${sanitizePagePath(nextPage.path)}`;
+      nextPage.path = ensureUniquePagePath(pages, candidatePath, nextPage.id);
+    }
     storeComponents.pages = [...pages, nextPage];
     hydrateCanvasFromPage(nextPage);
     broadcastReplaceAll();
