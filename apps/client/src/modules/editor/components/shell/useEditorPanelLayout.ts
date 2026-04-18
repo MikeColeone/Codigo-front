@@ -2,12 +2,15 @@ import type { PointerEvent as ReactPointerEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   LEFT_PANEL_DEFAULT_WIDTH,
+  LEFT_PANEL_COLLAPSED_KEY,
   LEFT_PANEL_STORAGE_KEY,
+  RIGHT_PANEL_COLLAPSED_KEY,
   RIGHT_PANEL_DEFAULT_WIDTH,
   RIGHT_PANEL_STORAGE_KEY,
   clampWidth,
   getPanelBounds,
   normalizePanelWidths,
+  readStoredBoolean,
   readStoredWidth,
   type ResizeSide,
 } from "./layout";
@@ -21,6 +24,12 @@ interface ResizeState {
 
 export function useEditorPanelLayout() {
   const resizeStateRef = useRef<ResizeState | null>(null);
+  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(() =>
+    readStoredBoolean(LEFT_PANEL_COLLAPSED_KEY, false),
+  );
+  const [isRightPanelCollapsed, setIsRightPanelCollapsed] = useState(() =>
+    readStoredBoolean(RIGHT_PANEL_COLLAPSED_KEY, false),
+  );
   const [leftPanelWidth, setLeftPanelWidth] = useState(() =>
     readStoredWidth(LEFT_PANEL_STORAGE_KEY, LEFT_PANEL_DEFAULT_WIDTH),
   );
@@ -48,6 +57,16 @@ export function useEditorPanelLayout() {
     },
     [],
   );
+
+  const setLeftPanelCollapsed = useCallback((collapsed: boolean) => {
+    setIsLeftPanelCollapsed(collapsed);
+    window.localStorage.setItem(LEFT_PANEL_COLLAPSED_KEY, String(collapsed));
+  }, []);
+
+  const setRightPanelCollapsed = useCallback((collapsed: boolean) => {
+    setIsRightPanelCollapsed(collapsed);
+    window.localStorage.setItem(RIGHT_PANEL_COLLAPSED_KEY, String(collapsed));
+  }, []);
 
   useEffect(() => {
     const normalized = normalizePanelWidths(
@@ -134,6 +153,12 @@ export function useEditorPanelLayout() {
 
   const startResize = useCallback(
     (side: ResizeSide) => (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (side === "left" && isLeftPanelCollapsed) {
+        setLeftPanelCollapsed(false);
+      }
+      if (side === "right" && isRightPanelCollapsed) {
+        setRightPanelCollapsed(false);
+      }
       resizeStateRef.current = {
         side,
         startX: event.clientX,
@@ -144,10 +169,21 @@ export function useEditorPanelLayout() {
       document.body.style.userSelect = "none";
       event.currentTarget.setPointerCapture(event.pointerId);
     },
-    [leftPanelWidth, rightPanelWidth],
+    [
+      isLeftPanelCollapsed,
+      isRightPanelCollapsed,
+      leftPanelWidth,
+      rightPanelWidth,
+      setLeftPanelCollapsed,
+      setRightPanelCollapsed,
+    ],
   );
 
   return {
+    isLeftPanelCollapsed,
+    isRightPanelCollapsed,
+    setLeftPanelCollapsed,
+    setRightPanelCollapsed,
     leftPanelWidth,
     rightPanelWidth,
     startResize,

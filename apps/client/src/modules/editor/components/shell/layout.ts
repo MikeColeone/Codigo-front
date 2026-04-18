@@ -8,6 +8,9 @@ export const RIGHT_PANEL_MAX_WIDTH = 460;
 export const CENTER_MIN_WIDTH = 420;
 export const LEFT_PANEL_STORAGE_KEY = "codigo:editor:left-panel-width:v5";
 export const RIGHT_PANEL_STORAGE_KEY = "codigo:editor:right-panel-width:v2";
+export const LEFT_PANEL_COLLAPSED_KEY = "codigo:editor:left-panel-collapsed:v1";
+export const RIGHT_PANEL_COLLAPSED_KEY =
+  "codigo:editor:right-panel-collapsed:v1";
 
 export type ResizeSide = "left" | "right";
 
@@ -18,6 +21,17 @@ export function readStoredWidth(key: string, fallback: number) {
 
   const stored = Number(window.localStorage.getItem(key));
   return Number.isFinite(stored) ? stored : fallback;
+}
+
+export function readStoredBoolean(key: string, fallback: boolean) {
+  if (typeof window === "undefined") {
+    return fallback;
+  }
+
+  const stored = window.localStorage.getItem(key);
+  if (stored === "true") return true;
+  if (stored === "false") return false;
+  return fallback;
 }
 
 export function clampWidth(value: number, min: number, max: number) {

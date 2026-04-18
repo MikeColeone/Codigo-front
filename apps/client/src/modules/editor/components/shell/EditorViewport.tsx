@@ -1,4 +1,10 @@
-import { ApartmentOutlined, AppstoreOutlined, FileTextOutlined } from "@ant-design/icons";
+import {
+  ApartmentOutlined,
+  AppstoreOutlined,
+  FileTextOutlined,
+  LeftOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import type {
   MouseEvent as ReactMouseEvent,
@@ -33,11 +39,17 @@ const MOBILE_FRAME_SIZE = 24;
 function PanelResizeHandle({
   side,
   onPointerDown,
+  onToggle,
+  toggleIcon,
+  toggleTitle,
 }: {
   side: "left" | "right";
   lineClassName?: string;
   gripClassName?: string;
   onPointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void;
+  onToggle: () => void;
+  toggleIcon: ReactNode;
+  toggleTitle: string;
 }) {
   return (
     <div
@@ -47,6 +59,20 @@ function PanelResizeHandle({
       className="group relative z-30 w-1 shrink-0 cursor-col-resize bg-transparent touch-none transition-colors hover:bg-[var(--ide-accent)]"
     >
       <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-[var(--ide-border)]" />
+      <button
+        type="button"
+        title={toggleTitle}
+        onPointerDown={(event) => {
+          event.stopPropagation();
+        }}
+        onClick={(event) => {
+          event.stopPropagation();
+          onToggle();
+        }}
+        className="absolute left-1/2 top-1/2 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-md border border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] text-[var(--ide-text-muted)] opacity-0 shadow-sm transition-opacity group-hover:opacity-100 hover:text-[var(--ide-text)]"
+      >
+        {toggleIcon}
+      </button>
     </div>
   );
 }
@@ -95,8 +121,15 @@ function EditorStage({
 export const EditorViewport = observer(function EditorViewport(
   props: EditorViewportProps,
 ) {
-  const { leftPanelWidth, rightPanelWidth, startResize } =
-    useEditorPanelLayout();
+  const {
+    isLeftPanelCollapsed,
+    isRightPanelCollapsed,
+    setLeftPanelCollapsed,
+    setRightPanelCollapsed,
+    leftPanelWidth,
+    rightPanelWidth,
+    startResize,
+  } = useEditorPanelLayout();
   const workspaceViewportRef = useRef<HTMLDivElement>(null);
   const workspaceSurfaceRef = useRef<HTMLDivElement>(null);
   const shouldCenterWorkspaceRef = useRef(true);
@@ -470,7 +503,12 @@ export const EditorViewport = observer(function EditorViewport(
                 <button
                   key={item.key}
                   type="button"
-                  onClick={() => setActiveLeftSection(item.key)}
+                  onClick={() => {
+                    if (isLeftPanelCollapsed) {
+                      setLeftPanelCollapsed(false);
+                    }
+                    setActiveLeftSection(item.key);
+                  }}
                   title={item.label}
                   className={`relative flex h-12 w-full items-center justify-center transition-colors hover:text-[var(--ide-text)] ${
                     isActive
@@ -488,31 +526,45 @@ export const EditorViewport = observer(function EditorViewport(
         {/* Side Bar (Panel) */}
         <div
           className="relative z-20 flex shrink-0 overflow-hidden border-r border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] transition-[width] duration-150"
-          style={{ width: leftPanelWidth - LEFT_PANEL_RAIL_WIDTH }}
+          style={{
+            width: isLeftPanelCollapsed ? 0 : leftPanelWidth - LEFT_PANEL_RAIL_WIDTH,
+          }}
         >
-          <div
-            className="flex min-h-0 flex-1 flex-col"
-          >
-            <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
-              {activeLeftSection === "pages"
-                ? "资源管理器"
-                : activeLeftSection === "components"
-                  ? "组件库"
-                  : "大纲"}
+          {!isLeftPanelCollapsed && (
+            <div className="flex min-h-0 flex-1 flex-col">
+              <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
+                {activeLeftSection === "pages"
+                  ? "资源管理器"
+                  : activeLeftSection === "components"
+                    ? "组件库"
+                    : "大纲"}
+              </div>
+              <div className="flex-1 overflow-auto">
+                {activeLeftSection === "pages" ? (
+                  <EditorPageManager embedded />
+                ) : activeLeftSection === "components" ? (
+                  <EditorLeftPanel embedded />
+                ) : (
+                  <EditorOutlineTree />
+                )}
+              </div>
             </div>
-            <div className="flex-1 overflow-auto">
-              {activeLeftSection === "pages" ? (
-                <EditorPageManager embedded />
-              ) : activeLeftSection === "components" ? (
-                <EditorLeftPanel embedded />
-              ) : (
-                <EditorOutlineTree />
-              )}
-            </div>
-          </div>
+          )}
         </div>
 
-        <PanelResizeHandle side="left" onPointerDown={startResize("left")} />
+        <PanelResizeHandle
+          side="left"
+          onPointerDown={startResize("left")}
+          onToggle={() => setLeftPanelCollapsed(!isLeftPanelCollapsed)}
+          toggleIcon={
+            isLeftPanelCollapsed ? (
+              <RightOutlined className="text-[11px]" />
+            ) : (
+              <LeftOutlined className="text-[11px]" />
+            )
+          }
+          toggleTitle={isLeftPanelCollapsed ? "展开左侧栏" : "收起左侧栏"}
+        />
 
         {/* Main Editor Area */}
         <div className="relative z-0 flex min-w-0 flex-1 flex-col overflow-hidden bg-[var(--ide-bg)]">
@@ -550,19 +602,34 @@ export const EditorViewport = observer(function EditorViewport(
         <PanelResizeHandle
           side="right"
           onPointerDown={startResize("right")}
+          onToggle={() => setRightPanelCollapsed(!isRightPanelCollapsed)}
+          toggleIcon={
+            isRightPanelCollapsed ? (
+              <LeftOutlined className="text-[11px]" />
+            ) : (
+              <RightOutlined className="text-[11px]" />
+            )
+          }
+          toggleTitle={isRightPanelCollapsed ? "展开右侧栏" : "收起右侧栏"}
         />
 
         {/* Right Panel */}
         <div
-          className="relative z-20 flex shrink-0 flex-col bg-[var(--ide-sidebar-bg)] shadow-[-10px_0_20px_rgba(15,23,42,0.06)] transition-[width] duration-150"
-          style={{ width: rightPanelWidth }}
+          className={`relative z-20 flex shrink-0 flex-col bg-[var(--ide-sidebar-bg)] transition-[width] duration-150 ${
+            isRightPanelCollapsed ? "" : "shadow-[-10px_0_20px_rgba(15,23,42,0.06)]"
+          }`}
+          style={{ width: isRightPanelCollapsed ? 0 : rightPanelWidth }}
         >
-          <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
-            属性设置
-          </div>
-          <div className="flex min-h-0 w-full flex-1 flex-col overflow-auto">
-            <EditorRightPanel />
-          </div>
+          {!isRightPanelCollapsed && (
+            <>
+              <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
+                属性设置
+              </div>
+              <div className="flex min-h-0 w-full flex-1 flex-col overflow-auto">
+                <EditorRightPanel />
+              </div>
+            </>
+          )}
         </div>
       </div>
 
