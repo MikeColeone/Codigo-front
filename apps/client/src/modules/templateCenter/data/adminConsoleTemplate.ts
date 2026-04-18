@@ -39,6 +39,80 @@ function place(
   };
 }
 
+function withStyles(
+  component: TemplateComponent,
+  styles?: Record<string, unknown>,
+): TemplateComponent {
+  if (!styles) {
+    return component;
+  }
+  return {
+    ...component,
+    styles: {
+      ...(component.styles ?? {}),
+      ...styles,
+    },
+  };
+}
+
+function createBox(
+  component: TemplateComponent,
+  options: {
+    backgroundColor: string;
+    borderColor: string;
+    borderRadius: number;
+    padding: number;
+  },
+): TemplateComponent {
+  return withStyles(component, {
+    backgroundColor: options.backgroundColor,
+    border: `1px solid ${options.borderColor}`,
+    borderRadius: toCssSize(options.borderRadius),
+    padding: toCssSize(options.padding),
+    boxSizing: "border-box",
+  });
+}
+
+function addCssSize(value: unknown, delta: number) {
+  if (typeof value === "number") {
+    return value + delta;
+  }
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (trimmed.endsWith("px")) {
+      const raw = Number(trimmed.slice(0, -2));
+      if (!Number.isNaN(raw)) {
+        return `${raw + delta}px`;
+      }
+    }
+  }
+  return value;
+}
+
+function applyPagePadding(
+  components: TemplateComponent[],
+  padding: number,
+): TemplateComponent[] {
+  const paddingX2 = padding * 2;
+  return components.map((component) => {
+    const styles = component.styles ?? {};
+    const next: Record<string, unknown> = { ...styles };
+    if (styles.left !== undefined) {
+      next.left = addCssSize(styles.left, padding);
+    }
+    if (styles.top !== undefined) {
+      next.top = addCssSize(styles.top, padding);
+    }
+    if (styles.width === "100%") {
+      next.width = `calc(100% - ${paddingX2}px)`;
+    }
+    return {
+      ...component,
+      styles: next,
+    };
+  });
+}
+
 /**
  * 创建文本物料节点，统一后台模板中的文案样式。
  */
@@ -52,35 +126,6 @@ function createText(
       title,
       size,
     },
-  };
-}
-
-/**
- * 创建后台模板中的通用容器。
- */
-function createPlainContainer(
-  children: TemplateComponent[],
-  options?: {
-    backgroundColor?: string;
-    borderColor?: string;
-    borderRadius?: number;
-    minHeight?: number;
-    padding?: number;
-    title?: string;
-  },
-): TemplateComponent {
-  return {
-    type: "container",
-    props: {
-      title: options?.title ?? "",
-      showChrome: false,
-      backgroundColor: options?.backgroundColor ?? "transparent",
-      borderColor: options?.borderColor ?? "transparent",
-      borderRadius: options?.borderRadius ?? 0,
-      padding: options?.padding ?? 0,
-      minHeight: options?.minHeight ?? 0,
-    },
-    children,
   };
 }
 
@@ -183,121 +228,117 @@ function createOverviewContent(): TemplateComponent[] {
     {
       ...createPlainTwoColumn(
         [
-          place(
-            createPlainContainer(
-              [
-                place(
-                  {
-                    type: "barChart",
-                    props: {
-                      title: "Revenue report",
-                      dataText: JSON.stringify(revenueData, null, 2),
-                      optionText: JSON.stringify(
-                        {
-                          grid: {
-                            left: 44,
-                            right: 18,
-                            top: 56,
-                            bottom: 30,
-                            containLabel: true,
-                          },
-                          yAxis: { splitLine: { lineStyle: { color: "#eef2f7" } } },
-                        },
-                        null,
-                        2,
-                      ),
-                      xAxisKey: "month",
-                      yAxisKey: "value",
-                      nameKey: "month",
-                      valueKey: "value",
-                      color: "#2563eb",
-                    },
-                  },
-                  { left: 0, top: 0, width: "100%", height: "100%" },
-                ),
-              ],
+          createBox(
+            place(
               {
-                backgroundColor: "#ffffff",
-                borderColor: "#e2e8f0",
-                borderRadius: 18,
-                padding: 8,
-                minHeight: 320,
+                type: "barChart",
+                props: {
+                  title: "Revenue report",
+                  dataText: JSON.stringify(revenueData, null, 2),
+                  optionText: JSON.stringify(
+                    {
+                      grid: {
+                        left: 44,
+                        right: 18,
+                        top: 56,
+                        bottom: 30,
+                        containLabel: true,
+                      },
+                      yAxis: { splitLine: { lineStyle: { color: "#eef2f7" } } },
+                    },
+                    null,
+                    2,
+                  ),
+                  xAxisKey: "month",
+                  yAxisKey: "value",
+                  nameKey: "month",
+                  valueKey: "value",
+                  color: "#2563eb",
+                },
               },
+              { left: 0, top: 0, width: "100%", height: "100%" },
             ),
-            { left: 0, top: 0, width: "100%", height: "100%" },
+            {
+              backgroundColor: "#ffffff",
+              borderColor: "#e2e8f0",
+              borderRadius: 18,
+              padding: 8,
+            },
           ),
         ],
         [
-          place(
-            createPlainContainer(
-              [
-                place(
-                  {
-                    type: "pieChart",
-                    props: {
-                      title: "Yearly breakup",
-                      dataText: JSON.stringify(breakupData, null, 2),
-                      optionText: JSON.stringify(
-                        {
-                          legend: { bottom: 8 },
-                          series: [
-                            {
-                              radius: ["54%", "78%"],
-                              label: { show: false },
-                            },
-                          ],
-                        },
-                        null,
-                        2,
-                      ),
-                      xAxisKey: "name",
-                      yAxisKey: "value",
-                      nameKey: "name",
-                      valueKey: "value",
-                      color: "#2563eb",
-                    },
-                  },
-                  { left: 0, top: 0, width: "100%", height: 160 },
-                ),
-                place(
-                  {
-                    type: "lineChart",
-                    props: {
-                      title: "Monthly earnings",
-                      dataText: JSON.stringify(earningsData, null, 2),
-                      optionText: JSON.stringify(
-                        {
-                          grid: {
-                            left: 44,
-                            right: 18,
-                            top: 50,
-                            bottom: 26,
-                            containLabel: true,
-                          },
-                          yAxis: { splitLine: { lineStyle: { color: "#eef2f7" } } },
-                        },
-                        null,
-                        2,
-                      ),
-                      xAxisKey: "month",
-                      yAxisKey: "value",
-                      nameKey: "month",
-                      valueKey: "value",
-                      color: "#3b82f6",
-                    },
-                  },
-                  { left: 0, top: 176, width: "100%", height: 150 },
-                ),
-              ],
+          createBox(
+            place(
               {
-                backgroundColor: "#ffffff",
-                borderColor: "#e2e8f0",
-                borderRadius: 18,
-                padding: 8,
-                minHeight: 320,
+                type: "pieChart",
+                props: {
+                  title: "Yearly breakup",
+                  dataText: JSON.stringify(breakupData, null, 2),
+                  optionText: JSON.stringify(
+                    {
+                      legend: { bottom: 8 },
+                      series: [
+                        {
+                          radius: ["54%", "78%"],
+                          label: { show: false },
+                        },
+                      ],
+                    },
+                    null,
+                    2,
+                  ),
+                  xAxisKey: "name",
+                  yAxisKey: "value",
+                  nameKey: "name",
+                  valueKey: "value",
+                  color: "#2563eb",
+                },
               },
+              { left: 0, top: 0, width: "100%", height: 160 },
             ),
-            { left: 0, top: 0, width: "100%", height: "100%" },
+            {
+              backgroundColor: "#ffffff",
+              borderColor: "#e2e8f0",
+              borderRadius: 18,
+              padding: 8,
+            },
+          ),
+          createBox(
+            place(
+              {
+                type: "lineChart",
+                props: {
+                  title: "Monthly earnings",
+                  dataText: JSON.stringify(earningsData, null, 2),
+                  optionText: JSON.stringify(
+                    {
+                      grid: {
+                        left: 44,
+                        right: 18,
+                        top: 50,
+                        bottom: 26,
+                        containLabel: true,
+                      },
+                      yAxis: { splitLine: { lineStyle: { color: "#eef2f7" } } },
+                    },
+                    null,
+                    2,
+                  ),
+                  xAxisKey: "month",
+                  yAxisKey: "value",
+                  nameKey: "month",
+                  valueKey: "value",
+                  color: "#3b82f6",
+                },
+              },
+              { left: 0, top: 176, width: "100%", height: 150 },
+            ),
+            {
+              backgroundColor: "#ffffff",
+              borderColor: "#e2e8f0",
+              borderRadius: 18,
+              padding: 8,
+            },
           ),
         ],
         {
@@ -355,82 +396,70 @@ function createOverviewContent(): TemplateComponent[] {
     {
       ...createPlainTwoColumn(
         [
-          place(
-            createPlainContainer(
-              [
-                place(
-                  {
-                    type: "image",
-                    props: {
-                      id: "world-map",
-                      name: "Revenue by location",
-                      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/World_map_-_low_resolution.svg/1280px-World_map_-_low_resolution.svg.png",
-                      height: 240,
-                      fit: "contain",
-                      handleClicked: "none",
-                      link: "",
-                    },
-                  },
-                  { left: 0, top: 0, width: "100%", height: "100%" },
-                ),
-              ],
+          createBox(
+            place(
               {
-                backgroundColor: "#ffffff",
-                borderColor: "#e2e8f0",
-                borderRadius: 18,
-                padding: 12,
-                minHeight: 240,
+                type: "image",
+                props: {
+                  id: "world-map",
+                  name: "Revenue by location",
+                  url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/World_map_-_low_resolution.svg/1280px-World_map_-_low_resolution.svg.png",
+                  height: 240,
+                  fit: "contain",
+                  handleClicked: "none",
+                  link: "",
+                },
               },
+              { left: 0, top: 0, width: "100%", height: "100%" },
             ),
-            { left: 0, top: 0, width: "100%", height: "100%" },
+            {
+              backgroundColor: "#ffffff",
+              borderColor: "#e2e8f0",
+              borderRadius: 18,
+              padding: 12,
+            },
           ),
         ],
         [
-          place(
-            createPlainContainer(
-              [
-                place(
-                  {
-                    type: "dataTable",
-                    props: {
-                      title: "Revenue by top regions",
-                      size: "small",
-                      bordered: true,
-                      pagination: false,
-                      pageSize: 8,
-                      emptyText: "暂无数据",
-                      columnsText: JSON.stringify(
-                        [
-                          { title: "Top region", dataIndex: "region" },
-                          { title: "Revenue", dataIndex: "revenue" },
-                        ],
-                        null,
-                        2,
-                      ),
-                      dataText: JSON.stringify(
-                        [
-                          { key: "region-1", region: "Japan", revenue: "$4,748,454" },
-                          { key: "region-2", region: "United Kingdom", revenue: "$405,748" },
-                          { key: "region-3", region: "United States", revenue: "$1,280,240" },
-                          { key: "region-4", region: "France", revenue: "$338,550" },
-                        ],
-                        null,
-                        2,
-                      ),
-                    },
-                  },
-                  { left: 0, top: 0, width: "100%", height: "100%" },
-                ),
-              ],
+          createBox(
+            place(
               {
-                backgroundColor: "#ffffff",
-                borderColor: "#e2e8f0",
-                borderRadius: 18,
-                padding: 0,
-                minHeight: 240,
+                type: "dataTable",
+                props: {
+                  title: "Revenue by top regions",
+                  size: "small",
+                  bordered: true,
+                  pagination: false,
+                  pageSize: 8,
+                  emptyText: "暂无数据",
+                  columnsText: JSON.stringify(
+                    [
+                      { title: "Top region", dataIndex: "region" },
+                      { title: "Revenue", dataIndex: "revenue" },
+                    ],
+                    null,
+                    2,
+                  ),
+                  dataText: JSON.stringify(
+                    [
+                      { key: "region-1", region: "Japan", revenue: "$4,748,454" },
+                      { key: "region-2", region: "United Kingdom", revenue: "$405,748" },
+                      { key: "region-3", region: "United States", revenue: "$1,280,240" },
+                      { key: "region-4", region: "France", revenue: "$338,550" },
+                    ],
+                    null,
+                    2,
+                  ),
+                },
               },
+              { left: 0, top: 0, width: "100%", height: "100%" },
             ),
-            { left: 0, top: 0, width: "100%", height: "100%" },
+            {
+              backgroundColor: "#ffffff",
+              borderColor: "#e2e8f0",
+              borderRadius: 18,
+              padding: 0,
+            },
           ),
         ],
         {
@@ -454,114 +483,126 @@ function createOverviewContent(): TemplateComponent[] {
  */
 function createProjectContent(): TemplateComponent[] {
   return [
-    {
-      type: "breadcrumbBar",
-      props: {
-        items: [
-          { id: "project-breadcrumb-1", label: "后台系统" },
-          { id: "project-breadcrumb-2", label: "项目管理" },
-          { id: "project-breadcrumb-3", label: "项目列表" },
-        ],
-        separator: "/",
-      },
-    },
-    {
-      type: "pageHeader",
-      props: {
-        title: "项目管理",
-        subtitle: "统一查看项目归属、环境状态和最近一次交付结果。",
-        tagsText: "后台,项目,检索",
-        extraText: "共 32 个项目",
-      },
-    },
-    {
-      type: "queryFilter",
-      props: {
-        columns: 4,
-        searchText: "搜索",
-        resetText: "重置",
-        showSearchButton: true,
-        showResetButton: true,
-        fields: [
-          {
-            id: "project-filter-1",
-            label: "项目名称",
-            field: "keyword",
-            type: "input",
-            placeholder: "请输入项目名称",
-            optionsText: "",
-          },
-          {
-            id: "project-filter-2",
-            label: "所属团队",
-            field: "team",
-            type: "select",
-            placeholder: "请选择团队",
-            optionsText: "全部,平台组,中台组,业务组",
-          },
-          {
-            id: "project-filter-3",
-            label: "当前状态",
-            field: "status",
-            type: "select",
-            placeholder: "请选择状态",
-            optionsText: "全部,开发中,待上线,运行中",
-          },
-        ],
-      },
-    },
-    {
-      type: "dataTable",
-      props: {
-        title: "项目清单",
-        size: "middle",
-        bordered: true,
-        pagination: true,
-        pageSize: 8,
-        emptyText: "暂无项目数据",
-        columnsText: JSON.stringify(
-          [
-            { title: "项目", dataIndex: "name" },
-            { title: "团队", dataIndex: "team" },
-            { title: "环境", dataIndex: "env" },
-            { title: "状态", dataIndex: "status" },
-            { title: "负责人", dataIndex: "owner" },
+    place(
+      {
+        type: "breadcrumbBar",
+        props: {
+          items: [
+            { id: "project-breadcrumb-1", label: "后台系统" },
+            { id: "project-breadcrumb-2", label: "项目管理" },
+            { id: "project-breadcrumb-3", label: "项目列表" },
           ],
-          null,
-          2,
-        ),
-        dataText: JSON.stringify(
-          [
+          separator: "/",
+        },
+      },
+      { left: 0, top: 0, width: "100%", height: 48 },
+    ),
+    place(
+      {
+        type: "pageHeader",
+        props: {
+          title: "项目管理",
+          subtitle: "统一查看项目归属、环境状态和最近一次交付结果。",
+          tagsText: "后台,项目,检索",
+          extraText: "共 32 个项目",
+        },
+      },
+      { left: 0, top: 58, width: "100%", height: 96 },
+    ),
+    place(
+      {
+        type: "queryFilter",
+        props: {
+          columns: 4,
+          searchText: "搜索",
+          resetText: "重置",
+          showSearchButton: true,
+          showResetButton: true,
+          fields: [
             {
-              key: "project-row-1",
-              name: "Workspace Console",
-              team: "平台组",
-              env: "Production",
-              status: "运行中",
-              owner: "Mike He",
+              id: "project-filter-1",
+              label: "项目名称",
+              field: "keyword",
+              type: "input",
+              placeholder: "请输入项目名称",
+              optionsText: "",
             },
             {
-              key: "project-row-2",
-              name: "Auth Portal",
-              team: "中台组",
-              env: "Staging",
-              status: "待上线",
-              owner: "Olivia",
+              id: "project-filter-2",
+              label: "所属团队",
+              field: "team",
+              type: "select",
+              placeholder: "请选择团队",
+              optionsText: "全部,平台组,中台组,业务组",
             },
             {
-              key: "project-row-3",
-              name: "Setting Center",
-              team: "业务组",
-              env: "Production",
-              status: "开发中",
-              owner: "Kevin",
+              id: "project-filter-3",
+              label: "当前状态",
+              field: "status",
+              type: "select",
+              placeholder: "请选择状态",
+              optionsText: "全部,开发中,待上线,运行中",
             },
           ],
-          null,
-          2,
-        ),
+        },
       },
-    },
+      { left: 0, top: 168, width: "100%", height: 120 },
+    ),
+    place(
+      {
+        type: "dataTable",
+        props: {
+          title: "项目清单",
+          size: "middle",
+          bordered: true,
+          pagination: true,
+          pageSize: 8,
+          emptyText: "暂无项目数据",
+          columnsText: JSON.stringify(
+            [
+              { title: "项目", dataIndex: "name" },
+              { title: "团队", dataIndex: "team" },
+              { title: "环境", dataIndex: "env" },
+              { title: "状态", dataIndex: "status" },
+              { title: "负责人", dataIndex: "owner" },
+            ],
+            null,
+            2,
+          ),
+          dataText: JSON.stringify(
+            [
+              {
+                key: "project-row-1",
+                name: "Workspace Console",
+                team: "平台组",
+                env: "Production",
+                status: "运行中",
+                owner: "Mike He",
+              },
+              {
+                key: "project-row-2",
+                name: "Auth Portal",
+                team: "中台组",
+                env: "Staging",
+                status: "待上线",
+                owner: "Olivia",
+              },
+              {
+                key: "project-row-3",
+                name: "Setting Center",
+                team: "业务组",
+                env: "Production",
+                status: "开发中",
+                owner: "Kevin",
+              },
+            ],
+            null,
+            2,
+          ),
+        },
+      },
+      { left: 0, top: 308, width: "100%", height: 560 },
+    ),
   ];
 }
 
@@ -570,132 +611,144 @@ function createProjectContent(): TemplateComponent[] {
  */
 function createAuthContent(): TemplateComponent[] {
   return [
-    {
-      type: "breadcrumbBar",
-      props: {
-        items: [
-          { id: "auth-breadcrumb-1", label: "后台系统" },
-          { id: "auth-breadcrumb-2", label: "权限中心" },
-          { id: "auth-breadcrumb-3", label: "角色授权" },
-        ],
-        separator: "/",
-      },
-    },
-    {
-      type: "pageHeader",
-      props: {
-        title: "权限中心",
-        subtitle: "按角色查看权限范围、待处理申请和关键成员分布。",
-        tagsText: "后台,权限,角色",
-        extraText: "今日新增 5 条申请",
-      },
-    },
-    createPlainTwoColumn(
-      [
-        {
-          type: "list",
-          props: {
-            items: [
-              {
-                title: "平台管理员",
-                titleLink: "",
-                description: "拥有项目、发布、成员、审计的完整权限",
-                avatar: "",
-              },
-              {
-                title: "项目管理员",
-                titleLink: "",
-                description: "管理项目成员、环境配置和发布审批",
-                avatar: "",
-              },
-              {
-                title: "审计人员",
-                titleLink: "",
-                description: "仅查看日志、权限记录和敏感操作结果",
-                avatar: "",
-              },
-            ],
-          },
-        },
-      ],
-      [
-        {
-          type: "cardGrid",
-          props: {
-            columns: 2,
-            items: [
-              {
-                id: "auth-grid-1",
-                title: "待处理申请",
-                subtitle: "待审批",
-                value: "12",
-                extra: "其中高风险 3 条",
-              },
-              {
-                id: "auth-grid-2",
-                title: "角色数量",
-                subtitle: "当前启用",
-                value: "8",
-                extra: "覆盖 3 条业务线",
-              },
-            ],
-          },
-        },
-      ],
+    place(
       {
-        leftWidth: 430,
-        gap: 16,
-        minHeight: 220,
+        type: "breadcrumbBar",
+        props: {
+          items: [
+            { id: "auth-breadcrumb-1", label: "后台系统" },
+            { id: "auth-breadcrumb-2", label: "权限中心" },
+            { id: "auth-breadcrumb-3", label: "角色授权" },
+          ],
+          separator: "/",
+        },
       },
+      { left: 0, top: 0, width: "100%", height: 48 },
     ),
-    {
-      type: "dataTable",
-      props: {
-        title: "成员授权列表",
-        size: "middle",
-        bordered: true,
-        pagination: true,
-        pageSize: 8,
-        emptyText: "暂无授权记录",
-        columnsText: JSON.stringify(
-          [
-            { title: "成员", dataIndex: "name" },
-            { title: "角色", dataIndex: "role" },
-            { title: "范围", dataIndex: "scope" },
-            { title: "状态", dataIndex: "status" },
-          ],
-          null,
-          2,
-        ),
-        dataText: JSON.stringify(
-          [
-            {
-              key: "auth-row-1",
-              name: "Mike He",
-              role: "平台管理员",
-              scope: "全局",
-              status: "生效中",
-            },
-            {
-              key: "auth-row-2",
-              name: "Anna",
-              role: "项目管理员",
-              scope: "Workspace Console",
-              status: "待复核",
-            },
-            {
-              key: "auth-row-3",
-              name: "Kevin",
-              role: "审计人员",
-              scope: "只读",
-              status: "生效中",
-            },
-          ],
-          null,
-          2,
-        ),
+    place(
+      {
+        type: "pageHeader",
+        props: {
+          title: "权限中心",
+          subtitle: "按角色查看权限范围、待处理申请和关键成员分布。",
+          tagsText: "后台,权限,角色",
+          extraText: "今日新增 5 条申请",
+        },
       },
-    },
+      { left: 0, top: 58, width: "100%", height: 96 },
+    ),
+    place(
+      createPlainTwoColumn(
+        [
+          {
+            type: "list",
+            props: {
+              items: [
+                {
+                  title: "平台管理员",
+                  titleLink: "",
+                  description: "拥有项目、发布、成员、审计的完整权限",
+                  avatar: "",
+                },
+                {
+                  title: "项目管理员",
+                  titleLink: "",
+                  description: "管理项目成员、环境配置和发布审批",
+                  avatar: "",
+                },
+                {
+                  title: "审计人员",
+                  titleLink: "",
+                  description: "仅查看日志、权限记录和敏感操作结果",
+                  avatar: "",
+                },
+              ],
+            },
+          },
+        ],
+        [
+          {
+            type: "cardGrid",
+            props: {
+              columns: 2,
+              items: [
+                {
+                  id: "auth-grid-1",
+                  title: "待处理申请",
+                  subtitle: "待审批",
+                  value: "12",
+                  extra: "其中高风险 3 条",
+                },
+                {
+                  id: "auth-grid-2",
+                  title: "角色数量",
+                  subtitle: "当前启用",
+                  value: "8",
+                  extra: "覆盖 3 条业务线",
+                },
+              ],
+            },
+          },
+        ],
+        {
+          leftWidth: 430,
+          gap: 16,
+          minHeight: 220,
+        },
+      ),
+      { left: 0, top: 168, width: "100%", height: 240 },
+    ),
+    place(
+      {
+        type: "dataTable",
+        props: {
+          title: "成员授权列表",
+          size: "middle",
+          bordered: true,
+          pagination: true,
+          pageSize: 8,
+          emptyText: "暂无授权记录",
+          columnsText: JSON.stringify(
+            [
+              { title: "成员", dataIndex: "name" },
+              { title: "角色", dataIndex: "role" },
+              { title: "范围", dataIndex: "scope" },
+              { title: "状态", dataIndex: "status" },
+            ],
+            null,
+            2,
+          ),
+          dataText: JSON.stringify(
+            [
+              {
+                key: "auth-row-1",
+                name: "Mike He",
+                role: "平台管理员",
+                scope: "全局",
+                status: "生效中",
+              },
+              {
+                key: "auth-row-2",
+                name: "Anna",
+                role: "项目管理员",
+                scope: "Workspace Console",
+                status: "待复核",
+              },
+              {
+                key: "auth-row-3",
+                name: "Kevin",
+                role: "审计人员",
+                scope: "只读",
+                status: "生效中",
+              },
+            ],
+            null,
+            2,
+          ),
+        },
+      },
+      { left: 0, top: 424, width: "100%", height: 452 },
+    ),
   ];
 }
 
@@ -704,29 +757,40 @@ function createAuthContent(): TemplateComponent[] {
  */
 function createSettingContent(): TemplateComponent[] {
   return [
-    {
-      type: "breadcrumbBar",
-      props: {
-        items: [
-          { id: "setting-breadcrumb-1", label: "后台系统" },
-          { id: "setting-breadcrumb-2", label: "系统设置" },
-          { id: "setting-breadcrumb-3", label: "基础配置" },
-        ],
-        separator: "/",
+    place(
+      {
+        type: "breadcrumbBar",
+        props: {
+          items: [
+            { id: "setting-breadcrumb-1", label: "后台系统" },
+            { id: "setting-breadcrumb-2", label: "系统设置" },
+            { id: "setting-breadcrumb-3", label: "基础配置" },
+          ],
+          separator: "/",
+        },
       },
-    },
-    {
-      type: "pageHeader",
-      props: {
-        title: "系统设置",
-        subtitle: "集中维护平台名称、通知策略和默认发布配置。",
-        tagsText: "后台,设置,配置",
-        extraText: "设置变更后需重新发布",
+      { left: 0, top: 0, width: "100%", height: 48 },
+    ),
+    place(
+      {
+        type: "pageHeader",
+        props: {
+          title: "系统设置",
+          subtitle: "集中维护平台名称、通知策略和默认发布配置。",
+          tagsText: "后台,设置,配置",
+          extraText: "设置变更后需重新发布",
+        },
       },
-    },
-    createPlainContainer(
-      [
-        createText("基础配置", "lg"),
+      { left: 0, top: 58, width: "100%", height: 96 },
+    ),
+    place(createText("基础配置", "lg"), {
+      left: 0,
+      top: 168,
+      width: 320,
+      height: 40,
+    }),
+    createBox(
+      place(
         {
           type: "input",
           props: {
@@ -735,6 +799,17 @@ function createSettingContent(): TemplateComponent[] {
             text: "Codigo Admin Console",
           },
         },
+        { left: 0, top: 218, width: 560, height: 56 },
+      ),
+      {
+        backgroundColor: "#ffffff",
+        borderColor: "#e2e8f0",
+        borderRadius: 16,
+        padding: 12,
+      },
+    ),
+    createBox(
+      place(
         {
           type: "input",
           props: {
@@ -743,6 +818,17 @@ function createSettingContent(): TemplateComponent[] {
             text: "admin.codigo.local",
           },
         },
+        { left: 0, top: 286, width: 560, height: 56 },
+      ),
+      {
+        backgroundColor: "#ffffff",
+        borderColor: "#e2e8f0",
+        borderRadius: 16,
+        padding: 12,
+      },
+    ),
+    createBox(
+      place(
         {
           type: "radio",
           props: {
@@ -754,6 +840,17 @@ function createSettingContent(): TemplateComponent[] {
             ],
           },
         },
+        { left: 0, top: 354, width: 560, height: 68 },
+      ),
+      {
+        backgroundColor: "#ffffff",
+        borderColor: "#e2e8f0",
+        borderRadius: 16,
+        padding: 12,
+      },
+    ),
+    createBox(
+      place(
         {
           type: "checkbox",
           props: {
@@ -766,13 +863,13 @@ function createSettingContent(): TemplateComponent[] {
             ],
           },
         },
-      ],
+        { left: 0, top: 434, width: 560, height: 92 },
+      ),
       {
         backgroundColor: "#ffffff",
         borderColor: "#e2e8f0",
-        borderRadius: 24,
-        padding: 20,
-        minHeight: 420,
+        borderRadius: 16,
+        padding: 12,
       },
     ),
   ];
@@ -786,25 +883,12 @@ function createContentPage(
   path: string,
   content: TemplateComponent[],
 ): TemplatePagePreset {
+  const PAGE_PADDING = 24;
   return {
     name,
     path,
     components: [
-      place(
-        createPlainContainer(content, {
-          backgroundColor: "#f1f5f9",
-          borderColor: "transparent",
-          borderRadius: 0,
-          padding: 24,
-          minHeight: CANVAS_HEIGHT,
-        }),
-        {
-          left: 0,
-          top: 0,
-          width: "100%",
-          height: "100%",
-        },
-      ),
+      ...applyPagePadding(content, PAGE_PADDING),
     ],
   };
 }

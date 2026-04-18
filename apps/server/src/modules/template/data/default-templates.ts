@@ -21,22 +21,15 @@ export const DEFAULT_TEMPLATE_PRESETS: TemplatePreset[] = [
         path: '/overview',
         components: [
           {
-            type: 'container',
-            props: {
-              title: '',
-              showChrome: false,
-              backgroundColor: '#ffffff',
-              borderColor: '#e2e8f0',
-              borderRadius: 16,
-              padding: 24,
-              minHeight: 520,
+            type: 'titleText',
+            props: { title: 'Dashboard', size: 'xl' },
+            styles: {
+              position: 'absolute',
+              left: 24,
+              top: 24,
+              width: 320,
+              height: 40,
             },
-            children: [
-              {
-                type: 'titleText',
-                props: { title: 'Dashboard', size: 'xl' },
-              },
-            ],
           },
         ],
       },
@@ -45,48 +38,48 @@ export const DEFAULT_TEMPLATE_PRESETS: TemplatePreset[] = [
         path: '/users',
         components: [
           {
-            type: 'container',
-            props: {
-              title: '',
-              showChrome: false,
-              backgroundColor: '#ffffff',
-              borderColor: '#e2e8f0',
-              borderRadius: 16,
-              padding: 24,
-              minHeight: 520,
+            type: 'titleText',
+            props: { title: 'Users', size: 'xl' },
+            styles: {
+              position: 'absolute',
+              left: 24,
+              top: 24,
+              width: 320,
+              height: 40,
             },
-            children: [
-              {
-                type: 'titleText',
-                props: { title: 'Users', size: 'xl' },
-              },
-              {
-                type: 'table',
-                props: {
-                  columnsText: JSON.stringify(
-                    [
-                      { title: 'ID', dataIndex: 'id' },
-                      { title: 'Name', dataIndex: 'name' },
-                      { title: 'Role', dataIndex: 'role' },
-                    ],
-                    null,
-                    2,
-                  ),
-                  dataText: JSON.stringify(
-                    [
-                      { id: 1, name: 'Alice', role: 'Admin' },
-                      { id: 2, name: 'Bob', role: 'User' },
-                    ],
-                    null,
-                    2,
-                  ),
-                  size: 'middle',
-                  bordered: true,
-                  rowKey: 'id',
-                  pagination: false,
-                },
-              },
-            ],
+          },
+          {
+            type: 'table',
+            props: {
+              columnsText: JSON.stringify(
+                [
+                  { title: 'ID', dataIndex: 'id' },
+                  { title: 'Name', dataIndex: 'name' },
+                  { title: 'Role', dataIndex: 'role' },
+                ],
+                null,
+                2,
+              ),
+              dataText: JSON.stringify(
+                [
+                  { id: 1, name: 'Alice', role: 'Admin' },
+                  { id: 2, name: 'Bob', role: 'User' },
+                ],
+                null,
+                2,
+              ),
+              size: 'middle',
+              bordered: true,
+              rowKey: 'id',
+              pagination: false,
+            },
+            styles: {
+              position: 'absolute',
+              left: 24,
+              top: 80,
+              width: 1232,
+              height: 600,
+            },
           },
         ],
       },

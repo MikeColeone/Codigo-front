@@ -1,0 +1,64 @@
+{
+  "unused": [
+    {
+      "file": "apps/client/src/app/router/AdminPortalRedirect.tsx",
+      "importers": []
+    },
+    {
+      "file": "apps/client/src/modules/adminConsole/components/AdminHeader.tsx",
+      "importers": []
+    },
+    {
+      "file": "apps/client/src/modules/appManagement/components/layout/AppManagementFootnote.tsx",
+      "importers": []
+    },
+    {
+      "file": "apps/client/src/modules/appManagement/components/layout/AppManagementPage.tsx",
+      "importers": []
+    },
+    {
+      "file": "apps/client/src/modules/devDocument/components/Footer.tsx",
+      "importers": []
+    },
+    {
+      "file": "apps/client/src/modules/devDocument/components/Header.tsx",
+      "importers": []
+    },
+    {
+      "file": "apps/client/src/modules/editor/components/canvas/CanvasToolbar.tsx",
+      "importers": []
+    },
+    {
+      "file": "apps/client/src/modules/editor/components/canvas/LayoutBlocksOverlay.tsx",
+      "importers": []
+    },
+    {
+      "file": "apps/client/src/modules/editor/components/rightPanel/PermissionPanel.tsx",
+      "importers": []
+    },
+    {
+      "file": "apps/client/src/modules/templateCenter/data/templatePresets.ts",
+      "importers": []
+    },
+    {
+      "file": "apps/client/src/shared/utils/excel.ts",
+      "importers": []
+    },
+    {
+      "file": "apps/client/src/shared/utils/theme/theme.ts",
+      "importers": []
+    },
+    {
+      "file": "apps/client/src/test/setup.ts",
+      "importers": []
+    },
+    {
+      "file": "apps/ide/src/app.tsx",
+      "importers": []
+    },
+    {
+      "file": "apps/ide/src/custom-layout-component.tsx",
+      "importers": []
+    }
+  ]
+}

@@ -14,7 +14,6 @@ import {
   useEditorComponents,
   useEditorPage,
   useEditorPermission,
-  useLayoutHistory,
 } from "@/modules/editor/hooks";
 import { generateComponent } from "@/modules/editor/runtime";
 import type { TEditorComponentsStore } from "@/modules/editor/stores";
@@ -22,9 +21,6 @@ import { useCanvasDragMove } from "./hooks/useCanvasDragMove";
 import { useCanvasDrop } from "./hooks/useCanvasDrop";
 import { useCanvasResize } from "./hooks/useCanvasResize";
 import { GridDashedOverlay } from "./GridDashedOverlay";
-import { LayoutBlocksOverlay } from "./LayoutBlocksOverlay";
-import { createRootLayoutBlock, splitLayoutBlocks } from "@/modules/editor/utils/layoutBlocks";
-import { message } from "antd";
 
 interface ComponentWrapperProps {
   id: string;
@@ -106,7 +102,6 @@ const EditorCanvas: FC<{
     getComponentById,
     getComponentTree,
     getAvailableSlots,
-    getActivePage,
     isCurrentComponent,
     moveExistingNode,
     setCurrentComponent,
@@ -116,14 +111,10 @@ const EditorCanvas: FC<{
     updateComponentSize,
     pushBlock,
     push,
-    updateEditorPageLayoutBlocks,
   } = useEditorComponents();
   const { can } = useEditorPermission();
   const { store: storePage } = useEditorPage();
   const canEditStructure = can("edit_structure");
-  const layoutHistory = useLayoutHistory();
-  const activePage = getActivePage.get();
-  const layoutBlocks = activePage?.layoutBlocks;
 
   const canvasRef = useRef<HTMLDivElement>(null);
   const [pageState, setPageState] = useState<Record<string, any>>({});
@@ -165,7 +156,7 @@ const EditorCanvas: FC<{
   } = useCanvasDragMove({
     canEditStructure,
     canvasRef,
-    layoutBlocks: storePage.layoutMode === "absolute" ? layoutBlocks : undefined,
+    layoutBlocks: undefined,
     getComponentById: (id) =>
       getComponentById(id) as ComponentNodeRecord | undefined | null,
     moveExistingNode,
@@ -185,7 +176,7 @@ const EditorCanvas: FC<{
   const { handleDragOver, handleDragLeave, handleDrop } = useCanvasDrop({
     canEditStructure,
     canvasRef,
-    layoutBlocks: storePage.layoutMode === "absolute" ? layoutBlocks : undefined,
+    layoutBlocks: undefined,
     currentComponentId: store.currentCompConfig,
     getComponentById: (id) =>
       getComponentById(id) as ComponentNodeRecord | undefined | null,
@@ -335,33 +326,6 @@ const EditorCanvas: FC<{
           gap={Math.max(0, storePage.grid?.gap ?? 0)}
         />
       )}
-
-      <LayoutBlocksOverlay
-        containerRef={canvasRef}
-        canvasWidth={storePage.canvasWidth}
-        canvasHeight={storePage.canvasHeight}
-        layoutBlocks={layoutBlocks}
-        onSelectBlock={() => {}}
-        onCommitSplit={({ blockId, orientation, position }) => {
-          if (!canEditStructure || !activePage?.id) return;
-          const prev = activePage.layoutBlocks ?? [];
-          layoutHistory.push(activePage.id, prev);
-          const base =
-            activePage.layoutBlocks?.length
-              ? activePage.layoutBlocks
-              : [createRootLayoutBlock(storePage.canvasWidth, storePage.canvasHeight)];
-          const next = splitLayoutBlocks(base, {
-            blockId,
-            orientation,
-            position,
-          });
-          if (!next) {
-            message.warning("切割失败，请调整切割位置");
-            return;
-          }
-          updateEditorPageLayoutBlocks(activePage.id, next);
-        }}
-      />
 
       {getComponentTree.get().map(function renderTreeNode(node: ComponentNode) {
         const renderedChildren = (() => {

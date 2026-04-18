@@ -12,7 +12,7 @@ import {
   type RuntimeAction,
 } from "@/modules/editor/runtime";
 import { useFitScale } from "@/shared/hooks";
-import { AdminShell } from "./components/AdminShell";
+import { AdminShell } from "@/modules/pageShell/components/AdminShell";
 
 function resolveSchemaFromReleasePayload(
   payload: Record<string, any> | null | undefined,
@@ -281,6 +281,7 @@ export default function Release() {
   const canvasHeight =
     Number(data?.canvasHeight) || (deviceType === "pc" ? 768 : 700);
   const layoutMode = data?.layoutMode === "grid" ? "grid" : "absolute";
+  const shellLayout = data?.shellLayout;
   const grid = data?.grid ?? null;
   const { containerRef, scale, scaledWidth, scaledHeight } = useFitScale({
     contentWidth: canvasWidth,
@@ -392,6 +393,7 @@ export default function Release() {
             });
           }}
           title={data?.page_name || "管理后台"}
+          layout={shellLayout}
         >
           <div
             ref={containerRef}

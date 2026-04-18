@@ -11,7 +11,7 @@ import {
 import { useFitScale, useStorePage } from "@/shared/hooks";
 import { useEditorComponents } from "@/modules/editor/hooks";
 import type { ComponentNode, IEditorPageSchema, RuntimeStateValue } from "@codigo/schema";
-import { AdminShell } from "./components/AdminShell";
+import { AdminShell } from "@/modules/pageShell/components/AdminShell";
 
 function resolvePreviewPage(
   pages: IEditorPageSchema[],
@@ -421,6 +421,7 @@ const PreviewCanvas = observer(() => {
         pages={pages}
         activePagePath={activePage?.path ?? null}
         onSelectPagePath={handleSelectPagePath}
+        layout={store.shellLayout}
       >
         {canvas}
       </AdminShell>

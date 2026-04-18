@@ -68,7 +68,7 @@ export default function ContainerComponent(_props: ContainerRuntimeProps) {
           showChrome
             ? "rounded-xl border border-dashed border-slate-200 bg-slate-50/70"
             : ""
-        } ${hasRuntimeHeight ? "min-h-0 flex-1" : "min-h-[160px]"}`}
+        } ${hasRuntimeHeight ? "min-h-0 flex-1" : ""}`}
         style={{
           minHeight: hasRuntimeHeight
             ? isPercentRuntimeHeight
@@ -83,9 +83,7 @@ export default function ContainerComponent(_props: ContainerRuntimeProps) {
           defaultChildren
         ) : (
           <div
-            className={`flex items-center justify-center text-sm text-slate-400 ${
-              hasRuntimeHeight ? "h-full min-h-0" : "h-full min-h-[160px]"
-            }`}
+            className={`flex items-center justify-center text-sm text-slate-400 ${hasRuntimeHeight ? "h-full min-h-0" : "h-full"}`}
             style={{
               minHeight: hasRuntimeHeight
                 ? isPercentRuntimeHeight

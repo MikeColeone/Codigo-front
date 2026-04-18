@@ -23,6 +23,7 @@ import { EditorOutlineTree } from "../rightPanel/ComponentFields";
 import GlobalFields from "../rightPanel/GlobalFields";
 import EditorCanvas from "../canvas";
 import { SandboxCanvas } from "../canvas/SandboxCanvas";
+import { AdminShell } from "@/modules/pageShell/components/AdminShell";
 import { useEditorPanelLayout } from "./useEditorPanelLayout";
 import { WebIDEFrame } from "./WebIDEFrame";
 import { EditorStatusBarActions } from "./EditorStatusBarActions";
@@ -101,30 +102,88 @@ function EditorStage({
   }
 
   return (
-    <div
-      className={`editor-canvas-container relative z-0 overflow-hidden bg-white text-left transition-all duration-300 ease-out shadow-lg ${
-        storePage.deviceType === "mobile"
-          ? "border-[12px] border-[#000000] rounded-[32px]"
-          : "border border-[var(--ide-border)]"
-      }`}
-      style={{
-        width: storePage.canvasWidth,
-        height: storePage.canvasHeight,
-        maxHeight: "100%",
-      }}
-    >
-      {storePage.deviceType === "mobile" && (
-        <div className="sticky top-0 z-50 flex h-7 items-center justify-between bg-black px-6 text-[11px] font-medium tracking-wider text-white select-none">
-          <span>9:41</span>
-          <div className="flex items-center gap-1.5">
-            <div className="h-3.5 w-3.5 rounded-sm bg-white/90" />
-            <div className="h-3.5 w-3.5 rounded-full bg-white/90" />
-            <div className="h-2.5 w-4 rounded-sm bg-white/90" />
-          </div>
+    (() => {
+      const pages = storeComps.pages.map((page) => ({
+        id: page.id,
+        name: page.name,
+        path: page.path,
+      }));
+      const activePagePath =
+        storeComps.pages.find((page) => page.id === storeComps.activePageId)?.path ??
+        storeComps.pages[0]?.path ??
+        null;
+
+      const canvas = (
+        <div
+          className={`editor-canvas-container relative z-0 overflow-hidden bg-white text-left transition-all duration-300 ease-out shadow-lg ${
+            storePage.deviceType === "mobile"
+              ? "border-[12px] border-[#000000] rounded-[32px]"
+              : "border border-[var(--ide-border)]"
+          }`}
+          style={{
+            width: storePage.canvasWidth,
+            height: storePage.canvasHeight,
+            maxHeight: "100%",
+          }}
+        >
+          {storePage.deviceType === "mobile" && (
+            <div className="sticky top-0 z-50 flex h-7 items-center justify-between bg-black px-6 text-[11px] font-medium tracking-wider text-white select-none">
+              <span>9:41</span>
+              <div className="flex items-center gap-1.5">
+                <div className="h-3.5 w-3.5 rounded-sm bg-white/90" />
+                <div className="h-3.5 w-3.5 rounded-full bg-white/90" />
+                <div className="h-2.5 w-4 rounded-sm bg-white/90" />
+              </div>
+            </div>
+          )}
+          <EditorCanvas store={storeComps} onRef={canvasRef} />
         </div>
-      )}
-      <EditorCanvas store={storeComps} onRef={canvasRef} />
-    </div>
+      );
+
+      if (storePage.shellLayout === "none") {
+        return canvas;
+      }
+
+      const sidebarWidth = 224;
+      const topBarHeight = 56;
+      const breadcrumbHeight = 44;
+      const baseWidth = storePage.canvasWidth;
+      const baseHeight = storePage.canvasHeight;
+      const frameWidth =
+        storePage.shellLayout === "leftRight" ||
+        storePage.shellLayout === "leftTop" ||
+        storePage.shellLayout === "topLeft"
+          ? baseWidth + sidebarWidth
+          : baseWidth;
+      const frameHeight =
+        storePage.shellLayout === "topBottom"
+          ? baseHeight + topBarHeight
+          : storePage.shellLayout === "breadcrumb"
+            ? baseHeight + topBarHeight + breadcrumbHeight
+            : storePage.shellLayout === "leftTop" || storePage.shellLayout === "topLeft"
+              ? baseHeight + topBarHeight
+              : baseHeight;
+
+      return (
+        <div
+          className="relative z-0 overflow-hidden border border-[var(--ide-border)] bg-white text-left shadow-lg"
+          style={{ width: frameWidth, height: frameHeight, maxHeight: "100%" }}
+        >
+          <AdminShell
+            pages={pages}
+            activePagePath={activePagePath}
+            onSelectPagePath={() => {}}
+            title={storePage.title || "管理后台"}
+            layout={storePage.shellLayout}
+            interactive={false}
+          >
+            <div className="h-full w-full flex items-center justify-center bg-transparent">
+              {canvas}
+            </div>
+          </AdminShell>
+        </div>
+      );
+    })()
   );
 }
 
