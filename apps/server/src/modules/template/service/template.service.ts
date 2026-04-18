@@ -21,18 +21,32 @@ export class TemplateService {
     private readonly templateRepository: Repository<Template>,
   ) {}
 
+  private readonly defaultTemplateVersions: Record<string, number> = {
+    'admin-console-standard': 2,
+  };
+
   async ensureDefaults() {
     for (const preset of DEFAULT_TEMPLATE_PRESETS) {
       const existing = await this.templateRepository.findOne({
         where: { key: preset.key },
       });
-      if (existing) continue;
+      const targetVersion = this.defaultTemplateVersions[preset.key] ?? 1;
+
+      if (existing) {
+        if ((existing.version ?? 1) >= targetVersion) continue;
+        applyPreset(existing, preset);
+        existing.cover_url = null;
+        existing.status = 'published';
+        existing.version = targetVersion;
+        await this.templateRepository.save(existing);
+        continue;
+      }
 
       const entity = new Template();
       applyPreset(entity, preset);
       entity.cover_url = null;
       entity.status = 'published';
-      entity.version = 1;
+      entity.version = targetVersion;
       await this.templateRepository.save(entity);
     }
   }

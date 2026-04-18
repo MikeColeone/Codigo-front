@@ -44,9 +44,8 @@ export default function AdminShell({
         </nav>
       </aside>
       <main className="flex-1 min-h-screen overflow-auto">
-        <div className="p-6">{children}</div>
+        {children}
       </main>
     </div>
   );
 }
-

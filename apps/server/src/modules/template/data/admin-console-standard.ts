@@ -50,98 +50,14 @@ function createCard(children: TemplateComponent[], styles?: Record<string, unkno
   });
 }
 
-function createSidebar(activeKey: string): TemplateComponent {
-  const nav = [
-    { key: 'overview', label: '概览' },
-    { key: 'users', label: '用户' },
-    { key: 'projects', label: '项目' },
-    { key: 'settings', label: '设置' },
-  ];
-
-  return createContainer({
-    backgroundColor: '#ffffff',
-    borderColor: '#e2e8f0',
-    borderRadius: 0,
-    padding: 16,
-    minHeight: CANVAS_HEIGHT,
-    children: [
-      withStyles(
-        {
-          type: 'image',
-          props: {
-            url: 'https://dummyimage.com/160x44/0f172a/ffffff&text=CODIGO',
-            name: 'Codigo',
-            height: 44,
-            fit: 'contain',
-            handleClicked: 'none',
-          },
-        },
-        { marginBottom: 10 },
-      ),
-      withStyles(
-        { type: 'titleText', props: { title: '后台管理系统', size: 'lg' } },
-        { marginBottom: 16 },
-      ),
-      ...nav.map((item) =>
-        withStyles(
-          {
-            type: 'button',
-            props: {
-              text: item.label,
-              type: 'text',
-              size: 'middle',
-              danger: false,
-              active: item.key === activeKey,
-              block: true,
-              actionType: 'none',
-            },
-          },
-          { width: '100%', marginBottom: 8 },
-        ),
-      ),
-      withStyles({ type: 'split', props: { dashed: false, orientation: 'center', text: '' } }, {
-        marginTop: 12,
-        marginBottom: 12,
-      }),
-      createCard(
-        [
-          withStyles(
-            {
-              type: 'avatar',
-              props: {
-                name: '管理员',
-                url: 'https://c-ssl.dtstatic.com/uploads/blog/202307/03/V2SoGOO7tmBvpYq.thumb.400_0.jpeg',
-                size: 44,
-                shape: 'circle',
-                handleClicked: 'none',
-                link: '',
-              },
-            },
-            { marginBottom: 8 },
-          ),
-          { type: 'titleText', props: { title: 'Super Admin', size: 'sm' } },
-          withStyles(
-            { type: 'titleText', props: { title: 'super_admin@demo.local', size: 'xs' } },
-            { marginTop: 4 },
-          ),
-        ],
-        { marginTop: 8 },
-      ),
-    ],
-  });
-}
-
-function createAdminPage(options: {
+function createAdminContentPage(options: {
   name: string;
   path: string;
-  activeKey: string;
   breadcrumb: { id: string; label: string }[];
   header: { title: string; subtitle: string; tagsText: string; extraText: string };
   content: TemplateComponent[];
 }): TemplatePagePreset {
-  const sidebar = createSidebar(options.activeKey);
-
-  const main = createContainer({
+  const page = createContainer({
     backgroundColor: '#f8fafc',
     padding: 24,
     minHeight: CANVAS_HEIGHT,
@@ -169,26 +85,7 @@ function createAdminPage(options: {
   return {
     name: options.name,
     path: options.path,
-    components: [
-      withStyles(
-        {
-          type: 'twoColumn',
-          props: {
-            title: '',
-            showChrome: false,
-            leftWidth: 260,
-            gap: 0,
-            minHeight: CANVAS_HEIGHT,
-            backgroundColor: 'transparent',
-          },
-          children: [
-            { ...sidebar, slot: 'left' },
-            { ...main, slot: 'right' },
-          ],
-        },
-        { width: '100%', height: `${CANVAS_HEIGHT}px` },
-      ),
-    ],
+    components: [withStyles(page, { width: '100%', minHeight: `${CANVAS_HEIGHT}px` })],
   };
 }
 
@@ -366,10 +263,9 @@ function createOverviewPage(): TemplatePagePreset {
     },
   ]);
 
-  return createAdminPage({
+  return createAdminContentPage({
     name: '概览',
     path: '/overview',
-    activeKey: 'overview',
     breadcrumb: [
       { id: 'bc-home', label: '后台' },
       { id: 'bc-dashboard', label: '概览' },
@@ -404,10 +300,9 @@ function createOverviewPage(): TemplatePagePreset {
 }
 
 function createUsersPage(): TemplatePagePreset {
-  return createAdminPage({
+  return createAdminContentPage({
     name: '用户管理',
     path: '/users',
-    activeKey: 'users',
     breadcrumb: [
       { id: 'bc-home', label: '后台' },
       { id: 'bc-users', label: '用户管理' },
@@ -521,10 +416,9 @@ function createUsersPage(): TemplatePagePreset {
 }
 
 function createProjectsPage(): TemplatePagePreset {
-  return createAdminPage({
+  return createAdminContentPage({
     name: '项目中心',
     path: '/projects',
-    activeKey: 'projects',
     breadcrumb: [
       { id: 'bc-home', label: '后台' },
       { id: 'bc-projects', label: '项目中心' },
@@ -641,10 +535,9 @@ function createProjectsPage(): TemplatePagePreset {
 }
 
 function createSettingsPage(): TemplatePagePreset {
-  return createAdminPage({
+  return createAdminContentPage({
     name: '系统设置',
     path: '/settings',
-    activeKey: 'settings',
     breadcrumb: [
       { id: 'bc-home', label: '后台' },
       { id: 'bc-settings', label: '系统设置' },
@@ -734,4 +627,3 @@ export const adminConsoleStandardTemplate: TemplatePreset = {
   activePagePath: '/overview',
   pages: [createOverviewPage(), createProjectsPage(), createUsersPage(), createSettingsPage()],
 };
-
