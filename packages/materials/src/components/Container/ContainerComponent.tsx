@@ -23,7 +23,14 @@ export default function ContainerComponent(_props: ContainerRuntimeProps) {
   }, [_props]);
 
   const defaultChildren = props.slots?.default ?? [];
-  const hasRuntimeHeight = props.runtimeHeight !== undefined;
+  const hasRuntimeHeight =
+    props.runtimeHeight !== undefined &&
+    props.runtimeHeight !== null &&
+    props.runtimeHeight !== "auto";
+  const isPercentRuntimeHeight =
+    typeof props.runtimeHeight === "string" &&
+    props.runtimeHeight.trim().endsWith("%");
+  const fallbackMinHeight = props.minHeight ?? 160;
   const showChrome =
     props.showChrome === undefined
       ? false
@@ -37,7 +44,11 @@ export default function ContainerComponent(_props: ContainerRuntimeProps) {
       className={`relative w-full ${shouldClip ? "overflow-hidden" : ""} ${hasRuntimeHeight ? "flex h-full min-h-0 flex-col" : ""}`}
       style={{
         height: hasRuntimeHeight ? "100%" : undefined,
-        minHeight: hasRuntimeHeight ? undefined : props.minHeight,
+        minHeight: hasRuntimeHeight
+          ? isPercentRuntimeHeight
+            ? fallbackMinHeight
+            : undefined
+          : fallbackMinHeight,
         padding: props.padding,
         borderRadius: props.borderRadius,
         border: showChrome || props.borderColor !== "transparent"
@@ -58,6 +69,13 @@ export default function ContainerComponent(_props: ContainerRuntimeProps) {
             ? "rounded-xl border border-dashed border-slate-200 bg-slate-50/70"
             : ""
         } ${hasRuntimeHeight ? "min-h-0 flex-1" : "min-h-[160px]"}`}
+        style={{
+          minHeight: hasRuntimeHeight
+            ? isPercentRuntimeHeight
+              ? fallbackMinHeight
+              : undefined
+            : fallbackMinHeight,
+        }}
         data-slot-name="default"
         data-container-id={props.editorNodeId}
       >
@@ -68,6 +86,13 @@ export default function ContainerComponent(_props: ContainerRuntimeProps) {
             className={`flex items-center justify-center text-sm text-slate-400 ${
               hasRuntimeHeight ? "h-full min-h-0" : "h-full min-h-[160px]"
             }`}
+            style={{
+              minHeight: hasRuntimeHeight
+                ? isPercentRuntimeHeight
+                  ? fallbackMinHeight
+                  : undefined
+                : fallbackMinHeight,
+            }}
           >
             拖入组件到默认插槽
           </div>

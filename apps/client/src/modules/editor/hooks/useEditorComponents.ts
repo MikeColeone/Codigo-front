@@ -308,6 +308,7 @@ export function useEditorComponents() {
     }
 
     const schema = buildTemplateSchema(template);
+    const nextPageSettings = createTemplatePageSettings(template);
     const activeTemplatePage =
       schema.pages?.find((page) => page.id === schema.activePageId) ??
       schema.pages?.[0] ??
@@ -323,10 +324,9 @@ export function useEditorComponents() {
         version: schema.version,
         components: activeTemplatePage.components,
       },
-      pageStore.layoutMode,
-      pageStore.grid,
+      nextPageSettings.layoutMode,
+      nextPageSettings.grid,
     );
-    const nextPageSettings = createTemplatePageSettings(template);
 
     storeComponents.compConfigs = normalized.compConfigs;
     storeComponents.sortableCompConfig = normalized.sortableCompConfig;

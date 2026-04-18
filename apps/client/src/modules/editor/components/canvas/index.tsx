@@ -31,6 +31,7 @@ interface ComponentWrapperProps {
   isMoving: boolean;
   canDrag: boolean;
   onClick: () => void;
+  onMouseDownCapture: (event: ReactMouseEvent) => void;
   onMouseDown: (event: ReactMouseEvent) => void;
   onResizeMouseDown: (event: ReactMouseEvent) => void;
   isCurrentComponent: boolean;
@@ -48,6 +49,7 @@ const ComponentWrapper: FC<ComponentWrapperProps> = ({
   canDrag,
   isCurrentComponent,
   onClick,
+  onMouseDownCapture,
   onMouseDown,
   onResizeMouseDown,
   style,
@@ -69,6 +71,7 @@ const ComponentWrapper: FC<ComponentWrapperProps> = ({
     <div
       className={`${layout === "absolute" ? "absolute" : "relative"} ${layout === "flow" ? "mb-4" : ""} group component-warpper ${canDrag ? "cursor-move" : "cursor-pointer"} ${isMoving ? "pointer-events-none" : ""}`}
       onClick={onClick}
+      onMouseDownCapture={onMouseDownCapture}
       onMouseDown={onMouseDown}
       style={style}
       data-id={id}
@@ -289,6 +292,7 @@ const EditorCanvas: FC<{
             isDragable={isDragging}
             isMoving={movingComponentId === node.id}
             canDrag={canEditStructure}
+            onMouseDownCapture={() => handleComponentClick(node)}
             onMouseDown={(event) => handleDragComponentStart(event, node.id)}
             onResizeMouseDown={(event) =>
               handleResizeComponentStart(event, node.id)

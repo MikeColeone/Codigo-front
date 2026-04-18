@@ -19,10 +19,14 @@ function SlotBox(props: {
   nodeId?: string;
   children?: ReactNode[];
   minHeight: number;
+  minHeightWhenFill?: number;
   fillHeight: boolean;
   showChrome: boolean;
 }) {
   const children = props.children ?? [];
+  const slotMinHeight = props.fillHeight
+    ? props.minHeightWhenFill
+    : props.minHeight;
   return (
     <div className="flex min-h-0 h-full flex-1 flex-col gap-3">
       {props.showChrome ? (
@@ -37,7 +41,7 @@ function SlotBox(props: {
             ? "rounded-2xl border border-dashed border-slate-200 bg-slate-50/70"
             : "min-h-0"
         } ${props.fillHeight ? "min-h-0" : "min-h-[200px]"}`}
-        style={{ minHeight: props.fillHeight ? undefined : props.minHeight }}
+        style={{ minHeight: slotMinHeight }}
         data-slot-name={props.slotName}
         data-container-id={props.nodeId}
       >
@@ -67,7 +71,14 @@ export default function TwoColumnComponent(_props: TwoColumnRuntimeProps) {
       ..._props,
     };
   }, [_props]);
-  const hasRuntimeHeight = props.runtimeHeight !== undefined;
+  const hasRuntimeHeight =
+    props.runtimeHeight !== undefined &&
+    props.runtimeHeight !== null &&
+    props.runtimeHeight !== "auto";
+  const isPercentRuntimeHeight =
+    typeof props.runtimeHeight === "string" &&
+    props.runtimeHeight.trim().endsWith("%");
+  const minHeightWhenFill = isPercentRuntimeHeight ? props.minHeight : undefined;
   const showChrome =
     props.showChrome === undefined
       ? false
@@ -80,6 +91,7 @@ export default function TwoColumnComponent(_props: TwoColumnRuntimeProps) {
       } ${hasRuntimeHeight ? "flex h-full min-h-0 flex-col" : ""}`}
       style={{
         height: hasRuntimeHeight ? "100%" : undefined,
+        minHeight: hasRuntimeHeight ? minHeightWhenFill : props.minHeight,
         backgroundColor: props.backgroundColor,
       }}
     >
@@ -103,6 +115,7 @@ export default function TwoColumnComponent(_props: TwoColumnRuntimeProps) {
             nodeId={props.editorNodeId}
             children={props.slots?.left}
             minHeight={props.minHeight}
+            minHeightWhenFill={minHeightWhenFill}
             fillHeight={hasRuntimeHeight}
             showChrome={showChrome}
           />
@@ -114,6 +127,7 @@ export default function TwoColumnComponent(_props: TwoColumnRuntimeProps) {
             nodeId={props.editorNodeId}
             children={props.slots?.right}
             minHeight={props.minHeight}
+            minHeightWhenFill={minHeightWhenFill}
             fillHeight={hasRuntimeHeight}
             showChrome={showChrome}
           />
