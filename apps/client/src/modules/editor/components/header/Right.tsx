@@ -31,12 +31,10 @@ export default observer(function Right() {
     return `${base}#/editor?id=${pageId}`;
   }, [pageId]);
 
-  const otherCollaborators = useMemo(() => {
-    const currentUserId = storeAuth.details?.id;
-    return storePermission.collaborators.filter((item) =>
-      currentUserId ? item.user_id !== currentUserId : true,
-    );
-  }, [storeAuth.details?.id, storePermission.collaborators]);
+  const currentUserId = storeAuth.details?.id;
+  const otherCollaborators = storePermission.collaborators.filter((item) =>
+    currentUserId ? item.user_id !== currentUserId : true,
+  );
 
   const visibleCollaborators = otherCollaborators.slice(0, 3);
   const restCollaboratorCount = otherCollaborators.length - visibleCollaborators.length;

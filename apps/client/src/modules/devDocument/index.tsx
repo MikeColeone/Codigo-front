@@ -8,14 +8,15 @@ export default function DevDoc() {
   useTitle("Codigo - 开发文档");
 
   return (
-    <IdeThemeLayout className="flex flex-col">
+    <IdeThemeLayout className="flex h-screen flex-col overflow-hidden">
       <Header />
-      <Center />
-      <Footer />
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <Center />
+        <Footer />
+      </div>
     </IdeThemeLayout>
   );
 }
-
 
 
 

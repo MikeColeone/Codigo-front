@@ -82,11 +82,11 @@ const AppManagement = observer(() => {
       </AppManagementPage>
       <TemplatePreviewModal
         loading={previewLoading}
-        open={previewState.open}
-        title={previewState.title}
-        subtitle={previewState.subtitle}
-        schema={previewState.schema}
-        onClose={() => setPreviewState({ open: false })}
+        open={Boolean(previewState)}
+        title={previewState?.title}
+        subtitle={previewState?.subtitle}
+        schema={previewState?.schema ?? null}
+        onClose={() => setPreviewState(null)}
       />
     </IdeThemeLayout>
   );

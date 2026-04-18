@@ -14,6 +14,7 @@ import Profile from "@/modules/profile";
 import AdminLayout from "@/modules/adminConsole/components/AdminLayout";
 import { AdminRouteGuard } from "@/modules/adminConsole/components/AdminRouteGuard";
 import AdminDashboard from "@/modules/adminConsole/pages/Dashboard";
+import AdminPermissions from "@/modules/adminConsole/pages/Permissions";
 import AdminPlaceholder from "@/modules/adminConsole/pages/Placeholder";
 
 export const router = createHashRouter([
@@ -84,7 +85,7 @@ export const router = createHashRouter([
     children: [
       { index: true, element: <AdminDashboard /> },
       { path: "settings", element: <AdminPlaceholder title="基础设置" /> },
-      { path: "permissions", element: <AdminPlaceholder title="权限设置" /> },
+      { path: "permissions", element: <AdminPermissions /> },
       { path: "roles", element: <AdminPlaceholder title="角色管理" /> },
       { path: "versions", element: <AdminPlaceholder title="版本管理" /> },
       { path: "snippets", element: <AdminPlaceholder title="代码片段管理" /> },

@@ -7,7 +7,7 @@ import { HomeHeader } from "./HomeHeader";
 /** 组合首页布局与营销区块。 */
 export function HomePage() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[var(--ide-bg)] text-[var(--ide-text)]">
+    <div className="relative min-h-full bg-[var(--ide-bg)] text-[var(--ide-text)]">
       <HomeHeader />
       <ParticleBackground />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(15,108,189,0.06),transparent_45%)]" />
