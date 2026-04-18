@@ -13,6 +13,7 @@ export function getDefaultWidthByType(type: TComponentTypes): string {
     case "twoColumn":
       return "960px";
     case "container":
+    case "viewGroup":
       return "720px";
     case "table":
     case "card":
@@ -43,6 +44,7 @@ export function getDefaultHeightByType(type: TComponentTypes): number {
     case "twoColumn":
       return 420;
     case "container":
+    case "viewGroup":
       return 240;
     case "barChart":
     case "lineChart":

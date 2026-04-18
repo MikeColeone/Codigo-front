@@ -120,6 +120,7 @@ function generateComponent(
         runtimePageState={pageState}
         slots={slots}
         editorNodeId={editorNodeId}
+        runtimeEnv="release"
       />
     );
   else
@@ -132,6 +133,7 @@ function generateComponent(
         runtimePageState={pageState}
         slots={slots}
         editorNodeId={editorNodeId}
+        runtimeEnv="release"
       />
     );
 }
@@ -265,11 +267,11 @@ export default function ComponentRender({
     return pageState[props.visibleStateKey] === props.visibleStateValue;
   };
 
-  const handleAction = async (action: RuntimeAction) => {
+  const handleAction = async (action: RuntimeAction, sourceNodeId?: string) => {
     const runActions = async (actions: RuntimeAction[] | undefined) => {
       const list = Array.isArray(actions) ? actions : [];
       for (const item of list) {
-        await handleAction(item);
+        await handleAction(item, sourceNodeId);
       }
     };
     const getByPath = (input: unknown, path: string) => {
@@ -314,6 +316,25 @@ export default function ComponentRender({
         ...pageStateRef.current,
         [action.key]: action.value,
       };
+      setPageState(pageStateRef.current);
+      return;
+    }
+
+    if (action.type === "setActiveContainer") {
+      const viewGroupId =
+        (typeof action.viewGroupId === "string" && action.viewGroupId) ||
+        sourceNodeId;
+      if (!viewGroupId || !action.containerId) {
+        return;
+      }
+      const prevMap = (pageStateRef.current as any).__viewGroupActive ?? {};
+      pageStateRef.current = {
+        ...pageStateRef.current,
+        __viewGroupActive: {
+          ...prevMap,
+          [viewGroupId]: action.containerId,
+        },
+      } as any;
       setPageState(pageStateRef.current);
       return;
     }
@@ -534,7 +555,7 @@ export default function ComponentRender({
         onClick={() => {
           const run = async () => {
             for (const action of getClickActions(node)) {
-              await handleAction(action);
+              await handleAction(action, node.id);
             }
           };
           void run().catch(() => {});

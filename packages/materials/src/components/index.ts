@@ -1,6 +1,7 @@
 export * from "./func";
 export * from "./Container";
 export * from "./TwoColumn";
+export * from "./ViewGroup";
 export * from "./Accordion";
 export * from "./Button";
 export * from "./BreadcrumbBar";

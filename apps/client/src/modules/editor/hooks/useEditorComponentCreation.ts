@@ -54,6 +54,21 @@ export function createEditorComponentCreation(
     }
   }
 
+  const resolveInitialProps = (type: TComponentTypes) => {
+    if (type !== "viewGroup") {
+      return {};
+    }
+    const firstId = ulid();
+    const secondId = ulid();
+    return {
+      containers: [
+        { id: firstId, name: "视图1" },
+        { id: secondId, name: "视图2" },
+      ],
+      defaultActiveId: firstId,
+    };
+  };
+
   /**
    * 获取组件可插入的 slot 列表。
    */
@@ -91,7 +106,7 @@ export function createEditorComponentCreation(
       const componentNode: ComponentNode = {
         id: ulid(),
         type,
-        props: {},
+        props: resolveInitialProps(type),
         styles: {
           position: "absolute",
           left:
@@ -151,7 +166,7 @@ export function createEditorComponentCreation(
       const componentNode: ComponentNode = {
         id: ulid(),
         type,
-        props: {},
+        props: resolveInitialProps(type),
         styles: {
           position: "absolute",
           left:

@@ -1,6 +1,7 @@
 import {
   ContainerComponent as LowCodeContainer,
   TwoColumnComponent as LowCodeTwoColumn,
+  ViewGroupComponent as LowCodeViewGroup,
   AccordionComponent as LowCodeAccordion,
   ButtonComponent as LowCodeButton,
   BreadcrumbBarComponent as LowCodeBreadcrumbBar,
@@ -64,6 +65,14 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
       { name: "left", title: "左区域", multiple: true },
       { name: "right", title: "右区域", multiple: true },
     ],
+  },
+  {
+    type: "viewGroup",
+    name: "ViewGroup",
+    defaultConfig: {} as any,
+    render: LowCodeViewGroup,
+    isContainer: true,
+    slots: [{ name: "default", title: "视图区域", multiple: true }],
   },
   {
     type: "accordion",

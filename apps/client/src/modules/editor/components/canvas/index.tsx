@@ -6,7 +6,7 @@ import type {
   MouseEvent as ReactMouseEvent,
   ReactNode,
 } from "react";
-import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import type { ComponentNode, ComponentNodeRecord } from "@codigo/schema";
 import {
   useEditorComponentKeyPress,
@@ -111,6 +111,37 @@ const EditorCanvas: FC<{
   const canEditStructure = can("edit_structure");
 
   const canvasRef = useRef<HTMLDivElement>(null);
+  const [pageState, setPageState] = useState<Record<string, any>>({});
+
+  const runtime = useMemo(
+    () => ({
+      mode: "editor" as const,
+      pageState,
+      onAction: (action: any) => {
+        if (action.type === "set-state" || action.type === "setState") {
+          setPageState((prev) => ({ ...prev, [action.key]: action.value }));
+          return;
+        }
+
+        if (action.type === "setActiveContainer") {
+          if (!action.viewGroupId || !action.containerId) {
+            return;
+          }
+          setPageState((prev) => {
+            const nextMap = {
+              ...((prev as any).__viewGroupActive ?? {}),
+              [action.viewGroupId]: action.containerId,
+            };
+            return {
+              ...prev,
+              __viewGroupActive: nextMap,
+            };
+          });
+        }
+      },
+    }),
+    [pageState],
+  );
 
   const {
     isDragging,
@@ -288,6 +319,7 @@ const EditorCanvas: FC<{
                   node,
                   storePage.chartTheme || undefined,
                   renderedChildren,
+                  runtime,
                 )}
               </div>
             </div>

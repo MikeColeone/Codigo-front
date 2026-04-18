@@ -17,6 +17,7 @@ interface LegacyRuntimeAction {
 export type RuntimeAction = ActionConfig | LegacyRuntimeAction;
 
 interface ComponentRuntimeState {
+  mode: "editor" | "preview";
   pageState: Record<string, RuntimeStateValue>;
   onAction?: (action: RuntimeAction) => void | Promise<void>;
 }
@@ -78,6 +79,9 @@ function handleComponentClickActions(
   node: ComponentNode,
   runtime?: ComponentRuntimeState,
 ) {
+  if (runtime?.mode !== "preview") {
+    return;
+  }
   const actions = getComponentClickActions(node);
   if (!actions.length) {
     return;
@@ -95,7 +99,7 @@ function shouldRenderComponent(
   conf: ComponentNode,
   runtime?: ComponentRuntimeState,
 ) {
-  if (!runtime) {
+  if (!runtime || runtime.mode !== "preview") {
     return true;
   }
 
@@ -196,6 +200,7 @@ export function generateComponent(
         runtimeHeight={conf.styles?.height}
         slots={slots}
         editorNodeId={conf.id}
+        runtimeEnv={runtime?.mode === "preview" ? "preview" : "editor"}
       />
     </div>
   );

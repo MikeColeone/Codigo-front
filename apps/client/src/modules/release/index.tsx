@@ -77,6 +77,7 @@ function ReleaseCanvas({
 
   const runtime = useMemo(
     () => ({
+      mode: "preview" as const,
       pageState,
       onAction: (action: RuntimeAction) => {
         if (action.type === "set-state") {
@@ -92,6 +93,23 @@ function ReleaseCanvas({
             ...prev,
             [action.key]: action.value,
           }));
+          return;
+        }
+
+        if (action.type === "setActiveContainer") {
+          if (!action.viewGroupId || !action.containerId) {
+            return;
+          }
+          setPageState((prev) => {
+            const nextMap = {
+              ...((prev as any).__viewGroupActive ?? {}),
+              [action.viewGroupId]: action.containerId,
+            };
+            return {
+              ...prev,
+              __viewGroupActive: nextMap,
+            };
+          });
           return;
         }
 
@@ -193,7 +211,7 @@ export default function Release() {
     [schema, requestedPagePath],
   );
   const activeNodes = activePage?.components ?? schema.components;
-  const deviceType = data?.deviceType === "pc" ? "pc" : "mobile";
+  const deviceType = data?.deviceType === "mobile" ? "mobile" : "pc";
   const canvasWidth =
     Number(data?.canvasWidth) || (deviceType === "pc" ? 1024 : 380);
   const canvasHeight =
@@ -203,10 +221,20 @@ export default function Release() {
     if (typeof window === "undefined") {
       return "";
     }
-    return window.location.href;
-  }, [isValidPageId]);
+    const base = window.location.href.split("#")[0];
+    return `${base}#${location.pathname}${location.search}`;
+  }, [location.pathname, location.search]);
 
   const shouldUseAdminShell = Array.isArray(schema.pages) && schema.pages.length > 0;
+  const shouldShowInitialLoading = isValidPageId && loading && !data && !error;
+
+  if (shouldShowInitialLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   const content = (() => {
     if (!isValidPageId) {

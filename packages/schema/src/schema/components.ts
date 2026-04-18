@@ -4,6 +4,7 @@
 export type TComponentTypes =
   | "container"
   | "twoColumn"
+  | "viewGroup"
   | "accordion" 
   | "button"
   | "breadcrumbBar"
@@ -65,6 +66,7 @@ export type RuntimeStateValue = unknown;
 export type ActionConfig =
   | { type: "navigate"; path: string }
   | { type: "setState"; key: string; value: RuntimeStateValue }
+  | { type: "setActiveContainer"; viewGroupId?: string; containerId: string }
   | { type: "openUrl"; url: string; target?: "_self" | "_blank" }
   | { type: "scrollTo"; targetId: string }
   | {

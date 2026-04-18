@@ -6,6 +6,7 @@ const { Panel } = Collapse;
 
 export const actionTypeOptions = [
   { label: "设置状态", value: "setState" },
+  { label: "切换视图", value: "setActiveContainer" },
   { label: "页面跳转", value: "navigate" },
   { label: "打开链接", value: "openUrl" },
   { label: "滚动定位", value: "scrollTo" },
@@ -17,6 +18,8 @@ export const actionTypeOptions = [
 
 function createDefaultAction(type: ActionConfig["type"]): ActionConfig {
   switch (type) {
+    case "setActiveContainer":
+      return { type, viewGroupId: "", containerId: "" };
     case "navigate":
       return { type, path: "page:home" };
     case "openUrl":
@@ -192,6 +195,33 @@ export const ActionListEditor: FC<{
                     })
                   }
                   placeholder="值"
+                  className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
+                />
+              </div>
+            ) : null}
+
+            {action.type === "setActiveContainer" ? (
+              <div className="grid grid-cols-2 gap-1.5">
+                <Input
+                  value={action.viewGroupId ?? ""}
+                  size="small"
+                  onChange={(event) =>
+                    updateAction(index, {
+                      viewGroupId: event.target.value,
+                    })
+                  }
+                  placeholder="viewGroupId(可选)"
+                  className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
+                />
+                <Input
+                  value={action.containerId}
+                  size="small"
+                  onChange={(event) =>
+                    updateAction(index, {
+                      containerId: event.target.value,
+                    })
+                  }
+                  placeholder="containerId"
                   className="!bg-[var(--ide-control-bg)] !border-[var(--ide-control-border)] !text-[var(--ide-text)]"
                 />
               </div>

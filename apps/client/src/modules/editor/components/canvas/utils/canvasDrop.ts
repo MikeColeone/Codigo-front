@@ -102,6 +102,32 @@ export function resolveCanvasDropResult({
   if (current) {
     const meta = getComponentContainerMeta(current.type);
     if (meta.isContainer) {
+      if (current.type === "viewGroup") {
+        const containers = Array.isArray((current.props as any)?.containers)
+          ? ((current.props as any).containers as Array<Record<string, unknown>>)
+          : [];
+        const ids = containers
+          .map((item) => (typeof item?.id === "string" ? (item.id as string) : ""))
+          .filter(Boolean);
+        const defaultActiveId =
+          typeof (current.props as any)?.defaultActiveId === "string"
+            ? ((current.props as any).defaultActiveId as string)
+            : "";
+        const slot = (defaultActiveId && ids.includes(defaultActiveId)
+          ? defaultActiveId
+          : ids[0]) ?? "default";
+        return {
+          type,
+          position: {
+            left: 24,
+            top: 24,
+          },
+          containerTarget: {
+            parentId: current.id,
+            slot,
+          },
+        };
+      }
       return {
         type,
         position: {

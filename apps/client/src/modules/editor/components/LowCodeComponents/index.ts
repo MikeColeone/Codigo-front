@@ -1,6 +1,7 @@
 export * from "./utils";
 export * from "./LowCodeContainer";
 export * from "./LowCodeTwoColumn";
+export * from "./LowCodeViewGroup";
 export * from "./LowCodeAccordion";
 export * from "./LowCodeButton";
 export * from "./LowCodeBreadcrumbBar";
