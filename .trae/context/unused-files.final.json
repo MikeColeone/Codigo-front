@@ -1,0 +1,12 @@
+{
+  "unused": [
+    {
+      "file": "apps/client/src/test/setup.ts",
+      "importers": []
+    },
+    {
+      "file": "apps/ide/src/app.tsx",
+      "importers": []
+    }
+  ]
+}

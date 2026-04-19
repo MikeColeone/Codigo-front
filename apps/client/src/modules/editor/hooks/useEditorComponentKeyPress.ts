@@ -72,7 +72,7 @@ export function useEditorComponentKeyPress() {
   /**
    * 校验当前是否存在选中组件。
    */
-  function validateComponent() {
+  function validateComponent(options?: { silent?: boolean }) {
     const isActive = canTriggerShortcut();
     const isCompExist =
       (store.selectedCompIds?.length ?? 0) > 0 || getCurrentComponentConfig.get() !== null;
@@ -82,7 +82,9 @@ export function useEditorComponentKeyPress() {
     }
 
     if (!isCompExist) {
-      message.warning("请先选择组件");
+      if (!options?.silent) {
+        message.warning("请先选择组件");
+      }
       return false;
     }
     return isActive;
@@ -92,7 +94,7 @@ export function useEditorComponentKeyPress() {
    * 获取当前选中组件在同级中的有效序号。
    */
   function getValidatedComponentIndex() {
-    if (!validateComponent()) {
+    if (!validateComponent({ silent: true })) {
       return null;
     }
 

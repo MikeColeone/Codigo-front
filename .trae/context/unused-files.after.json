@@ -1,0 +1,20 @@
+{
+  "unused": [
+    {
+      "file": "apps/client/src/modules/editor/components/canvas/hooks/useCanvasToolbarState.ts",
+      "importers": []
+    },
+    {
+      "file": "apps/client/src/modules/templateCenter/data/adminConsoleTemplate.ts",
+      "importers": []
+    },
+    {
+      "file": "apps/client/src/test/setup.ts",
+      "importers": []
+    },
+    {
+      "file": "apps/ide/src/app.tsx",
+      "importers": []
+    }
+  ]
+}
