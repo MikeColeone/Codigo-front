@@ -1,7 +1,7 @@
 import type { TemplateComponent, TemplatePagePreset, TemplatePreset } from '@codigo/schema';
 
 const CANVAS_WIDTH = 1280;
-const CANVAS_HEIGHT = 900;
+const CANVAS_HEIGHT = 1000;
 
 function withStyles(
   component: TemplateComponent,
@@ -682,7 +682,7 @@ function createStandardOverviewPage(): TemplatePagePreset {
             extraText: '更新于今天',
           },
         },
-        { left: 24, top: 82, width: 'calc(100% - 48px)', height: 96 },
+        { left: 24, top: 82, width: 'calc(100% - 48px)', height: 140 },
       ),
       placeAbs(
         {
@@ -721,7 +721,7 @@ function createStandardOverviewPage(): TemplatePagePreset {
             ],
           },
         },
-        { left: 24, top: 194, width: 'calc(100% - 48px)', height: 140 },
+        { left: 24, top: 238, width: 'calc(100% - 48px)', height: 140 },
       ),
       placeAbs(
         {
@@ -757,7 +757,7 @@ function createStandardOverviewPage(): TemplatePagePreset {
             boxSizing: 'border-box',
           },
         },
-        { left: 24, top: 350, width: 820, height: 320 },
+        { left: 24, top: 394, width: 820, height: 320 },
       ),
       placeAbs(
         {
@@ -792,7 +792,7 @@ function createStandardOverviewPage(): TemplatePagePreset {
             boxSizing: 'border-box',
           },
         },
-        { left: 860, top: 350, width: 396, height: 320 },
+        { left: 860, top: 394, width: 396, height: 320 },
       ),
       placeAbs(
         {
@@ -831,7 +831,7 @@ function createStandardOverviewPage(): TemplatePagePreset {
             boxSizing: 'border-box',
           },
         },
-        { left: 24, top: 686, width: 'calc(100% - 48px)', height: 190 },
+        { left: 24, top: 730, width: 'calc(100% - 48px)', height: 246 },
       ),
     ],
   };
@@ -865,7 +865,7 @@ function createStandardProjectsPage(): TemplatePagePreset {
             extraText: '共 32 个项目',
           },
         },
-        { left: 24, top: 82, width: 'calc(100% - 48px)', height: 96 },
+        { left: 24, top: 82, width: 'calc(100% - 48px)', height: 140 },
       ),
       placeAbs(
         {
@@ -904,7 +904,7 @@ function createStandardProjectsPage(): TemplatePagePreset {
             ],
           },
         },
-        { left: 24, top: 194, width: 'calc(100% - 48px)', height: 120 },
+        { left: 24, top: 238, width: 'calc(100% - 48px)', height: 120 },
       ),
       placeAbs(
         {
@@ -959,7 +959,7 @@ function createStandardProjectsPage(): TemplatePagePreset {
             ),
           },
         },
-        { left: 24, top: 330, width: 'calc(100% - 48px)', height: 546 },
+        { left: 24, top: 374, width: 'calc(100% - 48px)', height: 602 },
       ),
     ],
   };
@@ -993,7 +993,7 @@ function createStandardUsersPage(): TemplatePagePreset {
             extraText: '共 128 个成员',
           },
         },
-        { left: 24, top: 82, width: 'calc(100% - 48px)', height: 96 },
+        { left: 24, top: 82, width: 'calc(100% - 48px)', height: 140 },
       ),
       placeAbs(
         {
@@ -1026,7 +1026,7 @@ function createStandardUsersPage(): TemplatePagePreset {
             ),
           },
         },
-        { left: 24, top: 194, width: 'calc(100% - 48px)', height: 682 },
+        { left: 24, top: 238, width: 'calc(100% - 48px)', height: 738 },
       ),
     ],
   };
@@ -1061,14 +1061,14 @@ function createStandardSettingsPage(): TemplatePagePreset {
             extraText: '设置变更后需重新发布',
           },
         },
-        { left: 24, top: 82, width: 'calc(100% - 48px)', height: 96 },
+        { left: 24, top: 82, width: 'calc(100% - 48px)', height: 140 },
       ),
       placeAbs(
         {
           type: 'titleText',
           props: { title: '基础配置', size: 'lg' },
         },
-        { left: 24, top: 194, width: 320, height: 40 },
+        { left: 24, top: 238, width: 320, height: 40 },
       ),
       placeAbs(
         withStyles(
@@ -1088,7 +1088,7 @@ function createStandardSettingsPage(): TemplatePagePreset {
             boxSizing: 'border-box',
           },
         ),
-        { left: 24, top: 244, width: 560, height: 56 },
+        { left: 24, top: 288, width: 560, height: 56 },
       ),
       placeAbs(
         withStyles(
@@ -1108,7 +1108,7 @@ function createStandardSettingsPage(): TemplatePagePreset {
             boxSizing: 'border-box',
           },
         ),
-        { left: 24, top: 312, width: 560, height: 56 },
+        { left: 24, top: 356, width: 560, height: 56 },
       ),
       placeAbs(
         withStyles(
@@ -1131,7 +1131,7 @@ function createStandardSettingsPage(): TemplatePagePreset {
             boxSizing: 'border-box',
           },
         ),
-        { left: 24, top: 380, width: 560, height: 68 },
+        { left: 24, top: 424, width: 560, height: 68 },
       ),
       placeAbs(
         withStyles(
@@ -1155,7 +1155,7 @@ function createStandardSettingsPage(): TemplatePagePreset {
             boxSizing: 'border-box',
           },
         ),
-        { left: 24, top: 460, width: 560, height: 92 },
+        { left: 24, top: 504, width: 560, height: 92 },
       ),
     ],
   };

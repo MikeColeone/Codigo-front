@@ -61,7 +61,7 @@ export function HomeMaterialsPlaza() {
           物料广场
         </h2>
         <p className="max-w-2xl text-sm leading-6 text-[var(--ide-text-muted)]">
-          点击物料将跳转到开发文档的对应条目，查看详细说明。
+          点击物料将跳转到使用手册的对应条目，查看详细说明与注意事项。
         </p>
       </div>
 

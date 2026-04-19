@@ -330,14 +330,6 @@ const PreviewCanvas = observer(() => {
     return { mode: "preview" as const, pageState, onAction };
   }, [pageState, setSearchParams]);
 
-  const handleSelectPagePath = (path: string) => {
-    setSearchParams((prev) => {
-      const nextParams = new URLSearchParams(prev);
-      nextParams.set("page", path);
-      return nextParams;
-    });
-  };
-
   const canvas = (() => {
     const layoutMode = store.layoutMode === "grid" ? "grid" : "absolute";
     const gridCols = Math.max(1, store.grid?.cols ?? 12);
@@ -415,25 +407,21 @@ const PreviewCanvas = observer(() => {
     );
   })();
 
-  return (
-    pages.length ? (
-      <AdminShell
-        pages={pages}
-        activePagePath={activePage?.path ?? null}
-        onSelectPagePath={handleSelectPagePath}
-        layout={store.shellLayout}
-      >
-        {canvas}
-      </AdminShell>
-    ) : (
-      canvas
-    )
-  );
+  return canvas;
 });
 
 export default observer(function Preview() {
   const nav = useNavigate();
   const { store } = useStorePage();
+  const { getPages } = useEditorComponents();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pages = getPages.get();
+  const requestedPagePath = searchParams.get("page");
+  const activePage = useMemo(
+    () => resolvePreviewPage(pages, requestedPagePath),
+    [pages, requestedPagePath],
+  );
+  const shouldUseAdminShell = pages.length > 0;
   const { containerRef, scale, scaledWidth, scaledHeight } = useFitScale({
     contentWidth: store.canvasWidth,
     contentHeight: store.canvasHeight,
@@ -441,40 +429,73 @@ export default observer(function Preview() {
     maxScale: 3,
   });
 
+  const handleSelectPagePath = (path: string) => {
+    setSearchParams((prev) => {
+      const nextParams = new URLSearchParams(prev);
+      nextParams.set("page", path);
+      return nextParams;
+    });
+  };
+
+  const content = (
+    <div
+      ref={containerRef}
+      className={`h-full w-full flex items-center justify-center ${
+        store.deviceType === "mobile" ? "p-3" : "p-0"
+      }`}
+    >
+      <div className="relative" style={{ width: scaledWidth, height: scaledHeight }}>
+        <div
+          className={`bg-white text-left overflow-y-auto overflow-x-hidden scrollbar-hide ${
+            store.deviceType === "mobile"
+              ? "rounded-[30px] border-[8px] border-slate-800 shadow-2xl"
+              : "rounded-none border-0 shadow-none"
+          }`}
+          style={{
+            width: store.canvasWidth,
+            height: store.canvasHeight,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+          }}
+        >
+          {store.deviceType === "mobile" && (
+            <div className="sticky top-0 z-50 flex h-6 items-center justify-between bg-black/90 px-4 font-mono text-[10px] text-white">
+              <span>9:41</span>
+              <div className="flex gap-1">
+                <div className="h-3 w-3 rounded-full bg-white/20" />
+                <div className="h-3 w-3 rounded-full bg-white/20" />
+              </div>
+            </div>
+          )}
+          <PreviewCanvas />
+        </div>
+      </div>
+    </div>
+  );
+
+  if (shouldUseAdminShell) {
+    return (
+      <div className="h-screen overflow-hidden bg-slate-50">
+        <AdminShell
+          pages={pages}
+          activePagePath={activePage?.path ?? null}
+          onSelectPagePath={handleSelectPagePath}
+          title={store.title || "管理后台"}
+          layout={store.shellLayout}
+        >
+          {content}
+        </AdminShell>
+        <FloatButton icon={<CaretLeftOutlined />} onClick={() => nav(-1)} />
+      </div>
+    );
+  }
+
   return (
     <div className="w-screen h-screen overflow-hidden bg-slate-50">
       <div
-        ref={containerRef}
-        className={`h-full w-full flex items-center justify-center ${
-          store.deviceType === "mobile" ? "p-3" : "p-0"
-        }`}
+        className="h-full w-full"
       >
-        <div className="relative" style={{ width: scaledWidth, height: scaledHeight }}>
-          <div
-            className={`bg-white text-left overflow-y-auto overflow-x-hidden scrollbar-hide transition-transform duration-300 ${
-              store.deviceType === "mobile"
-                ? "rounded-[30px] border-[8px] border-slate-800 shadow-2xl"
-                : "rounded-none border-0 shadow-none"
-            }`}
-            style={{
-              width: store.canvasWidth,
-              height: store.canvasHeight,
-              transform: `scale(${scale})`,
-              transformOrigin: "top left",
-            }}
-          >
-            {store.deviceType === "mobile" && (
-              <div className="sticky top-0 z-50 h-6 bg-black/90 text-white text-[10px] flex items-center justify-between px-4 font-mono">
-                <span>9:41</span>
-                <div className="flex gap-1">
-                  <div className="w-3 h-3 bg-white/20 rounded-full"></div>
-                  <div className="w-3 h-3 bg-white/20 rounded-full"></div>
-                </div>
-              </div>
-            )}
-            <PreviewCanvas />
-          </div>
-        </div>
+        {content}
       </div>
       <FloatButton icon={<CaretLeftOutlined />} onClick={() => nav(-1)} />
     </div>

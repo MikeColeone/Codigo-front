@@ -37,6 +37,7 @@ interface ComponentWrapperProps {
   onResizeMouseDown: (
     event: ReactMouseEvent,
     handle: "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw",
+    layout: "absolute" | "flow" | "grid",
   ) => void;
   isCurrentComponent: boolean;
   style?: CSSProperties;
@@ -87,59 +88,59 @@ const ComponentWrapper: FC<ComponentWrapperProps> = ({
         <>
           <button
             type="button"
-            className="absolute -top-2 -left-2 z-[1001] flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-nw-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "nw")}
+            className="absolute -top-1.5 -left-1.5 z-[1001] flex h-3 w-3 items-center justify-center rounded-full border border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-nw-resize"
+            onMouseDown={(event) => onResizeMouseDown(event, "nw", layout)}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            <span className="h-1 w-1 rounded-full bg-white" />
           </button>
           <button
             type="button"
-            className="absolute -top-2 left-1/2 z-[1001] -translate-x-1/2 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-n-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "n")}
+            className="absolute -top-1.5 left-1/2 z-[1001] -translate-x-1/2 flex h-3 w-3 items-center justify-center rounded-full border border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-n-resize"
+            onMouseDown={(event) => onResizeMouseDown(event, "n", layout)}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            <span className="h-1 w-1 rounded-full bg-white" />
           </button>
           <button
             type="button"
-            className="absolute -top-2 -right-2 z-[1001] flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-ne-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "ne")}
+            className="absolute -top-1.5 -right-1.5 z-[1001] flex h-3 w-3 items-center justify-center rounded-full border border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-ne-resize"
+            onMouseDown={(event) => onResizeMouseDown(event, "ne", layout)}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            <span className="h-1 w-1 rounded-full bg-white" />
           </button>
           <button
             type="button"
-            className="absolute top-1/2 -left-2 z-[1001] -translate-y-1/2 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-w-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "w")}
+            className="absolute top-1/2 -left-1.5 z-[1001] -translate-y-1/2 flex h-3 w-3 items-center justify-center rounded-full border border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-w-resize"
+            onMouseDown={(event) => onResizeMouseDown(event, "w", layout)}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            <span className="h-1 w-1 rounded-full bg-white" />
           </button>
           <button
             type="button"
-            className="absolute top-1/2 -right-2 z-[1001] -translate-y-1/2 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-e-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "e")}
+            className="absolute top-1/2 -right-1.5 z-[1001] -translate-y-1/2 flex h-3 w-3 items-center justify-center rounded-full border border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-e-resize"
+            onMouseDown={(event) => onResizeMouseDown(event, "e", layout)}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            <span className="h-1 w-1 rounded-full bg-white" />
           </button>
           <button
             type="button"
-            className="absolute -bottom-2 -left-2 z-[1001] flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-sw-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "sw")}
+            className="absolute -bottom-1.5 -left-1.5 z-[1001] flex h-3 w-3 items-center justify-center rounded-full border border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-sw-resize"
+            onMouseDown={(event) => onResizeMouseDown(event, "sw", layout)}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            <span className="h-1 w-1 rounded-full bg-white" />
           </button>
           <button
             type="button"
-            className="absolute -bottom-2 left-1/2 z-[1001] -translate-x-1/2 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-s-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "s")}
+            className="absolute -bottom-1.5 left-1/2 z-[1001] -translate-x-1/2 flex h-3 w-3 items-center justify-center rounded-full border border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-s-resize"
+            onMouseDown={(event) => onResizeMouseDown(event, "s", layout)}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            <span className="h-1 w-1 rounded-full bg-white" />
           </button>
           <button
             type="button"
-            className="absolute -bottom-2 -right-2 z-[1001] flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-se-resize"
-            onMouseDown={(event) => onResizeMouseDown(event, "se")}
+            className="absolute -bottom-1.5 -right-1.5 z-[1001] flex h-3 w-3 items-center justify-center rounded-full border border-white bg-emerald-500 shadow-[0_6px_16px_rgba(16,185,129,0.35)] cursor-se-resize"
+            onMouseDown={(event) => onResizeMouseDown(event, "se", layout)}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            <span className="h-1 w-1 rounded-full bg-white" />
           </button>
         </>
       )}
@@ -240,12 +241,24 @@ const EditorCanvas: FC<{
     pushBlock,
   });
 
+  function resolveEventTargetElement(target: EventTarget | null) {
+    if (target instanceof Element) {
+      return target;
+    }
+    if (target instanceof Node) {
+      return target.parentElement;
+    }
+    return null;
+  }
+
   function isDirectWrapperHit(event: ReactMouseEvent, id: string) {
-    const target = event.target;
-    if (!(target instanceof Element)) {
+    const targetElement = resolveEventTargetElement(event.target);
+    if (!targetElement) {
       return false;
     }
-    const closestWrapper = target.closest(".component-warpper") as HTMLElement | null;
+    const closestWrapper = targetElement.closest(".component-warpper") as
+      | HTMLElement
+      | null;
     return closestWrapper?.dataset.id === id;
   }
 
@@ -289,11 +302,11 @@ const EditorCanvas: FC<{
   }
 
   function handleCanvasClick(event: ReactMouseEvent<HTMLDivElement>) {
-    const target = event.target;
-    if (!(target instanceof Element)) {
+    const targetElement = resolveEventTargetElement(event.target);
+    if (!targetElement) {
       return;
     }
-    const wrapper = target.closest(".component-warpper") as HTMLElement | null;
+    const wrapper = targetElement.closest(".component-warpper") as HTMLElement | null;
     if (!wrapper) {
       clearCurrentComponent();
       return;
@@ -474,8 +487,8 @@ const EditorCanvas: FC<{
               handleComponentMouseDownCapture(event, node)
             }
             onMouseDown={(event) => handleDragComponentStart(event, node.id)}
-            onResizeMouseDown={(event, handle) =>
-              handleResizeComponentStart(event, node.id, handle)
+            onResizeMouseDown={(event, handle, wrapperLayout) =>
+              handleResizeComponentStart(event, node.id, handle, wrapperLayout)
             }
             onClick={(event) => handleComponentClick(event, node)}
             isCurrentComponent={isSelectedComponent(node)}

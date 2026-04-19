@@ -557,11 +557,14 @@ export default function ComponentRender({
       delete resolvedStyles.gridRowStart;
       delete resolvedStyles.gridRowSpan;
     }
+    const shouldStretchWidth = resolvedStyles.width !== undefined;
+    const shouldStretchHeight =
+      resolvedStyles.height !== undefined && resolvedStyles.height !== "auto";
 
     return (
       <div
         key={node.id}
-        className="relative"
+        className={`relative ${shouldStretchWidth ? "[&>*]:w-full" : ""} ${shouldStretchHeight ? "[&>*]:h-full" : ""}`}
         onClick={() => {
           const run = async () => {
             for (const action of getClickActions(node)) {

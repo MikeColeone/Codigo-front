@@ -9,7 +9,12 @@ import {
 /**
  * 渲染头像物料，并按点击配置支持外链打开或锚点滚动。
  */
-export default function AvatarComponent(_props: IAvatarComponentProps) {
+interface AvatarRuntimeProps extends IAvatarComponentProps {
+  runtimeWidth?: string | number;
+  runtimeHeight?: string | number;
+}
+
+export default function AvatarComponent(_props: AvatarRuntimeProps) {
   const props = useMemo(() => {
     return {
       ...getDefaultValueByConfig(avatarComponentDefaultConfig),
@@ -18,12 +23,25 @@ export default function AvatarComponent(_props: IAvatarComponentProps) {
   }, [_props]);
 
   const fallbackText = props.name.trim().slice(0, 1) || "头";
+  const shouldStretch =
+    props.runtimeWidth !== undefined ||
+    (props.runtimeHeight !== undefined && props.runtimeHeight !== "auto");
+  const runtimeStyle = useMemo(() => {
+    if (!shouldStretch) {
+      return undefined;
+    }
+    return {
+      width: "100%",
+      height: "100%",
+    } satisfies React.CSSProperties;
+  }, [shouldStretch]);
   const avatar = (
     <Avatar
       src={props.url || undefined}
-      size={props.size}
+      size={shouldStretch ? undefined : props.size}
       shape={props.shape}
       alt={props.name}
+      style={runtimeStyle}
     >
       {fallbackText}
     </Avatar>

@@ -176,11 +176,15 @@ export function generateComponent(
       return [slotName, rendered];
     }),
   );
+  const shouldStretchWidth = conf.styles?.width !== undefined;
+  const shouldStretchHeight =
+    conf.styles?.height !== undefined && conf.styles?.height !== "auto";
 
   return (
     <div
       data-render-node={conf.id}
       onClick={() => handleComponentClickActions(conf, runtime)}
+      className={`${shouldStretchWidth ? "[&>*]:w-full" : ""} ${shouldStretchHeight ? "[&>*]:h-full" : ""}`}
       style={{
         position: "relative",
         width: conf.styles?.width || "100%",

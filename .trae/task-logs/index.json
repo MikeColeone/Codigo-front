@@ -1,5 +1,60 @@
 [
   {
+    "taskId": "TASK20260419101154",
+    "title": "Polish manual layout alignment",
+    "scope": "repository",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-19T02:11:54.826Z",
+    "gitBranch": "main",
+    "gitCommit": "d377a1b",
+    "markdownPath": ".trae/task-logs/2026-04-19/TASK20260419101154-polish-manual-layout-alignment.md",
+    "snapshotPath": ".trae/task-logs/2026-04-19/TASK20260419101154-polish-manual-layout-alignment.json"
+  },
+  {
+    "taskId": "TASK20260419100403",
+    "title": "Reposition docs as user manual",
+    "scope": "repository",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-19T02:04:03.701Z",
+    "gitBranch": "main",
+    "gitCommit": "d377a1b",
+    "markdownPath": ".trae/task-logs/2026-04-19/TASK20260419100403-reposition-docs-as-user-manual.md",
+    "snapshotPath": ".trae/task-logs/2026-04-19/TASK20260419100403-reposition-docs-as-user-manual.json"
+  },
+  {
+    "taskId": "TASK20260419100109",
+    "title": "修复画布缩放句柄选中与尺寸",
+    "scope": "repository",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-19T02:01:09.408Z",
+    "gitBranch": "main",
+    "gitCommit": "d377a1b",
+    "markdownPath": ".trae/task-logs/2026-04-19/TASK20260419100109-task.md",
+    "snapshotPath": ".trae/task-logs/2026-04-19/TASK20260419100109-task.json"
+  },
+  {
+    "taskId": "TASK20260419095830",
+    "title": "修复后台模板组件覆盖",
+    "scope": "repository",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-19T01:58:30.893Z",
+    "gitBranch": "main",
+    "gitCommit": "d377a1b",
+    "markdownPath": ".trae/task-logs/2026-04-19/TASK20260419095830-task.md",
+    "snapshotPath": ".trae/task-logs/2026-04-19/TASK20260419095830-task.json"
+  },
+  {
+    "taskId": "TASK20260419095353",
+    "title": "画布组件支持四边/四角缩放",
+    "scope": "repository",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-19T01:53:53.254Z",
+    "gitBranch": "main",
+    "gitCommit": "d377a1b",
+    "markdownPath": ".trae/task-logs/2026-04-19/TASK20260419095353-task.md",
+    "snapshotPath": ".trae/task-logs/2026-04-19/TASK20260419095353-task.json"
+  },
+  {
     "taskId": "TASK20260419094625",
     "title": "Improve dev docs layout & materials links",
     "scope": "repository",

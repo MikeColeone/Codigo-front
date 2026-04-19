@@ -13,7 +13,7 @@ export const DEFAULT_TEMPLATE_PRESETS: TemplatePreset[] = [
     layoutMode: 'absolute',
     deviceType: 'pc',
     canvasWidth: 1280,
-    canvasHeight: 900,
+    canvasHeight: 1000,
     activePagePath: '/overview',
     pages: [
       {

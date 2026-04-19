@@ -198,7 +198,7 @@ export const EditorStatusBarActions = observer(function EditorStatusBarActions()
           onClick={() => navigate("/doc")}
         >
           <BookOutlined />
-          <span>开发文档</span>
+          <span>使用手册</span>
         </button>
       </div>
 

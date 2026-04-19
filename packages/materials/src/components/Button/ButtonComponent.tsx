@@ -22,6 +22,8 @@ interface ButtonRuntimeAction {
 interface ButtonRuntimeProps extends IButtonComponentProps {
   onAction?: (action: ButtonRuntimeAction) => void;
   runtimePageState?: Record<string, RuntimeStateValue>;
+  runtimeWidth?: string | number;
+  runtimeHeight?: string | number;
 }
 
 /**
@@ -48,6 +50,16 @@ export default function ButtonComponent(_props: ButtonRuntimeProps) {
     return { ...getDefaultValueByConfig(buttonComponentDefaultConfig), ..._props };
   }, [_props]);
   const visualState = useMemo(() => getButtonVisualState(props), [props]);
+  const runtimeStyle = useMemo(() => {
+    const next: React.CSSProperties = {};
+    if (props.runtimeWidth !== undefined) {
+      next.width = "100%";
+    }
+    if (props.runtimeHeight !== undefined && props.runtimeHeight !== "auto") {
+      next.height = "100%";
+    }
+    return next;
+  }, [props.runtimeHeight, props.runtimeWidth]);
 
   /**
    * 统一处理按钮点击行为，按 actionType 路由到对应的交互逻辑。
@@ -85,6 +97,7 @@ export default function ButtonComponent(_props: ButtonRuntimeProps) {
       danger={visualState.danger}
       block={props.block}
       onClick={handleClick}
+      style={runtimeStyle}
     >
       {props.text}
     </Button>

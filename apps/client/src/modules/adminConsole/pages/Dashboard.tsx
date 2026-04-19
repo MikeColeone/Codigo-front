@@ -27,7 +27,7 @@ export default function AdminDashboard() {
             icon={<FileTextOutlined />}
             onClick={() => navigate("/doc")}
           >
-            开发文档
+            使用手册
           </Button>
           <Button
             type="primary"
@@ -74,10 +74,10 @@ export default function AdminDashboard() {
             >
               <div className="min-w-0">
                 <div className="text-[12px] font-medium text-[var(--ide-text)]">
-                  开发文档
+                  使用手册
                 </div>
                 <div className="mt-0.5 truncate text-[11px] text-[var(--ide-text-muted)]">
-                  快速查阅能力说明与规范
+                  按步骤完成常用操作
                 </div>
               </div>
               <ArrowRightOutlined className="text-[12px] text-[var(--ide-text-muted)] transition-colors group-hover:text-[var(--ide-text)]" />

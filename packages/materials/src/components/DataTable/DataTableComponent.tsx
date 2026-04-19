@@ -5,6 +5,10 @@ import { type IDataTableComponentProps, dataTableComponentDefaultConfig } from "
 
 const { Title } = Typography;
 
+interface DataTableRuntimeProps extends IDataTableComponentProps {
+  runtimeHeight?: string | number;
+}
+
 /**
  * 安全解析表格配置中的 JSON 字符串，解析失败时返回兜底数组。
  */
@@ -20,13 +24,17 @@ function safeParse(value: string, fallback: unknown[]) {
 /**
  * 渲染数据表格物料，并将字符串化的列配置与数据源转换为 Ant Design Table 可用结构。
  */
-export default function DataTableComponent(_props: IDataTableComponentProps) {
+export default function DataTableComponent(_props: DataTableRuntimeProps) {
   const props = useMemo(() => {
     return {
       ...getDefaultValueByConfig(dataTableComponentDefaultConfig),
       ..._props,
     };
   }, [_props]);
+  const hasRuntimeHeight =
+    props.runtimeHeight !== undefined &&
+    props.runtimeHeight !== null &&
+    props.runtimeHeight !== "auto";
 
   const columns = safeParse(
     props.columnsText,
@@ -40,6 +48,10 @@ export default function DataTableComponent(_props: IDataTableComponentProps) {
   return (
     <div
       style={{
+        height: hasRuntimeHeight ? "100%" : undefined,
+        minHeight: hasRuntimeHeight ? 0 : undefined,
+        display: hasRuntimeHeight ? "flex" : undefined,
+        flexDirection: hasRuntimeHeight ? "column" : undefined,
         borderRadius: 20,
         background: "#ffffff",
         padding: 24,
@@ -49,20 +61,28 @@ export default function DataTableComponent(_props: IDataTableComponentProps) {
       <Title level={4} style={{ marginTop: 0 }}>
         {props.title}
       </Title>
-      <Table
-        columns={columns}
-        dataSource={dataSource}
-        size={props.size}
-        bordered={props.bordered}
-        pagination={
-          props.pagination
-            ? {
-                pageSize: props.pageSize,
-              }
-            : false
-        }
-        locale={{ emptyText: props.emptyText }}
-      />
+      <div
+        style={{
+          flex: hasRuntimeHeight ? "1 1 auto" : undefined,
+          minHeight: hasRuntimeHeight ? 0 : undefined,
+          overflow: hasRuntimeHeight ? "auto" : undefined,
+        }}
+      >
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          size={props.size}
+          bordered={props.bordered}
+          pagination={
+            props.pagination
+              ? {
+                  pageSize: props.pageSize,
+                }
+              : false
+          }
+          locale={{ emptyText: props.emptyText }}
+        />
+      </div>
     </div>
   );
 }

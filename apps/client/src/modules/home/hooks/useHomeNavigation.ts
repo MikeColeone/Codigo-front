@@ -8,7 +8,7 @@ const navigationItems = [
   { label: "首页", path: "/" },
   { label: "模板广场", path: "/?view=templates" },
   { label: "物料广场", path: "/?view=materials" },
-  { label: "开发文档", path: "/?view=doc" },
+  { label: "使用手册", path: "/doc" },
   { label: "应用管理", path: "/app-management?tab=published" },
   { label: "后台管理", path: "/console" },
 ] as const;
