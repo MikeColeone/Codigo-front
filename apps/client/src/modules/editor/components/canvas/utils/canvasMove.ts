@@ -71,10 +71,15 @@ export function getPositioningRect(
   fallback: HTMLDivElement | null,
 ) {
   const offsetParent = element.offsetParent;
+  const fallbackRect = fallback?.getBoundingClientRect() ?? null;
   if (offsetParent instanceof HTMLElement) {
-    return offsetParent.getBoundingClientRect();
+    const parentRect = offsetParent.getBoundingClientRect();
+    if (fallbackRect && (parentRect.width <= 1 || parentRect.height <= 1)) {
+      return fallbackRect;
+    }
+    return parentRect;
   }
-  return fallback?.getBoundingClientRect() ?? null;
+  return fallbackRect;
 }
 
 /**

@@ -254,6 +254,14 @@ const EditorCanvas: FC<{
   function resolveClosestWrapper(
     event: ReactMouseEvent,
   ): HTMLElement | null {
+    const targetElement = resolveEventTargetElement(event.target);
+    if (targetElement) {
+      const closest = targetElement.closest(".component-warpper") as HTMLElement | null;
+      if (closest) {
+        return closest;
+      }
+    }
+
     const composedPath = (
       event.nativeEvent as unknown as { composedPath?: () => EventTarget[] }
     ).composedPath?.();
@@ -263,15 +271,7 @@ const EditorCanvas: FC<{
         item.classList.contains("component-warpper")
       );
     });
-    if (wrapperInPath instanceof HTMLElement) {
-      return wrapperInPath;
-    }
-
-    const targetElement = resolveEventTargetElement(event.target);
-    if (!targetElement) {
-      return null;
-    }
-    return targetElement.closest(".component-warpper") as HTMLElement | null;
+    return wrapperInPath instanceof HTMLElement ? wrapperInPath : null;
   }
 
   function isDirectWrapperHit(event: ReactMouseEvent, id: string) {
@@ -317,13 +317,18 @@ const EditorCanvas: FC<{
       clearCurrentComponent();
       return;
     }
-    const wrapperId = wrapper.dataset.id;
+  }
+
+  function handleCanvasMouseDownCapture(event: ReactMouseEvent<HTMLDivElement>) {
+    if (event.button !== 0) {
+      return;
+    }
+    const wrapper = resolveClosestWrapper(event);
+    const wrapperId = wrapper?.dataset.id;
     if (!wrapperId) {
       return;
     }
-    if (getComponentById(wrapperId)?.type === "container") {
-      clearCurrentComponent();
-    }
+    setCurrentComponent(wrapperId);
   }
 
   useEditorComponentKeyPress();
@@ -371,6 +376,7 @@ const EditorCanvas: FC<{
       ref={canvasRef}
       className="relative min-h-[700px] bg-white"
       onClick={handleCanvasClick}
+      onMouseDownCapture={handleCanvasMouseDownCapture}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}

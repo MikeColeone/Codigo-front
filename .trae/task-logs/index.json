@@ -1,5 +1,27 @@
 [
   {
+    "taskId": "TASK20260419104510",
+    "title": "修复画布组件纵向缩放失效",
+    "scope": "repository",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-19T02:45:10.248Z",
+    "gitBranch": "main",
+    "gitCommit": "e96d16d",
+    "markdownPath": ".trae/task-logs/2026-04-19/TASK20260419104510-task.md",
+    "snapshotPath": ".trae/task-logs/2026-04-19/TASK20260419104510-task.json"
+  },
+  {
+    "taskId": "TASK20260419104227",
+    "title": "修复画布单击无法显示缩放句柄",
+    "scope": "repository",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-19T02:42:27.292Z",
+    "gitBranch": "main",
+    "gitCommit": "e96d16d",
+    "markdownPath": ".trae/task-logs/2026-04-19/TASK20260419104227-task.md",
+    "snapshotPath": ".trae/task-logs/2026-04-19/TASK20260419104227-task.json"
+  },
+  {
     "taskId": "TASK20260419103929",
     "title": "侧边栏与表格配色去黑",
     "scope": "repository",
