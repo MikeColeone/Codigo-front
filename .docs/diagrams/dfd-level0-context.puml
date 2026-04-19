@@ -1,0 +1,29 @@
+@startuml
+title DFD Level-0（上下文图）- Codigo System
+left to right direction
+skinparam shadowing false
+
+rectangle "外部实体" as EE #DDDDDD
+rectangle "数据存储" as DS #EEEEEE
+rectangle "处理过程" as P #FFFFFF
+
+rectangle "访问者/用户" as E_User <<external_entity>>
+rectangle "管理员" as E_Admin <<external_entity>>
+rectangle "短信/验证码服务" as E_SMS <<external_entity>>
+rectangle "对象存储 OSS" as E_OSS <<external_entity>>
+
+rectangle "Codigo System\n(前端 + 后端)" as SYS <<process>>
+
+database "MySQL\n(codigo_lowcode)" as D_MySQL <<data_store>>
+database "Redis" as D_Redis <<data_store>>
+
+E_User --> SYS : 注册/登录/编辑/发布/访问/协作
+E_Admin --> SYS : 后台治理请求
+SYS --> E_SMS : 发送验证码（短信）
+SYS --> E_OSS : 上传/获取资源对象
+
+SYS --> D_MySQL : 业务数据读写
+SYS --> D_Redis : 缓存/验证码/会话状态
+
+@enduml
+

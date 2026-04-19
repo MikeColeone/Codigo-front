@@ -38,7 +38,6 @@ export class AuthController {
     @GetUserIP() ip: string,
   ) {
     const { phone, captcha, type } = body;
-    console.log(phone, captcha, type);
     const key = this.secrectTool.getSecret(ip + agent);
     return this.userService.sendCode(
       phone,

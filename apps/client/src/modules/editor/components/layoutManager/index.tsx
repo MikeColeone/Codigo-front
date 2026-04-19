@@ -129,16 +129,6 @@ export default observer(function EditorLayoutManager({
         <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
           布局设置
         </div>
-        <div className="text-[11px] text-[var(--ide-text-muted)]">仅预览/发布生效</div>
-      </div>
-
-      <div className="border-b border-[var(--ide-border)] px-4 py-3">
-        <div className="text-[12px] font-medium text-[var(--ide-text)]">
-          选择一种壳布局，在画布中预览（不切割画布）
-        </div>
-        <div className="mt-1 text-[11px] text-[var(--ide-text-muted)]">
-          页面菜单仍由 pages.path 派生，布局只改变导航的展示方式。
-        </div>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-3 py-3 scrollbar-thin scrollbar-thumb-[var(--ide-border)] hover:scrollbar-thumb-[var(--ide-text-muted)] scrollbar-track-transparent">

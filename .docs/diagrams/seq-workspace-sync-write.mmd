@@ -1,0 +1,28 @@
+sequenceDiagram
+  autonumber
+  actor Dev as 开发者
+  participant IDE as apps/ide(OpenSumi)
+  participant API as apps/server
+  participant WS as PageWorkspaceService
+  participant FS as Workspace Dir（磁盘目录）
+  participant DB as MySQL(page/component)
+
+  Dev->>IDE: 打开某 pageId 工作区
+  IDE->>API: POST /api/pages/:id/workspace
+  API->>WS: syncWorkspace(pageId)
+  alt 工作区不存在（首次）
+    WS->>FS: copy template workspace -> page workspace
+  end
+  WS->>DB: SELECT page schema/components
+  WS->>FS: write schema file
+  API-->>IDE: {code:0,data:{...}}
+
+  Dev->>IDE: 保存文件（path=...）
+  IDE->>API: PUT /api/pages/:id/workspace/file
+  API->>WS: writeWorkspaceFile(path, content)
+  WS->>FS: write file content
+  alt path 是 schema 文件
+    WS->>DB: update schema/components（回写 DB）
+  end
+  API-->>IDE: {code:0,data:null}
+

@@ -1,0 +1,19 @@
+sequenceDiagram
+  autonumber
+  actor U as 用户
+  participant FE as apps/client
+  participant API as apps/server
+  participant R as ResourcesService
+  participant OSS as Ali OSS
+  participant DB as MySQL(resources)
+
+  U->>FE: 选择文件上传
+  FE->>API: POST /api/resources/upload (multipart + Authorization)
+  API->>API: JwtStrategy.validate()
+  API->>R: upload(file, userId)
+  R->>OSS: put(file)
+  OSS-->>R: url
+  R->>DB: INSERT resources(account_id,url,type,name)
+  DB-->>R: id
+  API-->>FE: {code:0,data:{id,url,...}}
+

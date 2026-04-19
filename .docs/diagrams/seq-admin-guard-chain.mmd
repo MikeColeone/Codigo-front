@@ -1,0 +1,28 @@
+sequenceDiagram
+  autonumber
+  actor A as 管理员
+  participant FE as apps/admin
+  participant API as apps/server
+  participant JWT as JwtStrategy
+  participant RG as RolesGuard
+  participant PG as AdminPermissionGuard
+  participant S as AdminService
+  participant DB as MySQL(user/page/component)
+
+  A->>FE: 打开后台页面
+  FE->>API: GET /api/admin/users (Authorization)
+  API->>JWT: validate token
+  JWT-->>API: request.user
+  API->>RG: check global_role
+  RG-->>API: allow/deny
+  API->>PG: check permission keys
+  PG-->>API: allow/deny
+  alt 允许
+    API->>S: listUsers()
+    S->>DB: SELECT users
+    DB-->>S: rows
+    API-->>FE: {code:0,data:{...}}
+  else 拒绝
+    API-->>FE: {code:403,data:null,...}
+  end
+

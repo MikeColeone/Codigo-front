@@ -28,6 +28,12 @@
     "test": {
       "dependsOn": ["^build"],
       "outputs": ["coverage/**"]
+    },
+    "docs:check": {
+      "outputs": []
+    },
+    "changes:gate": {
+      "outputs": []
     }
   }
 }

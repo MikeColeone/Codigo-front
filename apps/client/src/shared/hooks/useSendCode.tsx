@@ -1,4 +1,4 @@
-﻿import type { FormInstance } from "antd";
+import type { FormInstance } from "antd";
 import { Button, Form, Input } from "antd";
 import { useEffect, useState } from "react";
 import { useRequest } from "ahooks";
@@ -12,7 +12,7 @@ import { getCaptcha, sendCode } from "@/modules/auth/api/user";
  */
 export function useSendCode(form: FormInstance, type: string) {
   // 设置倒计时并返回倒计时数值和设置倒计时的方法
-  let [countDown, setCountDown] = useState(60);
+  const [countDown, setCountDown] = useState(60);
 
   // 设置验证码图片源和设置验证码图片源的方法
   const [captchaSrc, setCaptchaSrc] = useState<string>("");
@@ -37,6 +37,10 @@ export function useSendCode(form: FormInstance, type: string) {
       },
     }
   );
+
+  useEffect(() => {
+    refreshCaptcha();
+  }, [refreshCaptcha]);
 
   /**
    * 使用useRequest自定义hook来发送sendCode请求
@@ -65,23 +69,34 @@ export function useSendCode(form: FormInstance, type: string) {
     if (startedCountDown === false) return;
 
     setIsDisable(true);
-    const timer = setInterval(() => {
-      setCountDown(--countDown);
-      if (countDown <= 0) {
-        clearInterval(timer);
-        setIsDisable(false);
-        setCountDown(60);
-        setStartedCountDown(false);
-      }
+    setCountDown(60);
+
+    const timer = window.setInterval(() => {
+      setCountDown((value) => {
+        if (value <= 1) {
+          window.clearInterval(timer);
+          setIsDisable(false);
+          setStartedCountDown(false);
+          return 60;
+        }
+        return value - 1;
+      });
     }, 1000);
+
+    return () => {
+      window.clearInterval(timer);
+    };
   }, [startedCountDown]);
 
   /**
    * 获取验证码并进行验证
    */
   async function getCode() {
-    form.validateFields(["phone"]);
-    form.validateFields(["captcha"]);
+    try {
+      await form.validateFields(["phone", "captcha"]);
+    } catch {
+      return;
+    }
     const phone = form.getFieldsValue().phone as string;
     const captcha = form.getFieldsValue().captcha as string;
     if (!phone || !captcha) return;
@@ -134,7 +149,6 @@ export function useSendCode(form: FormInstance, type: string) {
     sendCodeTemplate,
   };
 }
-
 
 
 

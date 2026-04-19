@@ -1,0 +1,48 @@
+flowchart LR
+  %% Codigo System - Overall Architecture (As-Is + Key Integrations)
+
+  subgraph U[外部参与者]
+    endUser[终端用户<br/>（浏览器）]
+    adminUser[管理员<br/>（浏览器）]
+    collaborator[协作者<br/>（浏览器）]
+  end
+
+  subgraph FE[前端应用（Vite / Next）]
+    clientApp[apps/client<br/>编辑器 & 工作台]
+    adminApp[apps/admin<br/>后台管理前端]
+    releaseApp[packages/release<br/>发布端（Next.js）]
+    ideApp[apps/ide<br/>WebIDE 外壳（OpenSumi）]
+  end
+
+  subgraph BE[后端（NestJS）]
+    api[apps/server<br/>REST API / WebSocket]
+    ws[/Socket.io Namespace<br/>/collaboration/]
+  end
+
+  subgraph DATA[数据与中间件]
+    mysql[(MySQL<br/>codigo_lowcode)]
+    redis[(Redis)]
+  end
+
+  subgraph EXT[第三方服务]
+    oss[(Ali OSS)]
+    sms[(短信/验证码服务)]
+  end
+
+  endUser -->|HTTP(S)| releaseApp
+  adminUser -->|HTTP(S)| adminApp
+  collaborator -->|HTTP(S)| clientApp
+  endUser -->|HTTP(S)| clientApp
+  collaborator -->|WebSocket| ws
+
+  clientApp -->|REST /api/*| api
+  adminApp -->|REST /api/admin/*| api
+  releaseApp -->|REST /api/pages/:id| api
+  ideApp -->|REST /api/pages/:id/workspace/*| api
+
+  api --> ws
+  api -->|TypeORM| mysql
+  api -->|ioredis| redis
+  api -->|SDK| oss
+  api --> sms
+

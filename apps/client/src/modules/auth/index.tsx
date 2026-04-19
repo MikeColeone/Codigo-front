@@ -1,8 +1,7 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { ConfigProvider } from "antd";
 import Register from "./components/register/Register";
 import Login from "./components/login/Login";
-import { ParticleBackground } from "./components/background/ParticleBackground";
 
 export default function LoginOrRegister() {
   // 切换弹窗逻辑
@@ -15,31 +14,35 @@ export default function LoginOrRegister() {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#10b981", // emerald-500
+          colorPrimary: "#0f6cbd",
           colorBgContainer: "#ffffff",
-          colorBorder: "#e2e8f0", // slate-200
-          colorText: "#0f172a", // slate-900
-          colorTextSecondary: "#64748b", // slate-500
+          colorBorder: "#e5e7eb",
+          colorText: "#1f2328",
+          colorTextSecondary: "#57606a",
           borderRadius: 8,
         },
         components: {
           Input: {
             colorBgContainer: "#ffffff",
-            activeBorderColor: "#10b981",
-            hoverBorderColor: "#34d399",
+            activeBorderColor: "#0f6cbd",
+            hoverBorderColor: "#2b7cd3",
           },
           Button: {
-            primaryShadow: "0 4px 14px 0 rgba(16, 185, 129, 0.39)",
+            primaryShadow: "0 6px 16px 0 rgba(15, 108, 189, 0.26)",
           },
         },
       }}
     >
-      <div className="relative flex h-full min-h-screen items-center justify-center overflow-hidden bg-slate-50 font-sans text-slate-900">
-        <ParticleBackground />
-
-        {/* Background Gradient Orbs */}
-        <div className="pointer-events-none absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-emerald-500/5 blur-[100px]" />
-        <div className="pointer-events-none absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-cyan-500/5 blur-[100px]" />
+      <div className="relative flex h-full min-h-screen items-center justify-center overflow-hidden bg-[#f3f3f3] font-sans text-[#1f2328]">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.55]"
+          style={{
+            backgroundImage:
+              "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(243,243,243,0.98) 100%), repeating-linear-gradient(90deg, rgba(31,35,40,0.06) 0px, rgba(31,35,40,0.06) 1px, transparent 1px, transparent 28px), repeating-linear-gradient(0deg, rgba(31,35,40,0.04) 0px, rgba(31,35,40,0.04) 1px, transparent 1px, transparent 28px)",
+          }}
+        />
+        <div className="pointer-events-none absolute -top-24 -left-20 h-[420px] w-[420px] rounded-full bg-[#0f6cbd]/8 blur-[90px]" />
+        <div className="pointer-events-none absolute -bottom-28 -right-24 h-[520px] w-[520px] rounded-full bg-[#007acc]/6 blur-[110px]" />
 
         <div className="relative z-10">
           {loginOrRegister ? (
@@ -50,7 +53,7 @@ export default function LoginOrRegister() {
         </div>
 
         {/* Footer */}
-        <div className="absolute bottom-6 text-center text-xs text-slate-400 font-mono z-10">
+        <div className="absolute bottom-6 z-10 text-center font-mono text-xs text-slate-500">
           © 2024 Codigo System. All rights reserved.
         </div>
       </div>

@@ -1,0 +1,31 @@
+sequenceDiagram
+  autonumber
+  actor A as 协作者A
+  actor B as 协作者B
+  participant FE as apps/client
+  participant WS as /collaboration Socket.io
+  participant S as CollaborationGateway
+
+  A->>FE: 打开编辑器
+  FE->>WS: connect + emit join_room(pageId, user)
+  WS->>S: handleJoinRoom()
+  S-->>WS: broadcast room_users_update
+  WS-->>FE: room_users_update(users)
+
+  B->>FE: 打开编辑器
+  FE->>WS: join_room(pageId, user)
+  WS->>S: handleJoinRoom()
+  S-->>WS: broadcast room_users_update
+
+  A->>FE: 拖拽/修改组件
+  FE->>WS: emit component_update(diff)
+  WS->>S: handleComponentUpdate()
+  S-->>WS: broadcast sync_component(diff)
+  WS-->>FE: sync_component(diff)（B 接收）
+
+  A->>FE: 锁定编辑
+  FE->>WS: emit toggle_lock(isLocked)
+  WS->>S: handleToggleLock()
+  S-->>WS: broadcast sync_lock_status
+  WS-->>FE: sync_lock_status
+

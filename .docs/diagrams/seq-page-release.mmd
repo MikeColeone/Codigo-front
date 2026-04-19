@@ -1,0 +1,20 @@
+sequenceDiagram
+  autonumber
+  actor U as 发布者
+  participant FE as apps/client
+  participant API as apps/server
+  participant S as PageReleaseService
+  participant DB as MySQL(page/component/page_version)
+
+  U->>FE: 点击发布
+  FE->>API: PUT /api/pages/me (Authorization)
+  API->>API: JwtStrategy.validate()
+  API->>S: release(schema)
+  S->>DB: BEGIN
+  S->>DB: UPSERT page（account_id 等）
+  S->>DB: REPLACE components（按 node_id 扁平化）
+  S->>DB: INSERT page_version（schema_data 快照）
+  S->>DB: COMMIT
+  API-->>FE: {code:0,data:{pageId}}
+  FE-->>U: 发布成功
+

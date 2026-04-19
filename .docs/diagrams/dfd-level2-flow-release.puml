@@ -1,0 +1,37 @@
+@startuml
+title DFD Level-2（模块级）- Flow: 发布页面（PUT /pages/me）
+left to right direction
+skinparam shadowing false
+
+rectangle "用户(Owner)" as E_User <<external_entity>>
+database "D1: page" as D_page <<data_store>>
+database "D2: component" as D_component <<data_store>>
+database "D3: page_version" as D_version <<data_store>>
+database "D4: operation_log" as D_oplog <<data_store>>
+
+rectangle "P2.1: JWT 校验" as P21 <<process>>
+rectangle "P2.2: Schema 规范化/校验" as P22 <<process>>
+rectangle "P2.3: Upsert Page" as P23 <<process>>
+rectangle "P2.4: 扁平化写入 Components" as P24 <<process>>
+rectangle "P2.5: 生成版本快照" as P25 <<process>>
+rectangle "P2.6: 输出发布结果" as P26 <<process>>
+
+E_User --> P21 : Authorization + schema payload
+P21 --> P22 : userId + schema
+
+P22 --> P23 : page meta + rootIds
+P23 --> D_page : INSERT/UPDATE
+
+P23 --> P24 : pageId + components tree
+P24 --> D_component : INSERT/UPDATE/DELETE
+
+P24 --> P25 : schema snapshot
+P25 --> D_version : INSERT（version + schema_data）
+
+P25 --> D_oplog : （建议）记录发布事件
+
+P25 --> P26 : pageId
+P26 --> E_User : {pageId}
+
+@enduml
+

@@ -1,0 +1,15 @@
+sequenceDiagram
+  autonumber
+  participant API as apps/server
+  participant M as TemplateModule
+  participant S as TemplateService
+  participant DB as MySQL(template)
+
+  API->>M: OnModuleInit
+  M->>S: ensureDefaults()
+  S->>DB: SELECT by key
+  alt 不存在或版本落后
+    S->>DB: UPSERT template(key,version,preset,...)
+  end
+  DB-->>S: ok
+

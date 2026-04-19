@@ -42,17 +42,30 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex h-full min-h-screen items-center justify-center bg-slate-100 px-4">
-      <div className="w-full max-w-[420px] rounded-2xl border border-slate-200 bg-white p-8 shadow-xl">
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-lg font-bold text-blue-600">
-            C
+    <div className="flex h-full min-h-screen items-center justify-center bg-[#f3f3f3] px-4">
+      <div className="w-full max-w-[420px] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl">
+        <div className="flex items-center justify-between border-b border-slate-200 bg-[#f3f3f3] px-4 py-3">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#0f6cbd]/10 text-[#0f6cbd] ring-1 ring-inset ring-[#0f6cbd]/20">
+              <span className="font-mono text-base font-bold">C</span>
+            </div>
+            <div className="leading-tight">
+              <div className="text-sm font-semibold text-[#1f2328]">Codigo Admin</div>
+              <div className="text-xs text-[#57606a]">仅管理员可访问</div>
+            </div>
           </div>
-          <h1 className="text-2xl font-semibold text-slate-900">Codigo 管理后台</h1>
-          <p className="mt-2 text-sm text-slate-500">
+          <div className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-slate-300" />
+            <span className="h-2 w-2 rounded-full bg-slate-300" />
+            <span className="h-2 w-2 rounded-full bg-slate-300" />
+          </div>
+        </div>
+
+        <div className="p-8">
+          <h1 className="text-xl font-semibold text-slate-900">管理后台登录</h1>
+          <p className="mt-2 text-sm text-slate-600">
             使用管理员账号登录，集中治理用户、页面与组件资产
           </p>
-        </div>
         <Alert
           className="mb-6"
           type="info"
@@ -89,6 +102,7 @@ export default function LoginPage() {
             进入后台
           </Button>
         </Form>
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,125 @@
+erDiagram
+  USER ||--o{ PAGE : "owns (account_id)"
+  USER ||--o{ RESOURCES : "uploads (account_id)"
+  USER ||--o{ PAGE_VERSION : "publishes (account_id)"
+  USER ||--o{ OPERATION_LOG : "acts (actor_id)"
+
+  PAGE ||--o{ COMPONENT : "contains (page_id)"
+  PAGE ||--o{ PAGE_VERSION : "versions (page_id)"
+  PAGE ||--o{ COMPONENT_DATA : "submissions (page_id)"
+  PAGE ||--o{ OPERATION_LOG : "logs (page_id)"
+
+  USER ||--o{ PAGE_COLLABORATOR : "collab (user_id)"
+  PAGE ||--o{ PAGE_COLLABORATOR : "collab (page_id)"
+
+  USER {
+    int id PK
+    varchar username
+    varchar phone
+    varchar password
+    varchar open_id
+    varchar head_img
+    varchar global_role
+    varchar status
+    json admin_permissions
+  }
+
+  PAGE {
+    int id PK
+    int account_id
+    varchar page_name
+    string components "simple-array"
+    int schema_version
+    varchar tdk
+    varchar desc
+    varchar pageCategory
+    varchar layoutMode
+    json grid
+    varchar shellLayout
+    varchar deviceType
+    int canvasWidth
+    int canvasHeight
+    boolean lockEditing
+    varchar visibility
+    timestamp expire_at
+  }
+
+  COMPONENT {
+    int id PK
+    int page_id
+    int account_id
+    varchar type
+    varchar node_id
+    varchar parent_node_id
+    varchar slot
+    varchar name
+    json options
+    json styles
+    json meta
+  }
+
+  PAGE_VERSION {
+    uuid id PK
+    int page_id
+    int account_id
+    int version
+    varchar desc
+    json schema_data
+    timestamp created_at
+  }
+
+  PAGE_COLLABORATOR {
+    uuid id PK
+    int page_id
+    int user_id
+    varchar role
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  RESOURCES {
+    int id PK
+    int account_id
+    varchar url
+    varchar type
+    varchar name
+  }
+
+  TEMPLATE {
+    int id PK
+    varchar key UK
+    varchar name
+    text desc
+    json tags
+    varchar page_title
+    varchar page_category
+    varchar layout_mode
+    varchar device_type
+    int canvas_width
+    int canvas_height
+    varchar active_page_path
+    int pages_count
+    varchar cover_url
+    varchar status
+    int version
+    json preset
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  COMPONENT_DATA {
+    int id PK
+    int page_id
+    varchar user
+    json props
+  }
+
+  OPERATION_LOG {
+    uuid id PK
+    int page_id
+    int actor_id
+    varchar event
+    varchar target
+    timestamp created_at
+  }
+

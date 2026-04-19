@@ -1,0 +1,53 @@
+@startuml
+title DFD Level-1（系统级）- 处理过程分解
+left to right direction
+skinparam shadowing false
+
+rectangle "访问者/用户" as E_User <<external_entity>>
+rectangle "管理员" as E_Admin <<external_entity>>
+rectangle "短信/验证码服务" as E_SMS <<external_entity>>
+rectangle "对象存储 OSS" as E_OSS <<external_entity>>
+
+database "D1: MySQL\n(user/page/component/...)" as D1 <<data_store>>
+database "D2: Redis\n(captcha/cache/...)" as D2 <<data_store>>
+
+rectangle "P1: 认证与用户\n(Auth/User)" as P1 <<process>>
+rectangle "P2: 页面发布与访问\n(Pages/Release)" as P2 <<process>>
+rectangle "P3: 页面版本\n(PageVersion)" as P3 <<process>>
+rectangle "P4: 工作区文件系统\n(Workspace)" as P4 <<process>>
+rectangle "P5: 协作者与实时协同\n(Collaboration)" as P5 <<process>>
+rectangle "P6: 模板\n(Templates)" as P6 <<process>>
+rectangle "P7: 资源\n(Resources)" as P7 <<process>>
+rectangle "P8: 后台治理\n(Admin)" as P8 <<process>>
+
+E_User --> P1 : 注册/登录/获取验证码
+P1 --> D1 : user 读写
+P1 --> D2 : captcha/session 缓存
+P1 --> E_SMS : 发送短信验证码
+
+E_User --> P2 : 发布/访问页面
+P2 --> D1 : page/component 读写
+
+P2 --> P3 : 生成版本快照
+P3 --> D1 : page_version 写入/读取
+
+E_User --> P4 : 同步工作区/读写文件
+P4 --> D1 : schema 读写（回写）
+
+E_User --> P5 : 协作成员管理/实时协同
+P5 --> D1 : page_collaborator 读写
+P5 --> D2 : （可选）协同状态/锁缓存
+
+E_User --> P6 : 浏览模板
+E_Admin --> P6 : 管理模板（CRUD）
+P6 --> D1 : template 读写
+
+E_User --> P7 : 上传/管理资源
+P7 --> E_OSS : 上传对象/获取 URL
+P7 --> D1 : resources 记录
+
+E_Admin --> P8 : 用户/页面/组件治理
+P8 --> D1 : user/page/component/page_version 读写
+
+@enduml
+

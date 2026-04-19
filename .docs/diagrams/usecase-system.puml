@@ -1,0 +1,63 @@
+@startuml
+left to right direction
+skinparam actorStyle awesome
+
+actor "访问者\n(Anonymous)" as Visitor
+actor "注册用户\n(Owner/Collaborator)" as User
+actor "管理员\n(Admin)" as Admin
+actor "第三方短信服务" as Sms
+actor "对象存储 OSS" as Oss
+
+rectangle "Codigo 系统" {
+  (注册) as UC_Register
+  (登录) as UC_Login
+  (获取验证码\n图形/短信) as UC_Captcha
+
+  (创建/编辑页面) as UC_EditPage
+  (发布页面) as UC_Publish
+  (查看发布页面) as UC_ViewRelease
+  (查看版本历史\n并应用) as UC_Versions
+
+  (管理协作者\n邀请/移除/改角色) as UC_CollabMgmt
+  (实时协同编辑\nSocket.io) as UC_CollabRealtime
+
+  (打开 WebIDE\n同步工作区) as UC_WebIDE
+  (读写工作区文件) as UC_WorkspaceFS
+
+  (上传资源) as UC_Upload
+  (查看/删除资源) as UC_ResourceMgmt
+
+  (浏览模板) as UC_TemplateBrowse
+  (管理模板\nCRUD) as UC_TemplateAdmin
+
+  (用户治理\n角色/冻结/权限点) as UC_AdminUsers
+  (页面治理\n列表/版本/删除) as UC_AdminPages
+  (组件治理\n统计/列表/删除) as UC_AdminComponents
+}
+
+Visitor --> UC_ViewRelease
+Visitor --> UC_Captcha
+Visitor --> UC_Login
+Visitor --> UC_Register
+
+User --> UC_EditPage
+User --> UC_Publish
+User --> UC_Versions
+User --> UC_CollabMgmt
+User --> UC_CollabRealtime
+User --> UC_WebIDE
+User --> UC_WorkspaceFS
+User --> UC_Upload
+User --> UC_ResourceMgmt
+User --> UC_TemplateBrowse
+
+Admin --> UC_AdminUsers
+Admin --> UC_AdminPages
+Admin --> UC_AdminComponents
+Admin --> UC_TemplateAdmin
+
+UC_Captcha ..> Sms : <<include>>
+UC_Upload ..> Oss : <<include>>
+
+@enduml
+

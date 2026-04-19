@@ -1,0 +1,47 @@
+flowchart TB
+  %% Codigo System - Deployment Topology (Recommended)
+
+  subgraph Internet[Internet]
+    userBrowser[Browser]
+  end
+
+  subgraph Edge[Edge / Ingress]
+    cdn[CDN（可选）]
+    ingress[Ingress / Nginx]
+  end
+
+  subgraph Web[Web Hosting]
+    feClient[apps/client 静态资源<br/>（Vite build）]
+    feAdmin[apps/admin 静态资源<br/>（Vite build）]
+    feRelease[packages/release<br/>（Next.js SSR/ISR）]
+    ideHost[apps/ide 静态资源<br/>（OpenSumi）]
+  end
+
+  subgraph App[Application]
+    api[apps/server（NestJS）]
+  end
+
+  subgraph Data[Data Layer]
+    mysqlPrimary[(MySQL Primary)]
+    mysqlReplica[(MySQL Replica 可选)]
+    redis[(Redis)]
+  end
+
+  subgraph ThirdParty[Third-Party]
+    oss[(Ali OSS)]
+    sms[(短信/验证码服务)]
+  end
+
+  userBrowser --> cdn --> ingress
+  ingress --> feClient
+  ingress --> feAdmin
+  ingress --> feRelease
+  ingress --> ideHost
+  ingress --> api
+
+  api --> mysqlPrimary
+  mysqlPrimary --> mysqlReplica
+  api --> redis
+  api --> oss
+  api --> sms
+

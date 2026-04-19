@@ -1,0 +1,33 @@
+sequenceDiagram
+  autonumber
+  actor V as 访问者
+  participant FE as packages/release 或 apps/client
+  participant API as apps/server
+  participant G as OptionalJwtAuthGuard
+  participant S as PageReleaseService
+  participant DB as MySQL(page/component)
+
+  V->>FE: 打开 /release/:id
+  FE->>API: GET /api/pages/:id (可能无 Authorization)
+  API->>G: 可选解析 JWT
+  API->>S: assertPageAccessible(id, user?)
+  S->>DB: SELECT page by id
+  alt page 不存在
+    S-->>API: throw 404
+    API-->>FE: {code:404,data:null,...}
+  else page 为 private 且 user 为空
+    S-->>API: throw 401
+    API-->>FE: {code:401,data:null,...}
+  else page 为 private 且 user 非 owner
+    S-->>API: throw 403
+    API-->>FE: {code:403,data:null,...}
+  else page 已过期
+    S-->>API: throw 404/403（按策略）
+    API-->>FE: {code:...,data:null,...}
+  else 可访问
+    S->>DB: SELECT components by page_id
+    DB-->>S: components
+    S-->>API: releaseData
+    API-->>FE: {code:0,data:{...}}
+  end
+
