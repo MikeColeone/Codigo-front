@@ -1,5 +1,16 @@
 [
   {
+    "taskId": "TASK20260419101334",
+    "title": "修复基础组件缩放仅占位不变",
+    "scope": "repository",
+    "author": "Trae Agent",
+    "timestamp": "2026-04-19T02:13:34.688Z",
+    "gitBranch": "main",
+    "gitCommit": "c47a65b",
+    "markdownPath": ".trae/task-logs/2026-04-19/TASK20260419101334-task.md",
+    "snapshotPath": ".trae/task-logs/2026-04-19/TASK20260419101334-task.json"
+  },
+  {
     "taskId": "TASK20260419101154",
     "title": "Polish manual layout alignment",
     "scope": "repository",
