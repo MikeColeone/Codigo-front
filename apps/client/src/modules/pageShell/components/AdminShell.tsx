@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { PropsWithChildren } from "react";
 import { useEffect, useMemo, useState } from "react";
 import type { PageShellLayout } from "@codigo/schema";

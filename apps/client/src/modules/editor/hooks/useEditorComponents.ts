@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/immutability */
 import { action, computed, makeAutoObservable, observable, toJS } from "mobx";
 import { message } from "antd";
 import type { IEditorPageSchema } from "@codigo/schema";

@@ -647,6 +647,7 @@ export default function Center({ variant = "page" }: { variant?: "page" | "embed
   };
 
   const materialsDocPage = useMemo<DocPage>(() => {
+    
     const sections: DocSection[] = builtinComponentDefinitions
       .map((item) => {
         const type = String(item.type);

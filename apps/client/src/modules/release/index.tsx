@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CaretLeftOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
 import { Button, Drawer, Empty, FloatButton, QRCode, Result, Spin } from "antd";

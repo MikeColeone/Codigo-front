@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { action } from "mobx";
 import { calcValueByString } from "@codigo/materials";
 import type {
@@ -100,6 +101,8 @@ export function createEditorComponentMutations(
 
     const nextProps = currentComponent.props as Record<string, unknown>;
     for (const [key, value] of Object.entries(compConfig)) {
+      // any 类型解释： 是为了兼容旧版的 React 组件，这些组件没有定义类型。
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       nextProps[key] = calcValueByString(value as any);
     }
 

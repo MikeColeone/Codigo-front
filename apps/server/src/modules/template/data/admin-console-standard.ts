@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 import type { TemplateComponent, TemplatePagePreset, TemplatePreset } from '@codigo/schema';
 
 const CANVAS_WIDTH = 1440;

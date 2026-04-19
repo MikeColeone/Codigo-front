@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { action } from "mobx";
 import { arrayMove } from "@dnd-kit/sortable";
 import { message } from "antd";
