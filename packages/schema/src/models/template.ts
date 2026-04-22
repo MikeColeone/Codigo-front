@@ -26,6 +26,23 @@ export interface TemplatePagePreset {
   components: TemplateComponent[];
 }
 
+/**
+ * 模板预设协议
+ * key(string): 模板唯一标识
+ * name(string): 模板名称
+ * desc(string): 模板描述
+ * tags(array[string]): 模板标签
+ * pageTitle(string): 模板首页标题
+ * pageCategory(string): 模板页面分类
+ * layoutMode(string): 模板布局模式
+ * grid(object): 模板网格配置
+ * shellLayout(object): 模板壳布局
+ * deviceType(string): 模板设备类型
+ * canvasWidth(number): 模板画布宽度
+ * canvasHeight(number): 模板画布高度
+ * activePagePath(string): 模板默认激活页面路径
+ * pageGroups(array[object]): 模板页面分组配置
+ */
 export interface TemplatePreset {
   key: string;
   name: string;

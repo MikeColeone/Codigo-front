@@ -1,0 +1,1 @@
+import TemplatePreset from '@codigo/schema';
