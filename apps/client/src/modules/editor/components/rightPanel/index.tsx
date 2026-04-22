@@ -2,11 +2,9 @@ import { useState } from "react";
 import { Empty, Tabs, Tooltip } from "antd";
 import {
   AppstoreOutlined,
-  RobotOutlined,
   ThunderboltOutlined,
 } from "@ant-design/icons";
 import ComponentFields from "./ComponentFields";
-import AIChatPanel from "./AIChatPanel";
 import { toJS } from "mobx";
 import type { ActionConfig } from "@codigo/schema";
 import { ActionListEditor } from "./ActionListEditor";
@@ -83,17 +81,6 @@ export default function EditorRightPanel() {
         </Tooltip>
       ),
       children: <ComponentEventsPanel />,
-    },
-    {
-      key: "ai-chat",
-      label: (
-        <Tooltip title="AI生成" placement="bottom">
-          <div className="flex h-8 w-8 items-center justify-center rounded-sm transition-all">
-            <RobotOutlined className="text-base" />
-          </div>
-        </Tooltip>
-      ),
-      children: <AIChatPanel />,
     },
   ];
 

@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ResponseIntercept } from './core/interceptor/response.interceptor';
 import { AbnormalFilter } from './core/filter/abnormal.filter';
+import { Reflector } from '@nestjs/core';
 
 /**
  * @description 应用程序入口文件，用于引导 NestJS 应用启动。
@@ -19,7 +20,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   app.setGlobalPrefix('api');
-  app.useGlobalInterceptors(new ResponseIntercept());
+  app.useGlobalInterceptors(new ResponseIntercept(new Reflector()));
   app.useGlobalFilters(new AbnormalFilter());
   await app.listen(process.env.PORT ?? 3000);
 }

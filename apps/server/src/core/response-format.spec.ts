@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import type { ArgumentsHost } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { firstValueFrom, of } from 'rxjs';
 import { Code, XException } from 'src/core/exception';
 import { AbnormalFilter } from 'src/core/filter/abnormal.filter';
@@ -35,7 +36,7 @@ describe('response format', () => {
   });
 
   it('maps interceptor response to unified structure', async () => {
-    const interceptor = new ResponseIntercept();
+    const interceptor = new ResponseIntercept(new Reflector());
     const result = await firstValueFrom(
       interceptor.intercept({} as never, {
         handle: () =>

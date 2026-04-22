@@ -6,6 +6,7 @@ import {
   GlobalOutlined,
   LeftOutlined,
   RightOutlined,
+  RobotOutlined,
   SendOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
@@ -20,6 +21,7 @@ import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
 import EditorLeftPanel from "../leftPanel";
 import EditorRightPanel from "../rightPanel";
+import AIChatPanel from "../ai/AIChatPanel";
 import { EditorOutlineTree } from "../rightPanel/ComponentFields";
 import GlobalFields from "../rightPanel/GlobalFields";
 import EditorCanvas from "../canvas";
@@ -41,6 +43,7 @@ type LeftPanelSection =
   | "components"
   | "outline"
   | "global"
+  | "ai"
   | "requests"
   | "datasources";
 
@@ -188,6 +191,11 @@ export const EditorViewport = observer(function EditorViewport(
       key: "global",
       icon: <GlobalOutlined className="text-xl" />,
       label: "全局",
+    },
+    {
+      key: "ai",
+      icon: <RobotOutlined className="text-xl" />,
+      label: "AI生成",
     },
     {
       key: "requests",
@@ -607,6 +615,8 @@ export const EditorViewport = observer(function EditorViewport(
                     ? "大纲"
                     : activeLeftSection === "global"
                       ? "全局"
+                      : activeLeftSection === "ai"
+                        ? "AI生成"
                       : activeLeftSection === "requests"
                         ? "请求"
                         : "数据源"}
@@ -617,6 +627,7 @@ export const EditorViewport = observer(function EditorViewport(
                 {activeLeftSection === "global" && (
                   <GlobalFields store={props.storePage} showHeader={false} />
                 )}
+                {activeLeftSection === "ai" && <AIChatPanel />}
                 {activeLeftSection === "requests" && (
                   <div className="px-4 py-3">
                     <div className="rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] p-3">

@@ -11,6 +11,7 @@ import { ResourcesModule } from './modules/resources/resources.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { TemplateModule } from './modules/template/template.module';
 import { JwtStrategy } from './core/guard/jwt.strategy';
+import { AiModule } from './modules/ai/ai.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
@@ -20,6 +21,7 @@ import { JwtStrategy } from './core/guard/jwt.strategy';
     ResourcesModule,
     AdminModule,
     TemplateModule,
+    AiModule,
     RedisModule.forRoot(redisConfig),
     JwtModule.register(jwtConfig),
   ],

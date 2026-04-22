@@ -42,6 +42,7 @@ export interface TemplatePagePreset {
  * canvasHeight(number): 模板画布高度
  * activePagePath(string): 模板默认激活页面路径
  * pageGroups(array[object]): 模板页面分组配置
+ * pages(array[object]): 模板页面配置
  */
 export interface TemplatePreset {
   key: string;
