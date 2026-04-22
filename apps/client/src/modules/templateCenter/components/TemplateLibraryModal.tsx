@@ -87,7 +87,7 @@ export function TemplateLibraryModal({
         onCancel={onClose}
       >
         <div className="mb-5 rounded-md border border-[var(--ide-border)] bg-[var(--ide-hover)] px-4 py-3 text-sm text-[var(--ide-text-muted)]">
-          在编辑器内直接预览并应用模板，会替换当前工作区的页面集合并生成一套完整后台骨架。
+          在编辑器内直接预览并应用模板
         </div>
         {listLoading ? (
           <div className="flex items-center justify-center py-24">

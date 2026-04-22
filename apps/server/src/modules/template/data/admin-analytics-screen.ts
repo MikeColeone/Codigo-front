@@ -1,4 +1,8 @@
-import type { TemplateComponent, TemplatePagePreset, TemplatePreset } from '@codigo/schema';
+import type {
+  TemplateComponent,
+  TemplatePagePreset,
+  TemplatePreset,
+} from '@codigo/schema';
 
 const CANVAS_WIDTH = 1440;
 const CANVAS_HEIGHT = 1280;
@@ -110,10 +114,38 @@ function createOverviewPage(): TemplatePagePreset {
     { cluster: '海外新加坡', value: 48 },
   ];
   const alarmRows = [
-    { key: 'alarm-1', level: 'P1', service: '支付网关', status: '处理中', owner: '小黑', time: '10:21' },
-    { key: 'alarm-2', level: 'P2', service: '消息中心', status: '已恢复', owner: '平台组', time: '10:08' },
-    { key: 'alarm-3', level: 'P2', service: '数据同步', status: '待确认', owner: '数据组', time: '09:46' },
-    { key: 'alarm-4', level: 'P3', service: '用户画像', status: '已恢复', owner: '运营组', time: '09:12' },
+    {
+      key: 'alarm-1',
+      level: 'P1',
+      service: '支付网关',
+      status: '处理中',
+      owner: '小黑',
+      time: '10:21',
+    },
+    {
+      key: 'alarm-2',
+      level: 'P2',
+      service: '消息中心',
+      status: '已恢复',
+      owner: '平台组',
+      time: '10:08',
+    },
+    {
+      key: 'alarm-3',
+      level: 'P2',
+      service: '数据同步',
+      status: '待确认',
+      owner: '数据组',
+      time: '09:46',
+    },
+    {
+      key: 'alarm-4',
+      level: 'P3',
+      service: '用户画像',
+      status: '已恢复',
+      owner: '运营组',
+      time: '09:12',
+    },
   ];
 
   return createPageShell({
@@ -125,7 +157,8 @@ function createOverviewPage(): TemplatePagePreset {
           type: 'pageHeader',
           props: {
             title: '运营指挥总览',
-            subtitle: '实时监测流量、转化、服务负载与全局异常，适合作为数据大屏首页。',
+            subtitle:
+              '实时监测流量、转化、服务负载与全局异常，适合作为数据大屏首页。',
             tagsText: '大屏,实时,运营',
             extraText: '数据刷新周期 30 秒',
           },
@@ -138,10 +171,34 @@ function createOverviewPage(): TemplatePagePreset {
           props: {
             columns: 4,
             items: [
-              { id: 'metric-1', title: '在线用户', subtitle: '当前', value: '28,491', extra: '较 5 分钟前 +3.2%' },
-              { id: 'metric-2', title: '支付成功率', subtitle: '今日', value: '99.42%', extra: '异常订单 14' },
-              { id: 'metric-3', title: '平均响应', subtitle: 'P95', value: '286ms', extra: '核心接口正常' },
-              { id: 'metric-4', title: '活跃应用', subtitle: '工作区', value: '124', extra: '新增 6 个待发布' },
+              {
+                id: 'metric-1',
+                title: '在线用户',
+                subtitle: '当前',
+                value: '28,491',
+                extra: '较 5 分钟前 +3.2%',
+              },
+              {
+                id: 'metric-2',
+                title: '支付成功率',
+                subtitle: '今日',
+                value: '99.42%',
+                extra: '异常订单 14',
+              },
+              {
+                id: 'metric-3',
+                title: '平均响应',
+                subtitle: 'P95',
+                value: '286ms',
+                extra: '核心接口正常',
+              },
+              {
+                id: 'metric-4',
+                title: '活跃应用',
+                subtitle: '工作区',
+                value: '124',
+                extra: '新增 6 个待发布',
+              },
             ],
           },
         },
@@ -160,9 +217,18 @@ function createOverviewPage(): TemplatePagePreset {
             color: '#29b6f6',
             optionText: JSON.stringify(
               {
-                grid: { left: 44, right: 18, top: 56, bottom: 26, containLabel: true },
+                grid: {
+                  left: 44,
+                  right: 18,
+                  top: 56,
+                  bottom: 26,
+                  containLabel: true,
+                },
                 tooltip: { trigger: 'axis' },
-                xAxis: { axisLine: { lineStyle: { color: '#35506d' } }, axisLabel: { color: '#8da3be' } },
+                xAxis: {
+                  axisLine: { lineStyle: { color: '#35506d' } },
+                  axisLabel: { color: '#8da3be' },
+                },
                 yAxis: {
                   splitLine: { lineStyle: { color: 'rgba(141,163,190,0.16)' } },
                   axisLabel: { color: '#8da3be' },
@@ -190,7 +256,9 @@ function createOverviewPage(): TemplatePagePreset {
             optionText: JSON.stringify(
               {
                 legend: { bottom: 0, textStyle: { color: '#8da3be' } },
-                series: [{ radius: ['52%', '76%'], label: { color: '#d9e7f7' } }],
+                series: [
+                  { radius: ['52%', '76%'], label: { color: '#d9e7f7' } },
+                ],
               },
               null,
               2,
@@ -212,7 +280,13 @@ function createOverviewPage(): TemplatePagePreset {
             color: '#36cfc9',
             optionText: JSON.stringify(
               {
-                grid: { left: 44, right: 14, top: 56, bottom: 46, containLabel: true },
+                grid: {
+                  left: 44,
+                  right: 14,
+                  top: 56,
+                  bottom: 46,
+                  containLabel: true,
+                },
                 xAxis: { axisLabel: { color: '#8da3be', rotate: 16 } },
                 yAxis: {
                   splitLine: { lineStyle: { color: 'rgba(141,163,190,0.16)' } },
@@ -231,7 +305,8 @@ function createOverviewPage(): TemplatePagePreset {
           type: 'geoMap',
           props: {
             title: '重点区域热力分布',
-            subtitle: '按区域标记业务收入和流量峰值，可在编辑器中继续调整标记点与颜色。',
+            subtitle:
+              '按区域标记业务收入和流量峰值，可在编辑器中继续调整标记点与颜色。',
             interactionHint: '点击地图后可调整选中标记位置。',
             backgroundColor: '#111c2d',
             oceanColor: '#081423',
@@ -242,14 +317,56 @@ function createOverviewPage(): TemplatePagePreset {
             showLegend: true,
             optionText: '',
             markers: [
-              { id: 'mk-shanghai', name: '上海', longitude: 121.4737, latitude: 31.2304, value: 'GMV 128w', color: '#3bb8ff', size: 18 },
-              { id: 'mk-shenzhen', name: '深圳', longitude: 114.0579, latitude: 22.5431, value: '流量峰值', color: '#22c55e', size: 16 },
-              { id: 'mk-beijing', name: '北京', longitude: 116.4074, latitude: 39.9042, value: '新增用户 2.8k', color: '#f59e0b', size: 15 },
+              {
+                id: 'mk-shanghai',
+                name: '上海',
+                longitude: 121.4737,
+                latitude: 31.2304,
+                value: 'GMV 128w',
+                color: '#3bb8ff',
+                size: 18,
+              },
+              {
+                id: 'mk-shenzhen',
+                name: '深圳',
+                longitude: 114.0579,
+                latitude: 22.5431,
+                value: '流量峰值',
+                color: '#22c55e',
+                size: 16,
+              },
+              {
+                id: 'mk-beijing',
+                name: '北京',
+                longitude: 116.4074,
+                latitude: 39.9042,
+                value: '新增用户 2.8k',
+                color: '#f59e0b',
+                size: 15,
+              },
             ],
             highlightRegions: [
-              { id: 'region-east', regionKey: 'china', label: '中国', value: '核心区域', color: '#21466f' },
-              { id: 'region-na', regionKey: 'north-america', label: '北美', value: '海外增量', color: '#173a58' },
-              { id: 'region-eu', regionKey: 'europe', label: '欧洲', value: '渠道拓展', color: '#1a4469' },
+              {
+                id: 'region-east',
+                regionKey: 'china',
+                label: '中国',
+                value: '核心区域',
+                color: '#21466f',
+              },
+              {
+                id: 'region-na',
+                regionKey: 'north-america',
+                label: '北美',
+                value: '海外增量',
+                color: '#173a58',
+              },
+              {
+                id: 'region-eu',
+                regionKey: 'europe',
+                label: '欧洲',
+                value: '渠道拓展',
+                color: '#1a4469',
+              },
             ],
           },
         },
@@ -358,10 +475,34 @@ function createTrafficPage(): TemplatePagePreset {
           props: {
             columns: 4,
             items: [
-              { id: 'traffic-1', title: '今日 PV', subtitle: '累计', value: '182.4w', extra: '环比 +12.4%' },
-              { id: 'traffic-2', title: '今日 UV', subtitle: '累计', value: '64.8w', extra: '新访客占比 38%' },
-              { id: 'traffic-3', title: '转化率', subtitle: '整体', value: '5.12%', extra: '投放页最高 8.3%' },
-              { id: 'traffic-4', title: '峰值并发', subtitle: '实时', value: '9,286', extra: '已低于容量红线' },
+              {
+                id: 'traffic-1',
+                title: '今日 PV',
+                subtitle: '累计',
+                value: '182.4w',
+                extra: '环比 +12.4%',
+              },
+              {
+                id: 'traffic-2',
+                title: '今日 UV',
+                subtitle: '累计',
+                value: '64.8w',
+                extra: '新访客占比 38%',
+              },
+              {
+                id: 'traffic-3',
+                title: '转化率',
+                subtitle: '整体',
+                value: '5.12%',
+                extra: '投放页最高 8.3%',
+              },
+              {
+                id: 'traffic-4',
+                title: '峰值并发',
+                subtitle: '实时',
+                value: '9,286',
+                extra: '已低于容量红线',
+              },
             ],
           },
         },
@@ -381,15 +522,35 @@ function createTrafficPage(): TemplatePagePreset {
             optionText: JSON.stringify(
               {
                 legend: { top: 10, textStyle: { color: '#8da3be' } },
-                grid: { left: 44, right: 18, top: 64, bottom: 26, containLabel: true },
-                xAxis: { axisLine: { lineStyle: { color: '#35506d' } }, axisLabel: { color: '#8da3be' } },
+                grid: {
+                  left: 44,
+                  right: 18,
+                  top: 64,
+                  bottom: 26,
+                  containLabel: true,
+                },
+                xAxis: {
+                  axisLine: { lineStyle: { color: '#35506d' } },
+                  axisLabel: { color: '#8da3be' },
+                },
                 yAxis: {
                   splitLine: { lineStyle: { color: 'rgba(141,163,190,0.16)' } },
                   axisLabel: { color: '#8da3be' },
                 },
                 series: [
-                  { name: 'PV', type: 'line', smooth: true, areaStyle: { color: 'rgba(91,143,249,0.18)' } },
-                  { name: 'UV', type: 'line', smooth: true, data: hourlyData.map((item) => item.uv), color: '#36cfc9' },
+                  {
+                    name: 'PV',
+                    type: 'line',
+                    smooth: true,
+                    areaStyle: { color: 'rgba(91,143,249,0.18)' },
+                  },
+                  {
+                    name: 'UV',
+                    type: 'line',
+                    smooth: true,
+                    data: hourlyData.map((item) => item.uv),
+                    color: '#36cfc9',
+                  },
                 ],
               },
               null,
@@ -412,7 +573,12 @@ function createTrafficPage(): TemplatePagePreset {
             color: '#36cfc9',
             optionText: JSON.stringify(
               {
-                legend: { orient: 'vertical', right: 0, top: 'middle', textStyle: { color: '#8da3be' } },
+                legend: {
+                  orient: 'vertical',
+                  right: 0,
+                  top: 'middle',
+                  textStyle: { color: '#8da3be' },
+                },
                 series: [{ radius: ['44%', '70%'], center: ['38%', '50%'] }],
               },
               null,
@@ -478,10 +644,34 @@ function createAlertsPage(): TemplatePagePreset {
     { name: 'P4', value: 26 },
   ];
   const serviceRows = [
-    { key: 'svc-1', service: '支付网关', count: 12, owner: '支付组', sla: '92.1%' },
-    { key: 'svc-2', service: '用户中心', count: 8, owner: '账号组', sla: '97.8%' },
-    { key: 'svc-3', service: '消息中心', count: 5, owner: '中台组', sla: '99.1%' },
-    { key: 'svc-4', service: '搜索服务', count: 3, owner: '平台组', sla: '99.4%' },
+    {
+      key: 'svc-1',
+      service: '支付网关',
+      count: 12,
+      owner: '支付组',
+      sla: '92.1%',
+    },
+    {
+      key: 'svc-2',
+      service: '用户中心',
+      count: 8,
+      owner: '账号组',
+      sla: '97.8%',
+    },
+    {
+      key: 'svc-3',
+      service: '消息中心',
+      count: 5,
+      owner: '中台组',
+      sla: '99.1%',
+    },
+    {
+      key: 'svc-4',
+      service: '搜索服务',
+      count: 3,
+      owner: '平台组',
+      sla: '99.4%',
+    },
   ];
 
   return createPageShell({
@@ -506,10 +696,34 @@ function createAlertsPage(): TemplatePagePreset {
           props: {
             columns: 4,
             items: [
-              { id: 'alert-1', title: '当前未恢复', subtitle: '总数', value: '11', extra: 'P1 3 条' },
-              { id: 'alert-2', title: '平均恢复时长', subtitle: 'MTTR', value: '18m', extra: '较昨日 -6m' },
-              { id: 'alert-3', title: '误报率', subtitle: '近 24h', value: '2.3%', extra: '已低于目标' },
-              { id: 'alert-4', title: 'SLA 风险服务', subtitle: '数量', value: '4', extra: '需重点关注' },
+              {
+                id: 'alert-1',
+                title: '当前未恢复',
+                subtitle: '总数',
+                value: '11',
+                extra: 'P1 3 条',
+              },
+              {
+                id: 'alert-2',
+                title: '平均恢复时长',
+                subtitle: 'MTTR',
+                value: '18m',
+                extra: '较昨日 -6m',
+              },
+              {
+                id: 'alert-3',
+                title: '误报率',
+                subtitle: '近 24h',
+                value: '2.3%',
+                extra: '已低于目标',
+              },
+              {
+                id: 'alert-4',
+                title: 'SLA 风险服务',
+                subtitle: '数量',
+                value: '4',
+                extra: '需重点关注',
+              },
             ],
           },
         },
@@ -528,7 +742,13 @@ function createAlertsPage(): TemplatePagePreset {
             color: '#f97316',
             optionText: JSON.stringify(
               {
-                grid: { left: 44, right: 18, top: 56, bottom: 26, containLabel: true },
+                grid: {
+                  left: 44,
+                  right: 18,
+                  top: 56,
+                  bottom: 26,
+                  containLabel: true,
+                },
                 xAxis: { axisLabel: { color: '#8da3be' } },
                 yAxis: {
                   splitLine: { lineStyle: { color: 'rgba(141,163,190,0.16)' } },
@@ -623,9 +843,30 @@ function createAlertsPage(): TemplatePagePreset {
             showSearchButton: true,
             showResetButton: true,
             fields: [
-              { id: 'alert-field-1', label: '服务名', field: 'service', type: 'input', placeholder: '请输入服务名', optionsText: '' },
-              { id: 'alert-field-2', label: '级别', field: 'level', type: 'select', placeholder: '请选择级别', optionsText: '全部,P1,P2,P3,P4' },
-              { id: 'alert-field-3', label: '状态', field: 'status', type: 'select', placeholder: '请选择状态', optionsText: '全部,处理中,已恢复,待确认' },
+              {
+                id: 'alert-field-1',
+                label: '服务名',
+                field: 'service',
+                type: 'input',
+                placeholder: '请输入服务名',
+                optionsText: '',
+              },
+              {
+                id: 'alert-field-2',
+                label: '级别',
+                field: 'level',
+                type: 'select',
+                placeholder: '请选择级别',
+                optionsText: '全部,P1,P2,P3,P4',
+              },
+              {
+                id: 'alert-field-3',
+                label: '状态',
+                field: 'status',
+                type: 'select',
+                placeholder: '请选择状态',
+                optionsText: '全部,处理中,已恢复,待确认',
+              },
             ],
           },
         },
@@ -653,9 +894,27 @@ function createAlertsPage(): TemplatePagePreset {
             ),
             dataText: JSON.stringify(
               [
-                { key: 'op-1', event: '支付回调超时', owner: '值班-张三', result: '切流完成', time: '10:18' },
-                { key: 'op-2', event: '登录异常升高', owner: '值班-李四', result: '规则回滚', time: '09:57' },
-                { key: 'op-3', event: '同步任务延迟', owner: '值班-王五', result: '扩容恢复', time: '09:23' },
+                {
+                  key: 'op-1',
+                  event: '支付回调超时',
+                  owner: '值班-张三',
+                  result: '切流完成',
+                  time: '10:18',
+                },
+                {
+                  key: 'op-2',
+                  event: '登录异常升高',
+                  owner: '值班-李四',
+                  result: '规则回滚',
+                  time: '09:57',
+                },
+                {
+                  key: 'op-3',
+                  event: '同步任务延迟',
+                  owner: '值班-王五',
+                  result: '扩容恢复',
+                  time: '09:23',
+                },
               ],
               null,
               2,
