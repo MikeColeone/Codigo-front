@@ -14,6 +14,11 @@ type AiChatStreamRequest = {
     props?: Record<string, unknown>;
     styles?: Record<string, unknown>;
   }>;
+  page?: {
+    id: string;
+    path: string;
+    name: string;
+  };
 };
 
 @Controller('ai/chat')

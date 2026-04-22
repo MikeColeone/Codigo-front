@@ -607,7 +607,7 @@ export const EditorViewport = observer(function EditorViewport(
           }}
         >
           {!isLeftPanelCollapsed && (
-            <div className="flex min-h-0 flex-1 flex-col">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col">
               <div className="flex h-9 items-center px-4 text-[11px] font-bold uppercase tracking-wider text-[var(--ide-text-muted)]">
                 {activeLeftSection === "components"
                   ? "组件库"
@@ -621,7 +621,7 @@ export const EditorViewport = observer(function EditorViewport(
                         ? "请求"
                         : "数据源"}
               </div>
-              <div className="flex-1 overflow-auto">
+              <div className="flex-1 min-h-0 min-w-0 overflow-auto">
                 {activeLeftSection === "components" && <EditorLeftPanel embedded />}
                 {activeLeftSection === "outline" && <EditorOutlineTree />}
                 {activeLeftSection === "global" && (

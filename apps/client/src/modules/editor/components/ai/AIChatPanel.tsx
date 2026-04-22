@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { Button, Input, Switch, Typography } from "antd";
+import { Avatar, Button, Input, Switch } from "antd";
 import { toJS } from "mobx";
 import { ulid } from "ulid";
 import type { TComponentTypes } from "@codigo/schema";
@@ -8,6 +8,7 @@ import { useEditorComponents } from "@/modules/editor/hooks";
 import { BASE_URL } from "@/shared/utils/request";
 import { storeAuth } from "@/shared/hooks/useStoreAuth";
 import { DeleteOutlined } from "@ant-design/icons";
+import { RobotOutlined } from "@ant-design/icons";
 
 /**
  * 聊天角色
@@ -235,8 +236,6 @@ function buildDraftByPrompt(prompt: string): DraftComponent[] {
   return next;
 }
 
-const { Text } = Typography;
-
 const AIChatPanel = observer(function AIChatPanel() {
   const { store, getComponentById, replaceByCode } = useEditorComponents();
   const [prompt, setPrompt] = useState("");
@@ -261,6 +260,11 @@ const AIChatPanel = observer(function AIChatPanel() {
   const messagesViewportRef = useRef<HTMLDivElement | null>(null);
   const stickToBottomRef = useRef(true);
   const persistTimerRef = useRef<number | null>(null);
+  const streamStateRef = useRef(
+    new Map<string, { jsonStarted: boolean; jsonHintShown: boolean }>(),
+  );
+  const userAvatar = storeAuth.details?.head_img || "";
+  const userName = storeAuth.details?.username || "你";
 
   const canSubmit = useMemo(() => prompt.trim().length > 0, [prompt]);
 
@@ -294,6 +298,37 @@ const AIChatPanel = observer(function AIChatPanel() {
           : item,
       ),
     );
+  }
+
+  function appendAssistantMessageFiltered(messageId: string, delta: string) {
+    if (!delta) return;
+    const state = streamStateRef.current.get(messageId) ?? {
+      jsonStarted: false,
+      jsonHintShown: false,
+    };
+
+    const normalized = delta.trimStart();
+    const looksLikeJsonChunk =
+      normalized.startsWith("{") ||
+      normalized.startsWith("[") ||
+      normalized.includes('"draft"') ||
+      normalized.includes('{"draft"');
+
+    if (!state.jsonStarted && looksLikeJsonChunk) {
+      state.jsonStarted = true;
+      streamStateRef.current.set(messageId, state);
+    }
+
+    if (state.jsonStarted) {
+      if (!state.jsonHintShown) {
+        state.jsonHintShown = true;
+        streamStateRef.current.set(messageId, state);
+        appendAssistantMessage(messageId, "\n(结构化结果生成中...)\n");
+      }
+      return;
+    }
+
+    appendAssistantMessage(messageId, delta);
   }
 
   function parseSSEBlock(block: string): SSEEvent | null {
@@ -382,6 +417,7 @@ const AIChatPanel = observer(function AIChatPanel() {
     pushMessage("user", userPrompt);
 
     try {
+      const activePage = store.pages.find((page) => page.id === store.activePageId);
       const current = appendMode
         ? store.sortableCompConfig
             .map((id) => getComponentById(id))
@@ -402,6 +438,10 @@ const AIChatPanel = observer(function AIChatPanel() {
         : [];
 
       const assistantMessageId = createAssistantMessage("正在连接 AI 服务...\n");
+      streamStateRef.current.set(assistantMessageId, {
+        jsonStarted: false,
+        jsonHintShown: false,
+      });
 
       const response = await fetch(`${BASE_URL}/api/ai/chat/stream`, {
         method: "POST",
@@ -413,6 +453,13 @@ const AIChatPanel = observer(function AIChatPanel() {
         body: JSON.stringify({
           prompt: userPrompt,
           current: appendMode ? current : [],
+          page: activePage
+            ? {
+                id: activePage.id,
+                path: activePage.path,
+                name: activePage.name,
+              }
+            : undefined,
         }),
       });
 
@@ -443,9 +490,9 @@ const AIChatPanel = observer(function AIChatPanel() {
           if (evt.event === "delta") {
             try {
               const payload = JSON.parse(evt.data) as { text?: string };
-              appendAssistantMessage(assistantMessageId, payload.text ?? "");
+              appendAssistantMessageFiltered(assistantMessageId, payload.text ?? "");
             } catch {
-              appendAssistantMessage(assistantMessageId, evt.data);
+              appendAssistantMessageFiltered(assistantMessageId, evt.data);
             }
           } else if (evt.event === "result") {
             const payload = JSON.parse(evt.data) as { draft?: DraftComponent[] };
@@ -472,7 +519,7 @@ const AIChatPanel = observer(function AIChatPanel() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col px-4 py-3">
+    <div className="flex h-full w-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[var(--ide-sidebar-bg)]">
       <div
         ref={messagesViewportRef}
         onScroll={() => {
@@ -482,70 +529,90 @@ const AIChatPanel = observer(function AIChatPanel() {
             viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight;
           stickToBottomRef.current = distanceToBottom < 24;
         }}
-        className="min-h-0 flex-1 space-y-3 overflow-auto rounded-sm border border-[var(--ide-border)] bg-[var(--ide-hover)] p-3 scrollbar-thin scrollbar-thumb-[var(--ide-border)] hover:scrollbar-thumb-[var(--ide-text-muted)] scrollbar-track-transparent"
+        className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-1 py-1 scrollbar-thin scrollbar-thumb-[var(--ide-border)] hover:scrollbar-thumb-[var(--ide-text-muted)] scrollbar-track-transparent"
       >
-        {messages.map((message) => {
-          const isUser = message.role === "user";
-          return (
-            <div
-              key={message.id}
-              className={`group flex w-full ${isUser ? "justify-end" : "justify-start"}`}
-            >
-              <div className={`max-w-[86%] ${isUser ? "text-right" : ""}`}>
-                <div className="mb-1 text-[10px] font-medium text-[var(--ide-text-muted)]">
-                  {isUser ? "你" : "AI"}
+        <div className="space-y-3 px-3 py-2">
+          {messages.map((message) => {
+            const isUser = message.role === "user";
+            const bubbleStyles = isUser
+              ? "bg-[var(--ide-hover)] text-[var(--ide-text)] border border-[var(--ide-border)]"
+              : "border border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] text-[var(--ide-text)]";
+            return (
+              <div
+                key={message.id}
+                className="group flex w-full min-w-0 items-start gap-2 justify-start"
+              >
+                <div className="pt-0.5">
+                  {isUser ? (
+                    <Avatar
+                      size={28}
+                      src={userAvatar || undefined}
+                      className="shrink-0 border border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] text-[var(--ide-text)]"
+                    >
+                      {(userName || "你").slice(0, 1).toUpperCase()}
+                    </Avatar>
+                  ) : (
+                    <Avatar
+                      size={28}
+                      icon={<RobotOutlined />}
+                      className="shrink-0 border border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] text-[var(--ide-text-muted)]"
+                    />
+                  )}
                 </div>
-                <div
-                  className={`relative rounded-2xl border px-3 py-2 text-xs leading-relaxed ${
-                    isUser
-                      ? "border-transparent bg-[var(--ide-accent)] text-white"
-                      : "border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] text-[var(--ide-text)]"
-                  }`}
-                >
-                  <div className="whitespace-pre-wrap break-words">
-                    {message.content}
+
+                <div className="min-w-0 flex-1">
+                  <div className="mb-1 px-1 text-[10px] text-[var(--ide-text-muted)]">
+                    {isUser ? userName : "AI"}
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => removeMessage(message.id)}
-                    title="删除消息"
-                    className={`absolute -top-2 ${
-                      isUser ? "-left-2" : "-right-2"
-                    } flex h-6 w-6 items-center justify-center rounded-full border border-[var(--ide-border)] bg-[var(--ide-bg)] text-[var(--ide-text-muted)] opacity-0 shadow-sm transition-opacity hover:text-[var(--ide-text)] group-hover:opacity-100`}
-                  >
-                    <DeleteOutlined className="text-[12px]" />
-                  </button>
+                  <div className="flex min-w-0 items-start gap-1">
+                    <div className="inline-block max-w-[100%] min-w-0">
+                      <div
+                        className={`rounded-2xl px-3 py-2 text-[12px] leading-relaxed shadow-sm ${bubbleStyles}`}
+                      >
+                        <div className="whitespace-pre-wrap break-words [overflow-wrap:anywhere]">
+                          {message.content}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeMessage(message.id)}
+                      title="删除消息"
+                      className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--ide-border)] bg-[var(--ide-bg)] text-[var(--ide-text-muted)] opacity-0 shadow-sm transition-opacity hover:text-[var(--ide-text)] group-hover:opacity-100"
+                    >
+                      <DeleteOutlined className="text-[12px]" />
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
-      <div className="mt-3 flex items-center justify-between">
-        <Text className="text-xs text-[var(--ide-text-muted)]">追加到现有画布</Text>
-        <Switch checked={appendMode} onChange={setAppendMode} />
-      </div>
-
-      <div className="mt-2">
+      <div className="shrink-0 border-t border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)] px-3 py-3">
+        <div className="mb-2 flex items-center justify-between">
+          <span className="text-[11px] text-[var(--ide-text-muted)]">追加到现有画布</span>
+          <Switch checked={appendMode} onChange={setAppendMode} />
+        </div>
         <Input.TextArea
           value={prompt}
           onChange={(event) => setPrompt(event.target.value)}
-          autoSize={{ minRows: 4, maxRows: 8 }}
+          autoSize={{ minRows: 2, maxRows: 6 }}
           placeholder="例如：生成一个活动报名表单，包含标题、姓名、手机号、单选项，选项: 学生、在职、自由职业"
         />
-      </div>
 
-      <div className="mt-2">
-        <Button
-          type="primary"
-          block
-          disabled={!canSubmit}
-          loading={submitting}
-          onClick={handleSubmit}
-        >
-          发送并渲染到画布
-        </Button>
+        <div className="mt-2 flex items-center">
+          <Button
+            type="primary"
+            block
+            disabled={!canSubmit}
+            loading={submitting}
+            onClick={handleSubmit}
+          >
+            发送并渲染到画布
+          </Button>
+        </div>
       </div>
     </div>
   );

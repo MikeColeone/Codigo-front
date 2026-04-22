@@ -18,6 +18,11 @@ type AiChatStreamRequest = {
     props?: Record<string, unknown>;
     styles?: Record<string, unknown>;
   }>;
+  page?: {
+    id: string;
+    path: string;
+    name: string;
+  };
 };
 
 function sleep(ms: number) {
@@ -211,14 +216,121 @@ export class AiChatService {
     res.write(`data: ${JSON.stringify(data)}\n\n`);
   }
 
+  private buildGenerationSystemPrompt(args: {
+    page?: AiChatStreamRequest['page'];
+    current?: AiChatStreamRequest['current'];
+  }) {
+    const allowedTypes = [
+      'titleText',
+      'image',
+      'alert',
+      'input',
+      'textArea',
+      'radio',
+      'checkbox',
+      'list',
+      'split',
+    ];
+
+    const currentTypes = Array.from(
+      new Set((args.current ?? []).map((item) => item?.type).filter(Boolean)),
+    ).slice(0, 32);
+
+    const currentSamples = (args.current ?? [])
+      .filter((item) => item && typeof item === 'object')
+      .slice(0, 8)
+      .map((item) => ({
+        type: item.type,
+        props:
+          item.props && typeof item.props === 'object'
+            ? Object.fromEntries(Object.entries(item.props).slice(0, 10))
+            : undefined,
+        styles:
+          item.styles && typeof item.styles === 'object'
+            ? Object.fromEntries(Object.entries(item.styles).slice(0, 10))
+            : undefined,
+      }));
+
+    const componentCheatSheet = {
+      titleText: { props: { title: '页面标题', size: 'lg' } },
+      image: { props: { name: '主图', height: 220 } },
+      alert: {
+        props: { title: '提示信息', showIcon: true, showClose: false, type: 'info' },
+      },
+      input: { props: { title: '姓名', placeholder: '请输入姓名', text: '' } },
+      textArea: { props: { title: '备注', placeholder: '请输入', text: '' } },
+      radio: {
+        props: {
+          id: 'uuid',
+          title: '请选择一项',
+          options: [{ id: 'uuid', value: '选项1' }],
+          defaultRadio: 'uuid',
+        },
+      },
+      checkbox: {
+        props: {
+          id: 'uuid',
+          title: '可多选',
+          options: [{ id: 'uuid', value: '选项1' }],
+          defaultChecked: ['uuid'],
+        },
+      },
+      list: {
+        props: {
+          items: [
+            {
+              id: 'uuid',
+              title: '列表项1',
+              description: '这是列表说明',
+              titleLink: 'https://example.com',
+              avatar: 'https://example.com/50x50.png',
+            },
+          ],
+        },
+      },
+      split: { props: {} },
+    };
+
+    const pageHint = args.page
+      ? `当前页面：${args.page.name}（path=${args.page.path}）`
+      : '当前页面：未提供';
+
+    return (
+      '你是一个低代码页面组件生成器。' +
+      '你的任务是根据用户描述，生成可直接用于渲染的组件草稿 JSON。' +
+      '\n' +
+      pageHint +
+      '\n' +
+      `可用组件 type 白名单：${allowedTypes.join(', ')}。禁止输出白名单以外的 type。` +
+      '\n' +
+      '只输出严格 JSON，不要 Markdown，不要解释，不要多余文本。' +
+      '\n' +
+      '输出格式必须为：{"draft":[{"type":"...","props":{...},"styles":{...}},...]}' +
+      '\n' +
+      'props/styles 必须可 JSON 序列化；styles 仅用于布局/样式，可省略。' +
+      '\n' +
+      '如需生成 radio/checkbox，请务必包含 id/options/defaultRadio(defaultChecked)。' +
+      '\n' +
+      `当前画布已有组件类型（供参考）：${JSON.stringify(currentTypes)}` +
+      '\n' +
+      `当前画布组件样例（供参考）：${JSON.stringify(currentSamples)}` +
+      '\n' +
+      `组件 props 样例（严格参考字段名）：${JSON.stringify(componentCheatSheet)}`
+    );
+  }
+
   private async streamFromDeepSeek({
     prompt,
     req,
     res,
+    page,
+    current,
   }: {
     prompt: string;
     req: Request;
     res: Response;
+    page?: AiChatStreamRequest['page'];
+    current?: AiChatStreamRequest['current'];
   }): Promise<{ draft: DraftComponent[]; rawText: string }> {
     const apiKey =
       process.env.DEEPSEEK_API_KEY ||
@@ -234,11 +346,7 @@ export class AiChatService {
     const model = (process.env.DEEPSEEK_MODEL || 'deepseek-chat').trim();
     const endpoint = `${baseUrl}/chat/completions`;
 
-    const systemPrompt =
-      '你是一个低代码页面组件生成器。只输出严格 JSON，不要 Markdown，不要解释。' +
-      '输出格式：{"draft":[{"type":"titleText","props":{...},"styles":{...}},...]}' +
-      '可用 type 仅限：titleText,image,alert,input,textArea,radio,checkbox,list,split。' +
-      'props 字段应可 JSON 序列化。';
+    const systemPrompt = this.buildGenerationSystemPrompt({ page, current });
 
     const body = {
       model,
@@ -409,7 +517,13 @@ export class AiChatService {
       this.writeEvent(res, 'delta', { text: '已连接 DeepSeek，开始生成...\n' });
       if (closed) return;
 
-      const { draft } = await this.streamFromDeepSeek({ prompt, req, res });
+      const { draft } = await this.streamFromDeepSeek({
+        prompt,
+        req,
+        res,
+        page: body.page,
+        current: body.current,
+      });
       if (closed) return;
 
       this.writeEvent(res, 'result', { draft });
