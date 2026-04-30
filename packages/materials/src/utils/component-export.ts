@@ -3,5 +3,5 @@ import type { TComponentTypes } from "@codigo/schema";
 import { builtinComponentDefinitions } from "../components/registry";
 
 export const componentList = Object.fromEntries(
-  builtinComponentDefinitions.map((item) => [item.type, item.render]),
+  builtinComponentDefinitions.map((item) => [item.type, item.component]),
 ) as Record<TComponentTypes, ComponentType<any>>;

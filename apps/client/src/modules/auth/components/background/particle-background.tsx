@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useParticleBackground } from "../../hooks/useParticleBackground";
+import { useParticleBackground } from "../../hooks/use-particle-background";
 
 export function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -10,7 +10,6 @@ export function ParticleBackground() {
     <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />
   );
 }
-
 
 
 

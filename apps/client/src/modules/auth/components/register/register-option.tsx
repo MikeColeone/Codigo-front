@@ -1,6 +1,6 @@
 import { Button, Checkbox, Form, Input } from "antd";
 import { useSendCode } from "@/shared/hooks/use-send-code";
-import { useRegister } from "@/modules/auth/hooks/useRegister";
+import { useRegister } from "@/modules/auth/hooks/use-register";
 
 export default function RegisterCaptcha() {
   const [form] = Form.useForm();
@@ -63,7 +63,6 @@ export default function RegisterCaptcha() {
     </Form>
   );
 }
-
 
 
 

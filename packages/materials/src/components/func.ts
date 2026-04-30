@@ -7,21 +7,38 @@ import { getComponentPlugin, type IComponentSlotDefinition } from "@codigo/plugi
 import { getBuiltinComponentDefinitionByType } from "./registry";
 
 /**
+ * 获取最终组件定义，优先使用已注册插件，其次回退到内置物料。
+ */
+function resolveComponentDefinition(type: TBasicComponentConfig["type"]) {
+  return getComponentPlugin(type) ?? getBuiltinComponentDefinitionByType(type) ?? null;
+}
+
+function resolveComponentRenderer(
+  definition: ReturnType<typeof resolveComponentDefinition>,
+) {
+  if (!definition) {
+    return null;
+  }
+
+  return "render" in definition && definition.render
+    ? definition.render
+    : "component" in definition
+      ? definition.component
+      : null;
+}
+
+/**
  * 按组件类型获取最终渲染入口，优先返回插件注册组件，其次回退到内置物料。
  */
 export function getComponentByType(type: TBasicComponentConfig["type"]) {
-  return (
-    getComponentPlugin(type)?.render ??
-    getBuiltinComponentDefinitionByType(type)?.render
-  );
+  return resolveComponentRenderer(resolveComponentDefinition(type));
 }
 
 /**
  * 获取组件是否为容器以及可用插槽定义，供编辑器布局与拖拽能力使用。
  */
 export function getComponentContainerMeta(type: TBasicComponentConfig["type"]) {
-  const plugin =
-    getComponentPlugin(type) ?? getBuiltinComponentDefinitionByType(type);
+  const plugin = resolveComponentDefinition(type);
   return {
     isContainer: Boolean(plugin?.isContainer),
     slots: (plugin?.slots ?? []) as IComponentSlotDefinition[],

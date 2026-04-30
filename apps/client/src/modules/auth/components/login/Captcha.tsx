@@ -1,6 +1,6 @@
-﻿import { Button, Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
 import { useSendCode } from "@/shared/hooks/use-send-code";
-import { usePhoneLogin } from "@/modules/auth/hooks/usePhoneLogin";
+import { usePhoneLogin } from "@/modules/auth/hooks/use-phone-login";
 
 export default function Captcha() {
   const [form] = Form.useForm();
@@ -35,7 +35,6 @@ export default function Captcha() {
     </Form>
   );
 }
-
 
 
 

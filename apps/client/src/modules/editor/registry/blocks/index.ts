@@ -1,4 +1,4 @@
 export * from "./types";
-export * from "./catalog";
+export * from "../../components/low-code-components/catalog";
 export * from "./selectors";
 

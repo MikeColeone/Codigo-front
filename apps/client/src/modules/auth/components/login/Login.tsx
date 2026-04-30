@@ -1,8 +1,7 @@
 import { useTitle } from "ahooks";
 import { useState } from "react";
-import Account from "./account.tsx";
-import Captcha from "./captcha.tsx";
-// import WechatLogin from "./login/WechatLogin";
+import Account from "./account";
+import Captcha from "./captcha";
 
 interface ILoginProps {
   changeState: () => void;
@@ -79,10 +78,6 @@ export default function Login(props: ILoginProps) {
             <hr className="flex-grow border-slate-200" />
           </div>
 
-        {/* <div className="flex justify-center">
-          <WechatLogin />
-        </div> */}
-
           <div className="mt-6 text-center text-sm text-slate-600">
             <span>
               还没账号？
@@ -99,7 +94,6 @@ export default function Login(props: ILoginProps) {
     </div>
   );
 }
-
 
 
 

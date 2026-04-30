@@ -38,18 +38,27 @@ import type { TComponentTypes } from "@codigo/schema";
 import {
   registerComponent,
   type IComponentPlugin,
+  type IComponentSlotDefinition,
 } from "@codigo/plugin-system";
 import { initBuiltinEChartsThemes } from "../utils/echarts-theme";
 
-type BuiltinComponentDefinition = IComponentPlugin<
-  TComponentTypes,
-  Record<string, any>,
-  ComponentType<any>
->;
+interface BuiltinComponentDefinition {
+  type: TComponentTypes;
+  name: string;
+  description?: string;
+  icon?: string;
+  component: ComponentType<any>;
+  render?: ComponentType<any>;
+  defaultProps?: Record<string, any>;
+  propsConfig?: Array<Record<string, unknown>>;
+  propsPanel?: any;
+  isContainer?: boolean;
+  slots?: IComponentSlotDefinition[];
+}
 
 export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
   {
-    type: "low-code-container",
+    type: "container",
     name: "容器",
     icon: "Container",
     component: LowCodeContainer,
@@ -65,7 +74,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     propsConfig: [
       {
         key: "style.backgroundColor",
-        label: "背景色",
+        label: "背景颜色",
         type: "color",
       },
       {
@@ -81,7 +90,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-two-column",
+    type: "twoColumn",
     name: "双栏布局",
     icon: "Layout",
     component: LowCodeTwoColumn,
@@ -101,7 +110,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
       },
       {
         key: "sidebarTitle",
-        label: "侧边栏标题",
+        label: "侧边栏标题",    
         type: "text",
       },
       {
@@ -112,7 +121,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-view-group",
+    type: "viewGroup",
     name: "视图组",
     icon: "Layers",
     component: LowCodeViewGroup,
@@ -136,7 +145,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-accordion",
+    type: "accordion",
     name: "手风琴",
     icon: "ChevronDown",
     component: LowCodeAccordion,
@@ -158,7 +167,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-button",
+    type: "button",
     name: "按钮",
     icon: "MousePointer",
     component: LowCodeButton,
@@ -198,14 +207,14 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-breadcrumb-bar",
+    type: "breadcrumbBar",
     name: "面包屑导航",
     icon: "ChevronRight",
     component: LowCodeBreadcrumbBar,
     defaultProps: {
       items: [
         { title: "首页", path: "/" },
-        { title: "当前页", path: "" },
+        { title: "当前页面", path: "" },
       ],
     },
     propsConfig: [
@@ -217,7 +226,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-page-header",
+    type: "pageHeader",
     name: "页面头部",
     icon: "PanelTop",
     component: LowCodePageHeader,
@@ -245,7 +254,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-query-filter",
+    type: "queryFilter",
     name: "查询筛选",
     icon: "Filter",
     component: LowCodeQueryFilter,
@@ -273,7 +282,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-stat-card",
+    type: "statCard",
     name: "统计卡片",
     icon: "BarChart3",
     component: LowCodeStatCard,
@@ -318,7 +327,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-card-grid",
+    type: "cardGrid",
     name: "卡片网格",
     icon: "Grid3X3",
     component: LowCodeCardGrid,
@@ -346,7 +355,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-data-table",
+    type: "dataTable",
     name: "数据表格",
     icon: "Table",
     component: LowCodeDataTable,
@@ -380,7 +389,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-card",
+    type: "card",
     name: "卡片",
     icon: "Square",
     component: LowCodeCard,
@@ -408,7 +417,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-image",
+    type: "image",
     name: "图片",
     icon: "Image",
     component: LowCodeImage,
@@ -454,7 +463,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-avatar",
+    type: "avatar",
     name: "头像",
     icon: "User",
     component: LowCodeAvatar,
@@ -486,7 +495,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-list",
+    type: "list",
     name: "列表",
     icon: "List",
     component: LowCodeList,
@@ -509,12 +518,12 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-statistic",
-    name: "统计数值",
+    type: "statistic",
+    name: "统计",
     icon: "Hash",
     component: LowCodeStatistic,
     defaultProps: {
-      title: "统计项",
+      title: "统计",
       value: 0,
       precision: 0,
       suffix: "",
@@ -549,8 +558,8 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-swiper",
-    name: "轮播图",
+    type: "swiper",
+    name: "轮播",
     icon: "Slideshow",
     component: LowCodeSwiper,
     defaultProps: {
@@ -577,7 +586,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-table",
+    type: "table",
     name: "表格",
     icon: "Table2",
     component: LowCodeTable,
@@ -605,7 +614,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-video",
+    type: "video",
     name: "视频",
     icon: "Video",
     component: LowCodeVideo,
@@ -624,7 +633,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
       },
       {
         key: "poster",
-        label: "封面图",
+        label: "封面",
         type: "text",
       },
       {
@@ -634,7 +643,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
       },
       {
         key: "controls",
-        label: "控制条",
+        label: "控制",
         type: "switch",
       },
       {
@@ -645,7 +654,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-text",
+    type: "titleText",
     name: "文本",
     icon: "Type",
     component: LowCodeText,
@@ -684,8 +693,8 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-split",
-    name: "分割线",
+    type: "split",
+    name: "分割",
     icon: "Minus",
     component: LowCodeSplit,
     defaultProps: {
@@ -710,7 +719,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-empty",
+    type: "empty",
     name: "空状态",
     icon: "Inbox",
     component: LowCodeEmpty,
@@ -727,7 +736,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-rich-text",
+    type: "richText",
     name: "富文本",
     icon: "FileText",
     component: LowCodeRichText,
@@ -743,7 +752,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-qrcode",
+    type: "qrcode",
     name: "二维码",
     icon: "QrCode",
     component: LowCodeQrcode,
@@ -766,18 +775,18 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
       },
       {
         key: "color",
-        label: "前景色",
+        label: "前景颜色",
         type: "color",
       },
       {
         key: "bgColor",
-        label: "背景色",
+        label: "背景颜色",
         type: "color",
       },
     ],
   },
   {
-    type: "low-code-alert",
+    type: "alert",
     name: "警告提示",
     icon: "AlertCircle",
     component: LowCodeAlert,
@@ -817,7 +826,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-geo-map",
+    type: "geoMap",
     name: "地理地图",
     icon: "Map",
     component: LowCodeGeoMap,
@@ -849,7 +858,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-input",
+    type: "input",
     name: "输入框",
     icon: "FormInput",
     component: LowCodeInput,
@@ -882,13 +891,13 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
       },
       {
         key: "allowClear",
-        label: "可清空",
+        label: "可清除",
         type: "switch",
       },
     ],
   },
   {
-    type: "low-code-text-area",
+    type: "textArea",
     name: "文本域",
     icon: "Text",
     component: LowCodeTextArea,
@@ -922,7 +931,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-radio",
+    type: "radio",
     name: "单选框",
     icon: "CircleDot",
     component: LowCodeRadio,
@@ -951,7 +960,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-checkbox",
+    type: "checkbox",
     name: "复选框",
     icon: "CheckSquare",
     component: LowCodeCheckbox,
@@ -970,7 +979,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-bar-chart",
+    type: "barChart",
     name: "柱状图",
     icon: "BarChart",
     component: LowCodeBarChart,
@@ -1004,7 +1013,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-line-chart",
+    type: "lineChart",
     name: "折线图",
     icon: "LineChart",
     component: LowCodeLineChart,
@@ -1044,7 +1053,7 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
     ],
   },
   {
-    type: "low-code-pie-chart",
+    type: "pieChart",
     name: "饼图",
     icon: "PieChart",
     component: LowCodePieChart,
@@ -1079,11 +1088,30 @@ export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
   },
 ];
 
+function createRegisteredPluginDefinition(
+  definition: BuiltinComponentDefinition,
+): IComponentPlugin<TComponentTypes, Record<string, any>, ComponentType<any>> {
+  return {
+    type: definition.type,
+    name: definition.name,
+    description: definition.description,
+    render: definition.render ?? definition.component,
+    defaultConfig: {
+      id: `builtin:${definition.type}`,
+      type: definition.type,
+      props: { ...(definition.defaultProps ?? {}) },
+    },
+    propsPanel: definition.propsPanel,
+    isContainer: definition.isContainer,
+    slots: definition.slots,
+  };
+}
+
 export function initBuiltinComponents() {
   initBuiltinEChartsThemes();
 
   for (const definition of builtinComponentDefinitions) {
-    registerComponent(definition.type, definition);
+    registerComponent(createRegisteredPluginDefinition(definition));
   }
 }
 

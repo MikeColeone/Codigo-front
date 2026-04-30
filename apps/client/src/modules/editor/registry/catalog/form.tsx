@@ -4,10 +4,10 @@ import {
   EditOutlined,
   FormOutlined,
 } from "@ant-design/icons";
-import { checkboxComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-checkbox";
-import { inputComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-input";
-import { radioComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-radio";
-import { textAreaComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-text-area";
+import { checkboxComponentProps } from "@/modules/editor/components/low-code-components/low-code-checkbox";
+import { inputComponentProps } from "@/modules/editor/components/low-code-components/low-code-input";
+import { radioComponentProps } from "@/modules/editor/components/low-code-components/low-code-radio";
+import { textAreaComponentProps } from "@/modules/editor/components/low-code-components/low-code-text-area";
 import type { EditorComponentMeta } from "../types";
 
 export const formEditorComponents: EditorComponentMeta[] = [

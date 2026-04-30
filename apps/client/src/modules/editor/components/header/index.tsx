@@ -1,6 +1,6 @@
 import { useEditorPage } from "@/modules/editor/hooks";
-import Left from "./left";
 import { observer } from "mobx-react-lite";
+import Left from "./left";
 import Center from "./center";
 import Right from "./right";
 

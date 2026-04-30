@@ -1,6 +1,6 @@
-﻿import { useEffect } from "react";
+import { useEffect } from "react";
 import type { RefObject } from "react";
-import { ParticleEngine } from "../particles/particleEngine";
+import { ParticleEngine } from "../particles/particle-engine";
 
 export function useParticleBackground(canvasRef: RefObject<HTMLCanvasElement>) {
   useEffect(() => {
@@ -26,7 +26,6 @@ export function useParticleBackground(canvasRef: RefObject<HTMLCanvasElement>) {
     return () => cancelAnimationFrame(frame);
   }, []);
 }
-
 
 
 

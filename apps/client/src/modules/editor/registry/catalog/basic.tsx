@@ -18,26 +18,26 @@ import {
   UserOutlined,
   WarningOutlined,
 } from "@ant-design/icons";
-import { accordionComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-accordion";
-import { alertComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-alert";
-import { avatarComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-avatar";
-import { breadcrumbBarComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-breadcrumb-bar";
-import { buttonComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-button";
-import { cardComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-card";
-import { cardGridComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-card-grid";
-import { dataTableComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-data-table";
-import { emptyComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-empty";
-import { imageComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-image";
-import { listComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-list";
-import { pageHeaderComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-page-header";
-import { queryFilterComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-query-filter";
-import { qrcodeComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-qrcode";
-import { richTextComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-rich-text";
-import { splitComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-split";
-import { StatcardComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-stat-card";
-import { swiperComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-swiper";
-import { textComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-text";
-import { videoComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-video";
+import { accordionComponentProps } from "@/modules/editor/components/low-code-components/low-code-accordion";
+import { alertComponentProps } from "@/modules/editor/components/low-code-components/low-code-alert";
+import { avatarComponentProps } from "@/modules/editor/components/low-code-components/low-code-avatar";
+import { breadcrumbBarComponentProps } from "@/modules/editor/components/low-code-components/low-code-breadcrumb-bar";
+import { buttonComponentProps } from "@/modules/editor/components/low-code-components/low-code-button";
+import { cardComponentProps } from "@/modules/editor/components/low-code-components/low-code-card";
+import { cardGridComponentProps } from "@/modules/editor/components/low-code-components/low-code-card-grid";
+import { dataTableComponentProps } from "@/modules/editor/components/low-code-components/low-code-data-table";
+import { emptyComponentProps } from "@/modules/editor/components/low-code-components/low-code-empty";
+import { imageComponentProps } from "@/modules/editor/components/low-code-components/low-code-image";
+import { listComponentProps } from "@/modules/editor/components/low-code-components/low-code-list";
+import { pageHeaderComponentProps } from "@/modules/editor/components/low-code-components/low-code-page-header";
+import { queryFilterComponentProps } from "@/modules/editor/components/low-code-components/low-code-query-filter";
+import { qrcodeComponentProps } from "@/modules/editor/components/low-code-components/low-code-qrcode";
+import { richTextComponentProps } from "@/modules/editor/components/low-code-components/low-code-rich-text";
+import { splitComponentProps } from "@/modules/editor/components/low-code-components/low-code-split";
+import { StatcardComponentProps } from "@/modules/editor/components/low-code-components/low-code-stat-card";
+import { swiperComponentProps } from "@/modules/editor/components/low-code-components/low-code-swiper";
+import { textComponentProps } from "@/modules/editor/components/low-code-components/low-code-text";
+import { videoComponentProps } from "@/modules/editor/components/low-code-components/low-code-video";
 import type { EditorComponentMeta } from "../types";
 
 export const basicEditorComponents: EditorComponentMeta[] = [

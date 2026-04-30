@@ -1,7 +1,7 @@
 import { LayoutOutlined } from "@ant-design/icons";
-import { containerComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-container";
-import { twoColumnComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-two-column";
-import { viewGroupComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-view-group";
+import { containerComponentProps } from "@/modules/editor/components/low-code-components/low-code-container";
+import { twoColumnComponentProps } from "@/modules/editor/components/low-code-components/low-code-two-column";
+import { viewGroupComponentProps } from "@/modules/editor/components/low-code-components/low-code-view-group";
 import type { EditorComponentMeta } from "../types";
 
 export const containerEditorComponents: EditorComponentMeta[] = [

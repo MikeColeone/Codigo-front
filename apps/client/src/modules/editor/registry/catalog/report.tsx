@@ -6,10 +6,10 @@ import {
   PieChartOutlined,
   TableOutlined,
 } from "@ant-design/icons";
-import { ChartComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-chart";
-import { geoMapComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-geo-map";
-import { statisticComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-statistic";
-import { tableComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-table";
+import { ChartComponentProps } from "@/modules/editor/components/low-code-components/low-code-chart";
+import { geoMapComponentProps } from "@/modules/editor/components/low-code-components/low-code-geo-map";
+import { statisticComponentProps } from "@/modules/editor/components/low-code-components/low-code-statistic";
+import { tableComponentProps } from "@/modules/editor/components/low-code-components/low-code-table";
 import type { EditorComponentMeta } from "../types";
 
 export const reportEditorComponents: EditorComponentMeta[] = [

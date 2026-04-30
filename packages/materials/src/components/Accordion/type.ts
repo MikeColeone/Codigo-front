@@ -2,7 +2,7 @@ import type {
   TBasicComponentConfig,
   TransformedComponentConfig,
 } from "@codigo/schema";
-import type { IButtonComponentProps } from "../Button/type";
+import type { IButtonComponentProps } from "../button/type";
 
 /**
  * 描述手风琴物料的运行时属性。

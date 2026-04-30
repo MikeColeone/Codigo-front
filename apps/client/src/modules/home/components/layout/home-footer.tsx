@@ -1,4 +1,3 @@
-/** 渲染首页底部说明与辅助链接。 */
 export function HomeFooter() {
   return (
     <footer className="relative z-10 overflow-hidden border-t border-[var(--ide-border)] bg-[var(--ide-sidebar-bg)]">

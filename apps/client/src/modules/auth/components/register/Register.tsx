@@ -1,6 +1,5 @@
 import { useTitle } from "ahooks";
 import RegisterOption from "./register-option";
-// import WechatLogin from "./login/WechatLogin";
 
 interface IRegisterProps {
   changeState: () => void; // 切换弹窗
@@ -53,10 +52,6 @@ export default function Register(props: IRegisterProps) {
             </span>
             <hr className="flex-grow border-slate-200" />
           </div>
-
-        {/* <div className="flex justify-center">
-          <WechatLogin />
-        </div> */}
 
           <div className="mt-6 text-center text-sm text-slate-600">
             <span>

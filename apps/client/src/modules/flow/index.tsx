@@ -1,8 +1,8 @@
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { flowStore } from "./stores/flow-store";
-import { Toolbar } from "./components/Toolbar";
-import { Canvas } from "./components/Canvas";
+import { Toolbar } from "./components/toolbar";
+import { Canvas } from "./components/canvas";
 import { PropsPanel } from "./components/props-panel";
 
 export default observer(() => {

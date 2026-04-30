@@ -1,5 +1,5 @@
 import type { PageCategory } from "@codigo/schema";
-import { editorBlockCatalog } from "./catalog";
+import { editorBlockCatalog } from "../../components/low-code-components/catalog";
 import type { EditorBlockSection, EditorBlockSectionKey } from "./types";
 
 const sectionLabelMap: Record<EditorBlockSectionKey, string> = {

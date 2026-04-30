@@ -4,7 +4,7 @@ import {
   LayoutOutlined,
   TableOutlined,
 } from "@ant-design/icons";
-import type { EditorBlockMeta } from "./types";
+import type { EditorBlockMeta } from "../../registry/blocks/types";
 
 export const editorBlockCatalog: EditorBlockMeta[] = [
   {

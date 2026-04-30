@@ -1,5 +1,5 @@
-﻿import { Button, Form, Input } from "antd";
-import { useLogin } from "@/modules/auth/hooks/useLogin";
+import { Button, Form, Input } from "antd";
+import { useLogin } from "@/modules/auth/hooks/use-login";
 export default function Account() {
   //  账号密码登录请求
   const { run, loading } = useLogin();
@@ -42,7 +42,6 @@ export default function Account() {
     </div>
   );
 }
-
 
 
 
