@@ -1,6 +1,6 @@
 import { useTitle } from "ahooks";
-import { IdeThemeLayout } from "@/app/layouts/IdeThemeLayout";
-import { HomePage } from "./components/layout/HomePage";
+import { IdeThemeLayout } from "@/app/layouts/ide-theme-layout";
+import { HomePage } from "./components/layout/home-page";
 
 /** 渲染首页模块入口。 */
 export default function Home() {

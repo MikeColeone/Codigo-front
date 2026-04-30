@@ -18,26 +18,26 @@ import {
   UserOutlined,
   WarningOutlined,
 } from "@ant-design/icons";
-import { AccordionComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeAccordion";
-import { AlertComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeAlert";
-import { AvatarComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeAvatar";
-import { BreadcrumbBarComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeBreadcrumbBar";
-import { ButtonComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeButton";
-import { CardComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeCard";
-import { CardGridComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeCardGrid";
-import { DataTableComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeDataTable";
-import { EmptyComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeEmpty";
-import { ImageComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeImage";
-import { ListComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeList";
-import { PageHeaderComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodePageHeader";
-import { QueryFilterComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeQueryFilter";
-import { QrcodeComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeQrcode";
-import { RichTextComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeRichText";
-import { SplitComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeSplit";
-import { StatCardComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeStatCard";
-import { SwiperComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeSwiper";
-import { TextComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeText";
-import { VideoComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeVideo";
+import { accordionComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-accordion";
+import { alertComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-alert";
+import { avatarComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-avatar";
+import { breadcrumbBarComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-breadcrumb-bar";
+import { buttonComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-button";
+import { cardComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-card";
+import { cardGridComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-card-grid";
+import { dataTableComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-data-table";
+import { emptyComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-empty";
+import { imageComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-image";
+import { listComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-list";
+import { pageHeaderComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-page-header";
+import { queryFilterComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-query-filter";
+import { qrcodeComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-qrcode";
+import { richTextComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-rich-text";
+import { splitComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-split";
+import { StatcardComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-stat-card";
+import { swiperComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-swiper";
+import { textComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-text";
+import { videoComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-video";
 import type { EditorComponentMeta } from "../types";
 
 export const basicEditorComponents: EditorComponentMeta[] = [
@@ -46,56 +46,56 @@ export const basicEditorComponents: EditorComponentMeta[] = [
     name: "手风琴",
     icon: <BarsOutlined />,
     sectionKey: "basic",
-    propsEditor: AccordionComponentProps,
+    propsEditor: accordionComponentProps,
   },
   {
     type: "breadcrumbBar",
     name: "面包屑",
     icon: <ApartmentOutlined />,
     sectionKey: "basic",
-    propsEditor: BreadcrumbBarComponentProps,
+    propsEditor: breadcrumbBarComponentProps,
   },
   {
     type: "pageHeader",
     name: "页面头",
     icon: <BarsOutlined />,
     sectionKey: "basic",
-    propsEditor: PageHeaderComponentProps,
+    propsEditor: pageHeaderComponentProps,
   },
   {
     type: "queryFilter",
     name: "搜索区",
     icon: <FilterOutlined />,
     sectionKey: "basic",
-    propsEditor: QueryFilterComponentProps,
+    propsEditor: queryFilterComponentProps,
   },
   {
     type: "statCard",
     name: "统计卡片",
     icon: <DashboardOutlined />,
     sectionKey: "basic",
-    propsEditor: StatCardComponentProps,
+    propsEditor: StatcardComponentProps,
   },
   {
     type: "cardGrid",
     name: "卡片网格",
     icon: <CreditCardOutlined />,
     sectionKey: "basic",
-    propsEditor: CardGridComponentProps,
+    propsEditor: cardGridComponentProps,
   },
   {
     type: "dataTable",
     name: "数据表格",
     icon: <TableOutlined />,
     sectionKey: "basic",
-    propsEditor: DataTableComponentProps,
+    propsEditor: dataTableComponentProps,
   },
   {
     type: "button",
     name: "按钮",
     icon: <BorderOutlined />,
     sectionKey: "basic",
-    propsEditor: ButtonComponentProps,
+    propsEditor: buttonComponentProps,
     quickInsert: true,
   },
   {
@@ -103,28 +103,28 @@ export const basicEditorComponents: EditorComponentMeta[] = [
     name: "轮播",
     icon: <SplitCellsOutlined />,
     sectionKey: "basic",
-    propsEditor: SwiperComponentProps,
+    propsEditor: swiperComponentProps,
   },
   {
     type: "card",
     name: "卡片",
     icon: <CreditCardOutlined />,
     sectionKey: "basic",
-    propsEditor: CardComponentProps,
+    propsEditor: cardComponentProps,
   },
   {
     type: "list",
     name: "列表",
     icon: <UnorderedListOutlined />,
     sectionKey: "basic",
-    propsEditor: ListComponentProps,
+    propsEditor: listComponentProps,
   },
   {
     type: "image",
     name: "图片",
     icon: <FundViewOutlined />,
     sectionKey: "basic",
-    propsEditor: ImageComponentProps,
+    propsEditor: imageComponentProps,
     quickInsert: true,
   },
   {
@@ -132,14 +132,14 @@ export const basicEditorComponents: EditorComponentMeta[] = [
     name: "视频",
     icon: <PlayCircleOutlined />,
     sectionKey: "basic",
-    propsEditor: VideoComponentProps,
+    propsEditor: videoComponentProps,
   },
   {
     type: "avatar",
     name: "头像",
     icon: <UserOutlined />,
     sectionKey: "basic",
-    propsEditor: AvatarComponentProps,
+    propsEditor: avatarComponentProps,
     quickInsert: true,
   },
   {
@@ -147,7 +147,7 @@ export const basicEditorComponents: EditorComponentMeta[] = [
     name: "文本",
     icon: <FontSizeOutlined />,
     sectionKey: "basic",
-    propsEditor: TextComponentProps,
+    propsEditor: textComponentProps,
     quickInsert: true,
   },
   {
@@ -155,34 +155,34 @@ export const basicEditorComponents: EditorComponentMeta[] = [
     name: "分割",
     icon: <MinusOutlined />,
     sectionKey: "basic",
-    propsEditor: SplitComponentProps,
+    propsEditor: splitComponentProps,
   },
   {
     type: "richText",
     name: "富文本",
     icon: <FontColorsOutlined />,
     sectionKey: "basic",
-    propsEditor: RichTextComponentProps,
+    propsEditor: richTextComponentProps,
   },
   {
     type: "qrcode",
     name: "二维码",
     icon: <QrcodeOutlined />,
     sectionKey: "basic",
-    propsEditor: QrcodeComponentProps,
+    propsEditor: qrcodeComponentProps,
   },
   {
     type: "empty",
     name: "空状态",
     icon: <ExpandOutlined />,
     sectionKey: "basic",
-    propsEditor: EmptyComponentProps,
+    propsEditor: emptyComponentProps,
   },
   {
     type: "alert",
     name: "警告",
     icon: <WarningOutlined />,
     sectionKey: "basic",
-    propsEditor: AlertComponentProps,
+    propsEditor: alertComponentProps,
   },
 ];

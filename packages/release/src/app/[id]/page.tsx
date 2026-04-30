@@ -1,4 +1,4 @@
-import ComponentRender from "../../components/ComponentRender";
+import ComponentRender from "../../components/component-render";
 import type { GetReleaseDataResponse } from "@codigo/schema";
 
 async function getData(id: string) {

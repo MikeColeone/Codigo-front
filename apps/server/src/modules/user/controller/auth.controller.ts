@@ -10,7 +10,7 @@ import {
   PhoneLoginDto,
   PasswordLoginDto,
 } from 'src/modules/user/dto/login.dto';
-import { SendCodeDto } from 'src/modules/user/dto/sendSms.dto';
+import { SendCodeDto } from 'src/modules/user/dto/send-sms.dto';
 import { UserService } from 'src/modules/user/service/user.service';
 
 @Controller('auth')

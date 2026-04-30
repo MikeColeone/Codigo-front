@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { AxiosRequestConfig } from "axios";
-import { storeAuth } from "../hooks/useStoreAuth";
+import { storeAuth } from "../hooks/use-store-auth";
 import { message } from "antd";
 export const BASE_URL = import.meta.env.VITE_BASE_URL || "";
 const request = axios.create({ baseURL: BASE_URL + "/api" });

@@ -217,17 +217,17 @@ export function enforceImportWhitelist(source: string, whitelist: string[]) {
 export function createBundleEntrySource(schema: SandboxSchemaNode[]) {
   const schemaText = JSON.stringify(schema);
   return `
-const pageSchema = ${schemaText};
+const page-schema = ${schemaText};
 const root = document.getElementById("root");
 if (root) {
   root.innerHTML = "";
-  if (!Array.isArray(pageSchema) || pageSchema.length === 0) {
+  if (!Array.isArray(page-schema) || page-schema.length === 0) {
     const empty = document.createElement("div");
     empty.className = "card";
     empty.textContent = "暂无组件";
     root.appendChild(empty);
   } else {
-    for (const node of pageSchema) {
+    for (const node of page-schema) {
       const card = document.createElement("div");
       card.className = "card";
       if (node && node.styles && typeof node.styles === "object") {

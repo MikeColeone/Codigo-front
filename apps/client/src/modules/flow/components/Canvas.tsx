@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useRef, useState, useEffect } from "react";
-import { flowStore } from "../stores/flowStore";
+import { flowStore } from "../stores/flow-store";
 import { NODE_TYPES, NODE_COLORS } from "../constants";
 import type { FlowEdge, FlowNode } from "../types";
 

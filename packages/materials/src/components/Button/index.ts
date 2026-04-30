@@ -1,2 +1,2 @@
 export * from "./type";
-export { default as ButtonComponent } from "./ButtonComponent";
+export { default as ButtonComponent } from "./button-component";

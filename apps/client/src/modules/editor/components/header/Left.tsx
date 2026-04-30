@@ -4,17 +4,17 @@ import { useState } from "react";
 import type { ChangeEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { useEditorPage, useLayoutManagerUI } from "@/modules/editor/hooks";
-import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
-import EditorPageManager from "../pageManager";
-import EditorLayoutManager from "../layoutManager";
+import { useEditorPage, useLayoutManagerUi } from "@/modules/editor/hooks";
+import { WorkspaceSwitcher } from "./workspace-switcher";
+import EditorPageManager from "../page-manager";
+import EditorLayoutManager from "../layout-manager";
 
 export default function Left(props: { title: string }) {
   const { setPageTitle } = useEditorPage();
   const [isEditState, setIsEditState] = useState(false);
   const [isPageMenuOpen, setIsPageMenuOpen] = useState(false);
   const [menuTab, setMenuTab] = useState<"pages" | "layout">("pages");
-  const layoutUI = useLayoutManagerUI();
+  const layoutUI = useLayoutManagerUi();
   const navigate = useNavigate();
   const location = useLocation();
   const isFlowWorkspace = location.pathname.startsWith("/flow");

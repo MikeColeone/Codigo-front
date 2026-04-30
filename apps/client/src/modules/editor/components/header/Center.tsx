@@ -1,12 +1,12 @@
 import { observer } from "mobx-react-lite";
-import { CanvasEditActions } from "./center/CanvasEditActions";
-import { CanvasSettings } from "./center/CanvasSettings";
-import { DeviceModeSwitch } from "./center/DeviceModeSwitch";
-import { EditorModeButton } from "./center/EditorModeButton";
-import { PreviewDraftActions } from "./center/PreviewDraftActions";
-import { PublishButton } from "./center/PublishButton";
-import { TemplateLibraryAction } from "./center/TemplateLibraryAction";
-import { VersionHistoryAction } from "./center/VersionHistoryAction";
+import { CanvasEditActions } from "./center/canvas-edit-actions";
+import { CanvasSettings } from "./center/canvas-settings";
+import { DeviceModeSwitch } from "./center/device-mode-switch";
+import { EditorModeButton } from "./center/editor-mode-button";
+import { PreviewDraftActions } from "./center/preview-draft-actions";
+import { PublishButton } from "./center/publish-button";
+import { TemplateLibraryAction } from "./center/template-library-action";
+import { VersionHistoryAction } from "./center/version-history-action";
 
 const Center = observer(() => {
   return (

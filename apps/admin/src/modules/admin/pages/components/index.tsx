@@ -1,7 +1,7 @@
 import { Button, Input, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { AdminComponentStatsTable } from "@/modules/admin/components/AdminComponentStatsTable";
-import { useAdminComponentsData } from "@/modules/admin/hooks/useAdminComponentsData";
+import { AdminComponentStatsTable } from "@/modules/admin/components/admin-component-stats-table";
+import { useAdminComponentsData } from "@/modules/admin/hooks/use-admin-components-data";
 import type { AdminComponentItem } from "@/modules/admin/types/admin";
 
 const { Search } = Input;

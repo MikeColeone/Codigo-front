@@ -5,10 +5,10 @@ import {
   UserOutlined,
   LockOutlined,
 } from "@ant-design/icons";
-import { useStoreAuth } from "@/shared/hooks/useStoreAuth";
+import { useStoreAuth } from "@/shared/hooks/use-store-auth";
 import { updateProfile, updatePassword } from "@/modules/auth/api/user";
 import { useNavigate } from "react-router-dom";
-import { ProfilePageHeader } from "./components/ProfilePageHeader";
+import { ProfilePageHeader } from "./components/profile-page-header";
 
 const Profile = observer(
   ({

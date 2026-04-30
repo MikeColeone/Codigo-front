@@ -1,5 +1,5 @@
 import { useTitle } from "ahooks";
-import RegisterOption from "./RegisterOption";
+import RegisterOption from "./register-option";
 // import WechatLogin from "./login/WechatLogin";
 
 interface IRegisterProps {

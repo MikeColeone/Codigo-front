@@ -1,7 +1,7 @@
 import { LayoutOutlined } from "@ant-design/icons";
-import { ContainerComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeContainer";
-import { TwoColumnComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeTwoColumn";
-import { ViewGroupComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeViewGroup";
+import { containerComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-container";
+import { twoColumnComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-two-column";
+import { viewGroupComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-view-group";
 import type { EditorComponentMeta } from "../types";
 
 export const containerEditorComponents: EditorComponentMeta[] = [
@@ -10,7 +10,7 @@ export const containerEditorComponents: EditorComponentMeta[] = [
     name: "容器",
     icon: <LayoutOutlined />,
     sectionKey: "container",
-    propsEditor: ContainerComponentProps,
+    propsEditor: containerComponentProps,
     hiddenFromPalette: true,
   },
   {
@@ -18,7 +18,7 @@ export const containerEditorComponents: EditorComponentMeta[] = [
     name: "双栏布局",
     icon: <LayoutOutlined />,
     sectionKey: "basic",
-    propsEditor: TwoColumnComponentProps,
+    propsEditor: twoColumnComponentProps,
     hiddenFromPalette: true,
   },
   {
@@ -26,7 +26,7 @@ export const containerEditorComponents: EditorComponentMeta[] = [
     name: "视图组",
     icon: <LayoutOutlined />,
     sectionKey: "basic",
-    propsEditor: ViewGroupComponentProps,
+    propsEditor: viewGroupComponentProps,
     hiddenFromPalette: true,
   },
 ];

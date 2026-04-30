@@ -6,10 +6,10 @@ import {
   PieChartOutlined,
   TableOutlined,
 } from "@ant-design/icons";
-import { ChartComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeChart";
-import { GeoMapComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeGeoMap";
-import { StatisticComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeStatistic";
-import { TableComponentProps } from "@/modules/editor/components/LowCodeComponents/LowCodeTable";
+import { ChartComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-chart";
+import { geoMapComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-geo-map";
+import { statisticComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-statistic";
+import { tableComponentProps } from "@/modules/editor/components/low-code-components/low-code-components/low-code-table";
 import type { EditorComponentMeta } from "../types";
 
 export const reportEditorComponents: EditorComponentMeta[] = [
@@ -18,14 +18,14 @@ export const reportEditorComponents: EditorComponentMeta[] = [
     name: "统计指标",
     icon: <DashboardOutlined />,
     sectionKey: "report",
-    propsEditor: StatisticComponentProps,
+    propsEditor: statisticComponentProps,
   },
   {
     type: "table",
     name: "表格",
     icon: <TableOutlined />,
     sectionKey: "report",
-    propsEditor: TableComponentProps,
+    propsEditor: tableComponentProps,
   },
   {
     type: "barChart",
@@ -53,6 +53,6 @@ export const reportEditorComponents: EditorComponentMeta[] = [
     name: "地图",
     icon: <GlobalOutlined />,
     sectionKey: "report",
-    propsEditor: GeoMapComponentProps,
+    propsEditor: geoMapComponentProps,
   },
 ];

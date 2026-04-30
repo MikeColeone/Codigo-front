@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { flowStore } from "../stores/flowStore";
+import { flowStore } from "../stores/flow-store";
 import { NODE_TYPES, NODE_COLORS } from "../constants";
 import type { NodeType } from "../types";
 

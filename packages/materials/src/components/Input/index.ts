@@ -1,3 +1,3 @@
 export * from './type'
 
-export { default as InputComponent } from './InputComponent'
+export { default as InputComponent } from './input-component'

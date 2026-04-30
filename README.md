@@ -23,30 +23,168 @@ codigo/
 └─ .trae/rules/  # 本地协作规则（不参与生产构建）
 ```
 
+## 环境要求
+
+- **Node.js**: 20.19+ 或 22.12+（Vite 7 需要）
+- **pnpm**: 10.28.2+
+- **数据库**: MySQL 8.0+
+- **缓存**: Redis 6.0+
+
 ## 快速开始
+
+### 1. 安装依赖
 
 ```bash
 pnpm install
+```
+
+### 2. 配置数据库
+
+#### 方式一：本地 Docker 启动（推荐）
+
+```bash
+# 启动 MySQL
+docker run -d --name codigo-mysql \
+  -p 13306:3306 \
+  -e MYSQL_ROOT_PASSWORD=123456 \
+  -e MYSQL_DATABASE=codigo_lowcode \
+  mysql:8
+
+# 启动 Redis
+docker run -d --name codigo-redis \
+  -p 6379:6379 \
+  redis:alpine
+```
+
+然后修改数据库配置：
+
+**apps/server/src/config/index.ts**
+```typescript
+export const redisConfig: RedisOptions = {
+  host: 'localhost',
+  port: 6379,
+};
+```
+
+**apps/server/src/database/typeorm.config.ts**
+```typescript
+export const typeOrmConfig: TypeOrmModuleOptions = {
+  type: 'mysql',
+  host: 'localhost',
+  port: 13306,
+  username: 'root',
+  password: '123456',
+  database: 'codigo_lowcode',
+  // ...
+};
+```
+
+#### 方式二：远程数据库（虚拟机/NAS）
+
+如果数据库运行在虚拟机或另一台电脑上：
+
+1. **虚拟机使用桥接网络**：虚拟机将获得和主机同一网段的 IP，直接修改配置中的 host 为虚拟机 IP
+
+2. **虚拟机使用 NAT + 端口转发**：
+   - VMware: 虚拟机设置 → 网络适配器 → NAT 模式 → 高级 → 端口转发
+   - VirtualBox: 设置 → 网络 → 高级 → 端口转发
+   
+   添加规则：
+   | 主机端口 | 类型 | 虚拟机端口 |
+   |---------|------|-----------|
+   | 13306   | TCP  | 13306     |
+   | 6379    | TCP  | 6379      |
+   
+   配置中使用 `host: 'localhost'` 通过端口转发访问
+
+### 3. 启动开发服务器
+
+#### 全部启动（需要数据库）
+
+```bash
 pnpm run dev
 ```
 
-按应用单独启动：
+#### 单独启动应用
 
 ```bash
+# 只启动前端（不需要数据库）
 pnpm run run:client
-pnpm run run:admin
-pnpm run run:server
-pnpm run run:ide
-pnpm run run:release
+
+# 启动其他应用
+pnpm run run:admin      # 后台管理
+pnpm run run:server     # 后端服务（需要数据库）
+pnpm run run:ide        # OpenSumi IDE
+pnpm run run:release    # 发布端
 ```
+
+### 4. 访问应用
+
+| 应用 | 地址 |
+|------|------|
+| Client | http://localhost:5173/ |
+| Admin | http://localhost:5174/ |
+| Server API | http://localhost:3000/ |
+| OpenSumi IDE | http://localhost:8080/ |
+| Release | http://localhost:3001/ |
+
+## 常见问题
+
+### 1. Vite 报错 `crypto.hash is not a function`
+
+**原因**: Node.js 版本过低（需要 20.19+）
+
+**解决**:
+```bash
+# 使用 nvm 切换版本
+nvm use 20
+# 或
+nvm use 22
+```
+
+### 2. 浏览器报错 `SyntaxError: Unexpected token '-'`
+
+**原因**: Vite 预构建缓存损坏
+
+**解决**:
+```bash
+rm -rf node_modules/.vite
+rm -rf apps/client/node_modules/.vite
+pnpm run run:client
+```
+
+### 3. 后端报错 `Unable to connect to the database`
+
+**原因**: 数据库连接失败
+
+**解决**:
+1. 检查 MySQL 和 Redis 是否运行
+2. 检查配置中的 host、port、密码是否正确
+3. 检查网络连接（虚拟机需要配置端口转发或桥接）
+
+### 4. 端口被占用
+
+Vite 会自动尝试下一个可用端口（5173 → 5174 → 5175...），查看控制台输出确认实际端口。
 
 ## 构建与质量
 
 ```bash
+# 构建所有包
 pnpm run build
+
+# 代码检查
 pnpm run lint
+
+# 类型检查
 pnpm run typecheck
+
+# 运行测试
 pnpm run test
+
+# 构建特定应用
+pnpm run build:client
+pnpm run build:server
+pnpm run build:admin
 ```
 
 ## 协作规则

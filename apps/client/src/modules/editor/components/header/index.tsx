@@ -1,8 +1,8 @@
 import { useEditorPage } from "@/modules/editor/hooks";
-import Left from "./Left";
+import Left from "./left";
 import { observer } from "mobx-react-lite";
-import Center from "./Center";
-import Right from "./Right";
+import Center from "./center";
+import Right from "./right";
 
 const Header = observer(() => {
   const { store: storePage } = useEditorPage();

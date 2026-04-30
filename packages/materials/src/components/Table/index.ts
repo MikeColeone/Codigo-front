@@ -1,2 +1,2 @@
 export * from "./type";
-export { default as TableComponent } from "./TableComponent";
+export { default as TableComponent } from "./table-component";

@@ -1,3 +1,3 @@
 export * from './type'
 
-export { default as AlertComponent } from './AlertComponent'
+export { default as AlertComponent } from './alert-component'

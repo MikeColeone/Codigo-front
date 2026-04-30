@@ -12,7 +12,7 @@ import {
 import { useFitScale, useStorePage } from "@/shared/hooks";
 import { useEditorComponents } from "@/modules/editor/hooks";
 import type { ComponentNode, IEditorPageSchema, RuntimeStateValue } from "@codigo/schema";
-import { AdminShell } from "@/modules/pageShell/components/AdminShell";
+import { AdminShell } from "@/modules/page-shell/components/admin-shell";
 
 function resolvePreviewPage(
   pages: IEditorPageSchema[],

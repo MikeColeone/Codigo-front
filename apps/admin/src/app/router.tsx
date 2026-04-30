@@ -1,13 +1,13 @@
 import { createHashRouter } from "react-router-dom";
-import { AdminIndexRedirect } from "@/modules/admin/components/AdminIndexRedirect";
-import AdminLayout from "@/modules/admin/components/AdminLayout";
-import { AdminPermissionRoute } from "@/modules/admin/components/AdminPermissionRoute";
-import { AdminRouteGuard } from "@/modules/admin/components/AdminRouteGuard";
+import { AdminIndexRedirect } from "@/modules/admin/components/admin-index-redirect";
+import AdminLayout from "@/modules/admin/components/admin-layout";
+import { AdminPermissionRoute } from "@/modules/admin/components/admin-permission-route";
+import { AdminRouteGuard } from "@/modules/admin/components/admin-route-guard";
 import AdminComponents from "@/modules/admin/pages/components";
 import AdminPages from "@/modules/admin/pages/pages";
 import AdminPermissions from "@/modules/admin/pages/permissions";
 import AdminUsers from "@/modules/admin/pages/users";
-import LoginPage from "@/modules/auth/pages/LoginPage";
+import LoginPage from "@/modules/auth/pages/login-page";
 
 export const router = createHashRouter([
   {

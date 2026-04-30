@@ -4,13 +4,13 @@ export function renderCode(framework: SandboxFramework, schemaText: string) {
   if (framework === "vue") {
     return `<script setup lang="ts">
 import LowCodeRenderer from "./LowCodeRenderer.vue";
-const pageSchema = ${schemaText};
+const page-schema = ${schemaText};
 </script>
 
 <template>
   <div class="codigo-page" style="height: 100%; min-height: 100vh; position: relative;">
     <LowCodeRenderer
-      v-for="component in pageSchema"
+      v-for="component in page-schema"
       :key="component.id"
       :component="component"
     />
@@ -22,7 +22,7 @@ const pageSchema = ${schemaText};
   return `import React, { useMemo, useEffect, useState } from "react";
 import { LowCodeRenderer } from "./LowCodeRenderer";
 
-const pageSchema = ${schemaText};
+const page-schema = ${schemaText};
 
 export default function Page() {
   const initialPageState = useMemo(() => {
@@ -68,7 +68,7 @@ export default function Page() {
       });
     };
 
-    visitNodes(pageSchema);
+    visitNodes(page-schema);
     return nextState;
   }, []);
   const [pageState, setPageState] = useState(initialPageState);
@@ -79,7 +79,7 @@ export default function Page() {
 
   return (
     <div className="codigo-page" style={{ height: '100%', minHeight: '100vh', position: 'relative' }}>
-      {pageSchema.map((component) => (
+      {page-schema.map((component) => (
         <LowCodeRenderer
           key={component.id}
           component={component}

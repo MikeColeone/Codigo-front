@@ -1,4 +1,4 @@
-import { useStoreAuth } from "@/shared/hooks/useStoreAuth";
+import { useStoreAuth } from "@/shared/hooks/use-store-auth";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useRequest } from "ahooks";
 import { getLoginWithPhone } from "@/modules/auth/api/user";

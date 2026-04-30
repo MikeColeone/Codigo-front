@@ -1,3 +1,3 @@
 export * from './type'
 
-export { default as CardComponent } from './CardComponent'
+export { default as CardComponent } from './card-component'

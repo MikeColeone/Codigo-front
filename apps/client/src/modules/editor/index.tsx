@@ -9,10 +9,10 @@ import {
   useEditorPage,
   useEditorPermission,
 } from "./hooks";
-import { EditorViewport } from "./components/shell/EditorViewport";
-import { useEditorBootstrap } from "./components/shell/useEditorBootstrap";
-import { fetchTemplateDetail } from "@/modules/templateCenter/api/templates";
-import { writeTemplateToDraft } from "@/modules/templateCenter/utils/templateDraft";
+import { EditorViewport } from "./components/shell/editor-viewport";
+import { useEditorBootstrap } from "./components/shell/use-editor-bootstrap";
+import { fetchTemplateDetail } from "@/modules/template-center/api/templates";
+import { writeTemplateToDraft } from "@/modules/template-center/utils/template-draft";
 import { getLowCodePage } from "@/modules/editor/api/low-code";
 
 const Editor = observer(() => {

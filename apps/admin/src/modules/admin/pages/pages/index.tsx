@@ -1,7 +1,7 @@
 import { Button, Input, Popconfirm, Space, Table, Tag, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { AdminPageVersionDrawer } from "@/modules/admin/components/AdminPageVersionDrawer";
-import { useAdminPagesData } from "@/modules/admin/hooks/useAdminPagesData";
+import { AdminPageVersionDrawer } from "@/modules/admin/components/admin-page-version-drawer";
+import { useAdminPagesData } from "@/modules/admin/hooks/use-admin-pages-data";
 import type { AdminPageItem } from "@/modules/admin/types/admin";
 
 const { Search } = Input;

@@ -1,3 +1,3 @@
 export * from "./type";
 
-export { default as ContainerComponent } from "./ContainerComponent";
+export { default as ContainerComponent } from "./container-component";

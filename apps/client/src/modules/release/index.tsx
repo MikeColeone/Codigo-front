@@ -13,7 +13,7 @@ import {
   type RuntimeAction,
 } from "@/modules/editor/runtime";
 import { useFitScale } from "@/shared/hooks";
-import { AdminShell } from "@/modules/pageShell/components/AdminShell";
+import { AdminShell } from "@/modules/page-shell/components/admin-shell";
 
 function resolveSchemaFromReleasePayload(
   payload: Record<string, any> | null | undefined,

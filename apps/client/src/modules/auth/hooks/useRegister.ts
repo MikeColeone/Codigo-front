@@ -1,6 +1,6 @@
 import { useSendCode } from "@/shared/hooks";
 import type { FormInstance } from "antd";
-import { useStoreAuth } from "@/shared/hooks/useStoreAuth";
+import { useStoreAuth } from "@/shared/hooks/use-store-auth";
 import { useRequest } from "ahooks";
 import { getRegister } from "@/modules/auth/api/user";
 import { useNavigate, useSearchParams } from "react-router-dom";

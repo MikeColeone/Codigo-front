@@ -1,3 +1,3 @@
 export * from './type'
 
-export { default as ImageComponent } from './ImageComponent'
+export { default as ImageComponent } from './image-component'

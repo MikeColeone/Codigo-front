@@ -1,3 +1,3 @@
 export * from "./components";
-export * from "./layoutHistory";
+export * from "./layout-history";
 export * from "./permission";

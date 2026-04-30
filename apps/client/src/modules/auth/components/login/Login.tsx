@@ -1,7 +1,7 @@
 import { useTitle } from "ahooks";
 import { useState } from "react";
-import Account from "./Account.tsx";
-import Captcha from "./Captcha.tsx";
+import Account from "./account.tsx";
+import Captcha from "./captcha.tsx";
 // import WechatLogin from "./login/WechatLogin";
 
 interface ILoginProps {

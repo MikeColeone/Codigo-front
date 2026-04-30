@@ -2,7 +2,7 @@ import type { TComponentTypes } from "@codigo/schema";
 import {
   getDefaultHeightByType,
   getDefaultWidthByType,
-} from "@/modules/editor/utils/pageLayout";
+} from "@/modules/editor/utils/page-layout";
 
 export interface CanvasCollisionRect {
   left: number;

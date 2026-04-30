@@ -4,16 +4,16 @@ import Home from "@/modules/home/index";
 import Release from "@/modules/release";
 import Preview from "@/modules/preview";
 import Flow from "@/modules/flow";
-import DevDoc from "@/modules/devDocument";
-import AppManagement from "@/modules/appManagement/index";
-import { StudioLayout } from "@/app/layouts/StudioLayout";
-import { EditorRouteGuard } from "@/modules/editor/components/EditorRouteGuard";
-import AdminLayout from "@/modules/adminConsole/components/AdminLayout";
-import { AdminRouteGuard } from "@/modules/adminConsole/components/AdminRouteGuard";
-import AdminDashboard from "@/modules/adminConsole/pages/Dashboard";
-import AdminPermissions from "@/modules/adminConsole/pages/Permissions";
-import AdminPlaceholder from "@/modules/adminConsole/pages/Placeholder";
-import { IdeThemeLayout } from "@/app/layouts/IdeThemeLayout";
+import DevDoc from "@/modules/dev-document";
+import AppManagement from "@/modules/app-management/index";
+import { StudioLayout } from "@/app/layouts/studio-layout";
+import { EditorRouteGuard } from "@/modules/editor/components/editor-route-guard";
+import AdminLayout from "@/modules/admin-console/components/admin-layout";
+import { AdminRouteGuard } from "@/modules/admin-console/components/admin-route-guard";
+import AdminDashboard from "@/modules/admin-console/pages/dashboard";
+import AdminPermissions from "@/modules/admin-console/pages/permissions";
+import AdminPlaceholder from "@/modules/admin-console/pages/placeholder";
+import { IdeThemeLayout } from "@/app/layouts/ide-theme-layout";
 
 export const router = createHashRouter([
   {

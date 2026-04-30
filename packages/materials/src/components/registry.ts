@@ -39,7 +39,7 @@ import {
   registerComponent,
   type IComponentPlugin,
 } from "@codigo/plugin-system";
-import { initBuiltinEChartsThemes } from "../utils/echartsTheme";
+import { initBuiltinEChartsThemes } from "../utils/echarts-theme";
 
 type BuiltinComponentDefinition = IComponentPlugin<
   TComponentTypes,
@@ -49,269 +49,1044 @@ type BuiltinComponentDefinition = IComponentPlugin<
 
 export const builtinComponentDefinitions: BuiltinComponentDefinition[] = [
   {
-    type: "container",
-    name: "Container",
-    description: "通用容器，用于承载子组件并进行布局编排。",
-    defaultConfig: {} as any,
-    render: LowCodeContainer,
-    isContainer: true,
-    slots: [{ name: "default", title: "默认区域", multiple: true }],
-  },
-  {
-    type: "twoColumn",
-    name: "TwoColumn",
-    description: "双列布局容器，提供左右两块可编辑区域。",
-    defaultConfig: {} as any,
-    render: LowCodeTwoColumn,
-    isContainer: true,
-    slots: [
-      { name: "left", title: "左区域", multiple: true },
-      { name: "right", title: "右区域", multiple: true },
+    type: "low-code-container",
+    name: "容器",
+    icon: "Container",
+    component: LowCodeContainer,
+    defaultProps: {
+      style: {
+        width: "100%",
+        minHeight: "100px",
+        backgroundColor: "#ffffff",
+        borderRadius: "8px",
+        padding: "16px",
+      },
+    },
+    propsConfig: [
+      {
+        key: "style.backgroundColor",
+        label: "背景色",
+        type: "color",
+      },
+      {
+        key: "style.padding",
+        label: "内边距",
+        type: "text",
+      },
+      {
+        key: "style.borderRadius",
+        label: "圆角",
+        type: "text",
+      },
     ],
   },
   {
-    type: "viewGroup",
-    name: "ViewGroup",
-    description: "分组容器，用于组织内容区块并形成清晰的页面结构。",
-    defaultConfig: {} as any,
-    render: LowCodeViewGroup,
-    isContainer: true,
-    slots: [{ name: "default", title: "视图区域", multiple: true }],
+    type: "low-code-two-column",
+    name: "双栏布局",
+    icon: "Layout",
+    component: LowCodeTwoColumn,
+    defaultProps: {
+      sidebarWidth: 280,
+      sidebarTitle: "侧边栏",
+      showSidebar: true,
+      style: {
+        height: "100%",
+      },
+    },
+    propsConfig: [
+      {
+        key: "sidebarWidth",
+        label: "侧边栏宽度",
+        type: "number",
+      },
+      {
+        key: "sidebarTitle",
+        label: "侧边栏标题",
+        type: "text",
+      },
+      {
+        key: "showSidebar",
+        label: "显示侧边栏",
+        type: "switch",
+      },
+    ],
   },
   {
-    type: "accordion",
-    name: "Accordion",
-    description: "手风琴折叠面板，用于收纳可展开/收起的内容。",
-    defaultConfig: {} as any,
-    render: LowCodeAccordion,
+    type: "low-code-view-group",
+    name: "视图组",
+    icon: "Layers",
+    component: LowCodeViewGroup,
+    defaultProps: {
+      containers: [
+        { id: "view-1", label: "视图 1", visible: true },
+      ],
+      currentViewId: "view-1",
+    },
+    propsConfig: [
+      {
+        key: "containers",
+        label: "容器列表",
+        type: "array",
+      },
+      {
+        key: "currentViewId",
+        label: "当前视图",
+        type: "text",
+      },
+    ],
   },
   {
-    type: "button",
-    name: "Button",
-    description: "按钮组件，可配合事件编排触发动作链路。",
-    defaultConfig: {} as any,
-    render: LowCodeButton,
+    type: "low-code-accordion",
+    name: "手风琴",
+    icon: "ChevronDown",
+    component: LowCodeAccordion,
+    defaultProps: {
+      title: "折叠面板",
+      defaultExpanded: false,
+    },
+    propsConfig: [
+      {
+        key: "title",
+        label: "标题",
+        type: "text",
+      },
+      {
+        key: "defaultExpanded",
+        label: "默认展开",
+        type: "switch",
+      },
+    ],
   },
   {
-    type: "breadcrumbBar",
-    name: "BreadcrumbBar",
-    description: "面包屑导航条，用于展示页面层级与返回路径。",
-    defaultConfig: {} as any,
-    render: LowCodeBreadcrumbBar,
+    type: "low-code-button",
+    name: "按钮",
+    icon: "MousePointer",
+    component: LowCodeButton,
+    defaultProps: {
+      text: "按钮",
+      type: "primary",
+      size: "middle",
+    },
+    propsConfig: [
+      {
+        key: "text",
+        label: "文本",
+        type: "text",
+      },
+      {
+        key: "type",
+        label: "类型",
+        type: "select",
+        options: [
+          { label: "主按钮", value: "primary" },
+          { label: "次按钮", value: "default" },
+          { label: "虚线按钮", value: "dashed" },
+          { label: "文字按钮", value: "text" },
+          { label: "链接按钮", value: "link" },
+        ],
+      },
+      {
+        key: "size",
+        label: "尺寸",
+        type: "select",
+        options: [
+          { label: "大", value: "large" },
+          { label: "中", value: "middle" },
+          { label: "小", value: "small" },
+        ],
+      },
+    ],
   },
   {
-    type: "pageHeader",
-    name: "PageHeader",
-    description: "页面头部区块，适用于后台页面标题、操作按钮与说明。",
-    defaultConfig: {} as any,
-    render: LowCodePageHeader,
+    type: "low-code-breadcrumb-bar",
+    name: "面包屑导航",
+    icon: "ChevronRight",
+    component: LowCodeBreadcrumbBar,
+    defaultProps: {
+      items: [
+        { title: "首页", path: "/" },
+        { title: "当前页", path: "" },
+      ],
+    },
+    propsConfig: [
+      {
+        key: "items",
+        label: "面包屑项",
+        type: "array",
+      },
+    ],
   },
   {
-    type: "queryFilter",
-    name: "QueryFilter",
-    description: "查询筛选区块，适用于表格/列表前的条件过滤。",
-    defaultConfig: {} as any,
-    render: LowCodeQueryFilter,
+    type: "low-code-page-header",
+    name: "页面头部",
+    icon: "PanelTop",
+    component: LowCodePageHeader,
+    defaultProps: {
+      title: "页面标题",
+      subtitle: "",
+      showBack: true,
+    },
+    propsConfig: [
+      {
+        key: "title",
+        label: "标题",
+        type: "text",
+      },
+      {
+        key: "subtitle",
+        label: "副标题",
+        type: "text",
+      },
+      {
+        key: "showBack",
+        label: "显示返回",
+        type: "switch",
+      },
+    ],
   },
   {
-    type: "statCard",
-    name: "StatCard",
-    description: "指标卡片，用于展示核心统计数据与趋势。",
-    defaultConfig: {} as any,
-    render: LowCodeStatCard,
+    type: "low-code-query-filter",
+    name: "查询筛选",
+    icon: "Filter",
+    component: LowCodeQueryFilter,
+    defaultProps: {
+      filters: [],
+      submitText: "查询",
+      resetText: "重置",
+    },
+    propsConfig: [
+      {
+        key: "filters",
+        label: "筛选条件",
+        type: "array",
+      },
+      {
+        key: "submitText",
+        label: "提交按钮文本",
+        type: "text",
+      },
+      {
+        key: "resetText",
+        label: "重置按钮文本",
+        type: "text",
+      },
+    ],
   },
   {
-    type: "cardGrid",
-    name: "CardGrid",
-    description: "卡片网格布局，用于统一排布多个信息卡片。",
-    defaultConfig: {} as any,
-    render: LowCodeCardGrid,
+    type: "low-code-stat-card",
+    name: "统计卡片",
+    icon: "BarChart3",
+    component: LowCodeStatCard,
+    defaultProps: {
+      title: "指标",
+      value: "0",
+      unit: "",
+      trend: "up",
+      trendValue: "0%",
+    },
+    propsConfig: [
+      {
+        key: "title",
+        label: "标题",
+        type: "text",
+      },
+      {
+        key: "value",
+        label: "数值",
+        type: "text",
+      },
+      {
+        key: "unit",
+        label: "单位",
+        type: "text",
+      },
+      {
+        key: "trend",
+        label: "趋势",
+        type: "select",
+        options: [
+          { label: "上升", value: "up" },
+          { label: "下降", value: "down" },
+          { label: "持平", value: "flat" },
+        ],
+      },
+      {
+        key: "trendValue",
+        label: "趋势值",
+        type: "text",
+      },
+    ],
   },
   {
-    type: "dataTable",
-    name: "DataTable",
-    description: "数据表格区块，适用于后台列表展示与基础交互。",
-    defaultConfig: {} as any,
-    render: LowCodeDataTable,
+    type: "low-code-card-grid",
+    name: "卡片网格",
+    icon: "Grid3X3",
+    component: LowCodeCardGrid,
+    defaultProps: {
+      columns: 3,
+      gap: 16,
+      cards: [],
+    },
+    propsConfig: [
+      {
+        key: "columns",
+        label: "列数",
+        type: "number",
+      },
+      {
+        key: "gap",
+        label: "间距",
+        type: "number",
+      },
+      {
+        key: "cards",
+        label: "卡片数据",
+        type: "array",
+      },
+    ],
   },
   {
-    type: "video",
-    name: "Video",
-    description: "视频播放器组件，用于嵌入视频内容。",
-    defaultConfig: {} as any,
-    render: LowCodeVideo,
+    type: "low-code-data-table",
+    name: "数据表格",
+    icon: "Table",
+    component: LowCodeDataTable,
+    defaultProps: {
+      columns: [],
+      dataSource: [],
+      pagination: true,
+      pageSize: 10,
+    },
+    propsConfig: [
+      {
+        key: "columns",
+        label: "列定义",
+        type: "array",
+      },
+      {
+        key: "dataSource",
+        label: "数据源",
+        type: "array",
+      },
+      {
+        key: "pagination",
+        label: "分页",
+        type: "switch",
+      },
+      {
+        key: "pageSize",
+        label: "每页条数",
+        type: "number",
+      },
+    ],
   },
   {
-    type: "image",
-    name: "Image",
-    description: "图片组件，用于展示图片资源并支持基础样式配置。",
-    defaultConfig: {} as any,
-    render: LowCodeImage,
+    type: "low-code-card",
+    name: "卡片",
+    icon: "Square",
+    component: LowCodeCard,
+    defaultProps: {
+      title: "卡片标题",
+      bordered: true,
+      hoverable: false,
+    },
+    propsConfig: [
+      {
+        key: "title",
+        label: "标题",
+        type: "text",
+      },
+      {
+        key: "bordered",
+        label: "显示边框",
+        type: "switch",
+      },
+      {
+        key: "hoverable",
+        label: "悬浮效果",
+        type: "switch",
+      },
+    ],
   },
   {
-    type: "avatar",
-    name: "Avatar",
-    description: "头像组件，用于展示用户头像或标识图。",
-    defaultConfig: {} as any,
-    render: LowCodeAvatar,
+    type: "low-code-image",
+    name: "图片",
+    icon: "Image",
+    component: LowCodeImage,
+    defaultProps: {
+      src: "",
+      alt: "",
+      width: "100%",
+      height: "auto",
+      objectFit: "cover",
+    },
+    propsConfig: [
+      {
+        key: "src",
+        label: "图片地址",
+        type: "text",
+      },
+      {
+        key: "alt",
+        label: "替代文本",
+        type: "text",
+      },
+      {
+        key: "width",
+        label: "宽度",
+        type: "text",
+      },
+      {
+        key: "height",
+        label: "高度",
+        type: "text",
+      },
+      {
+        key: "objectFit",
+        label: "填充模式",
+        type: "select",
+        options: [
+          { label: "覆盖", value: "cover" },
+          { label: "包含", value: "contain" },
+          { label: "填充", value: "fill" },
+          { label: "无", value: "none" },
+        ],
+      },
+    ],
   },
   {
-    type: "swiper",
-    name: "Swiper",
-    description: "轮播组件，用于多张图片/内容的切换展示。",
-    defaultConfig: {} as any,
-    render: LowCodeSwiper,
+    type: "low-code-avatar",
+    name: "头像",
+    icon: "User",
+    component: LowCodeAvatar,
+    defaultProps: {
+      src: "",
+      size: 40,
+      shape: "circle",
+    },
+    propsConfig: [
+      {
+        key: "src",
+        label: "头像地址",
+        type: "text",
+      },
+      {
+        key: "size",
+        label: "尺寸",
+        type: "number",
+      },
+      {
+        key: "shape",
+        label: "形状",
+        type: "select",
+        options: [
+          { label: "圆形", value: "circle" },
+          { label: "方形", value: "square" },
+        ],
+      },
+    ],
   },
   {
-    type: "card",
-    name: "Card",
-    description: "卡片容器，用于承载内容并提供统一的视觉边界。",
-    defaultConfig: {} as any,
-    render: LowCodeCard,
+    type: "low-code-list",
+    name: "列表",
+    icon: "List",
+    component: LowCodeList,
+    defaultProps: {
+      dataSource: [],
+      renderItem: null,
+      bordered: false,
+    },
+    propsConfig: [
+      {
+        key: "dataSource",
+        label: "数据源",
+        type: "array",
+      },
+      {
+        key: "bordered",
+        label: "显示边框",
+        type: "switch",
+      },
+    ],
   },
   {
-    type: "list",
-    name: "List",
-    description: "列表组件，用于展示结构化条目内容。",
-    defaultConfig: {} as any,
-    render: LowCodeList,
+    type: "low-code-statistic",
+    name: "统计数值",
+    icon: "Hash",
+    component: LowCodeStatistic,
+    defaultProps: {
+      title: "统计项",
+      value: 0,
+      precision: 0,
+      suffix: "",
+      prefix: "",
+    },
+    propsConfig: [
+      {
+        key: "title",
+        label: "标题",
+        type: "text",
+      },
+      {
+        key: "value",
+        label: "数值",
+        type: "number",
+      },
+      {
+        key: "precision",
+        label: "精度",
+        type: "number",
+      },
+      {
+        key: "suffix",
+        label: "后缀",
+        type: "text",
+      },
+      {
+        key: "prefix",
+        label: "前缀",
+        type: "text",
+      },
+    ],
   },
   {
-    type: "statistic",
-    name: "Statistic",
-    description: "统计数字组件，适用于关键指标数字展示。",
-    defaultConfig: {} as any,
-    render: LowCodeStatistic,
+    type: "low-code-swiper",
+    name: "轮播图",
+    icon: "Slideshow",
+    component: LowCodeSwiper,
+    defaultProps: {
+      slides: [],
+      autoplay: true,
+      interval: 3000,
+    },
+    propsConfig: [
+      {
+        key: "slides",
+        label: "幻灯片",
+        type: "array",
+      },
+      {
+        key: "autoplay",
+        label: "自动播放",
+        type: "switch",
+      },
+      {
+        key: "interval",
+        label: "间隔(ms)",
+        type: "number",
+      },
+    ],
   },
   {
-    type: "table",
-    name: "Table",
-    description: "基础表格组件，适用于轻量级表格展示。",
-    defaultConfig: {} as any,
-    render: LowCodeTable,
+    type: "low-code-table",
+    name: "表格",
+    icon: "Table2",
+    component: LowCodeTable,
+    defaultProps: {
+      columns: [],
+      dataSource: [],
+      pagination: false,
+    },
+    propsConfig: [
+      {
+        key: "columns",
+        label: "列定义",
+        type: "array",
+      },
+      {
+        key: "dataSource",
+        label: "数据源",
+        type: "array",
+      },
+      {
+        key: "pagination",
+        label: "分页",
+        type: "switch",
+      },
+    ],
   },
   {
-    type: "titleText",
-    name: "Text",
-    description: "文本组件，用于展示标题或正文内容。",
-    defaultConfig: {} as any,
-    render: LowCodeText,
+    type: "low-code-video",
+    name: "视频",
+    icon: "Video",
+    component: LowCodeVideo,
+    defaultProps: {
+      src: "",
+      poster: "",
+      autoplay: false,
+      controls: true,
+      loop: false,
+    },
+    propsConfig: [
+      {
+        key: "src",
+        label: "视频地址",
+        type: "text",
+      },
+      {
+        key: "poster",
+        label: "封面图",
+        type: "text",
+      },
+      {
+        key: "autoplay",
+        label: "自动播放",
+        type: "switch",
+      },
+      {
+        key: "controls",
+        label: "控制条",
+        type: "switch",
+      },
+      {
+        key: "loop",
+        label: "循环播放",
+        type: "switch",
+      },
+    ],
   },
   {
-    type: "split",
-    name: "Split",
-    description: "分割线组件，用于分隔不同内容区域。",
-    defaultConfig: {} as any,
-    render: LowCodeSplit,
+    type: "low-code-text",
+    name: "文本",
+    icon: "Type",
+    component: LowCodeText,
+    defaultProps: {
+      content: "文本内容",
+      fontSize: 14,
+      color: "#000000",
+      align: "left",
+    },
+    propsConfig: [
+      {
+        key: "content",
+        label: "内容",
+        type: "textarea",
+      },
+      {
+        key: "fontSize",
+        label: "字体大小",
+        type: "number",
+      },
+      {
+        key: "color",
+        label: "颜色",
+        type: "color",
+      },
+      {
+        key: "align",
+        label: "对齐",
+        type: "select",
+        options: [
+          { label: "左对齐", value: "left" },
+          { label: "居中", value: "center" },
+          { label: "右对齐", value: "right" },
+        ],
+      },
+    ],
   },
   {
-    type: "empty",
-    name: "Empty",
-    description: "空状态组件，用于无数据/无结果时的占位提示。",
-    defaultConfig: {} as any,
-    render: LowCodeEmpty,
+    type: "low-code-split",
+    name: "分割线",
+    icon: "Minus",
+    component: LowCodeSplit,
+    defaultProps: {
+      direction: "horizontal",
+      text: "",
+    },
+    propsConfig: [
+      {
+        key: "direction",
+        label: "方向",
+        type: "select",
+        options: [
+          { label: "水平", value: "horizontal" },
+          { label: "垂直", value: "vertical" },
+        ],
+      },
+      {
+        key: "text",
+        label: "文本",
+        type: "text",
+      },
+    ],
   },
   {
-    type: "richText",
-    name: "RichText",
-    description: "富文本组件，用于展示格式化文本内容。",
-    defaultConfig: {} as any,
-    render: LowCodeRichText,
+    type: "low-code-empty",
+    name: "空状态",
+    icon: "Inbox",
+    component: LowCodeEmpty,
+    defaultProps: {
+      description: "暂无数据",
+      image: null,
+    },
+    propsConfig: [
+      {
+        key: "description",
+        label: "描述",
+        type: "text",
+      },
+    ],
   },
   {
-    type: "qrcode",
-    name: "Qrcode",
-    description: "二维码组件，用于生成并展示二维码信息。",
-    defaultConfig: {} as any,
-    render: LowCodeQrcode,
+    type: "low-code-rich-text",
+    name: "富文本",
+    icon: "FileText",
+    component: LowCodeRichText,
+    defaultProps: {
+      html: "<p>富文本内容</p>",
+    },
+    propsConfig: [
+      {
+        key: "html",
+        label: "HTML 内容",
+        type: "textarea",
+      },
+    ],
   },
   {
-    type: "alert",
-    name: "Alert",
-    description: "提示/告警组件，用于展示状态说明或风险提示。",
-    defaultConfig: {} as any,
-    render: LowCodeAlert,
+    type: "low-code-qrcode",
+    name: "二维码",
+    icon: "QrCode",
+    component: LowCodeQrcode,
+    defaultProps: {
+      value: "",
+      size: 128,
+      color: "#000000",
+      bgColor: "#ffffff",
+    },
+    propsConfig: [
+      {
+        key: "value",
+        label: "内容",
+        type: "text",
+      },
+      {
+        key: "size",
+        label: "尺寸",
+        type: "number",
+      },
+      {
+        key: "color",
+        label: "前景色",
+        type: "color",
+      },
+      {
+        key: "bgColor",
+        label: "背景色",
+        type: "color",
+      },
+    ],
   },
   {
-    type: "geoMap",
-    name: "GeoMap",
-    description: "地图组件，用于展示区域分布、标记点和坐标信息。",
-    defaultConfig: {} as any,
-    render: LowCodeGeoMap,
+    type: "low-code-alert",
+    name: "警告提示",
+    icon: "AlertCircle",
+    component: LowCodeAlert,
+    defaultProps: {
+      message: "提示信息",
+      type: "info",
+      showIcon: true,
+      closable: false,
+    },
+    propsConfig: [
+      {
+        key: "message",
+        label: "消息",
+        type: "text",
+      },
+      {
+        key: "type",
+        label: "类型",
+        type: "select",
+        options: [
+          { label: "信息", value: "info" },
+          { label: "成功", value: "success" },
+          { label: "警告", value: "warning" },
+          { label: "错误", value: "error" },
+        ],
+      },
+      {
+        key: "showIcon",
+        label: "显示图标",
+        type: "switch",
+      },
+      {
+        key: "closable",
+        label: "可关闭",
+        type: "switch",
+      },
+    ],
   },
   {
-    type: "input",
-    name: "Input",
-    description: "输入框组件，用于录入单行文本。",
-    defaultConfig: {} as any,
-    render: LowCodeInput,
+    type: "low-code-geo-map",
+    name: "地理地图",
+    icon: "Map",
+    component: LowCodeGeoMap,
+    defaultProps: {
+      mapType: "china",
+      data: [],
+      height: 400,
+    },
+    propsConfig: [
+      {
+        key: "mapType",
+        label: "地图类型",
+        type: "select",
+        options: [
+          { label: "中国", value: "china" },
+          { label: "世界", value: "world" },
+        ],
+      },
+      {
+        key: "data",
+        label: "数据",
+        type: "array",
+      },
+      {
+        key: "height",
+        label: "高度",
+        type: "number",
+      },
+    ],
   },
   {
-    type: "textArea",
-    name: "TextArea",
-    description: "多行文本输入组件，用于录入较长内容。",
-    defaultConfig: {} as any,
-    render: LowCodeTextArea,
+    type: "low-code-input",
+    name: "输入框",
+    icon: "FormInput",
+    component: LowCodeInput,
+    defaultProps: {
+      placeholder: "请输入",
+      type: "text",
+      disabled: false,
+      allowClear: true,
+    },
+    propsConfig: [
+      {
+        key: "placeholder",
+        label: "占位符",
+        type: "text",
+      },
+      {
+        key: "type",
+        label: "类型",
+        type: "select",
+        options: [
+          { label: "文本", value: "text" },
+          { label: "密码", value: "password" },
+          { label: "数字", value: "number" },
+        ],
+      },
+      {
+        key: "disabled",
+        label: "禁用",
+        type: "switch",
+      },
+      {
+        key: "allowClear",
+        label: "可清空",
+        type: "switch",
+      },
+    ],
   },
   {
-    type: "radio",
-    name: "Radio",
-    description: "单选组件，用于在多个选项中选择一个。",
-    defaultConfig: {} as any,
-    render: LowCodeRadio,
+    type: "low-code-text-area",
+    name: "文本域",
+    icon: "Text",
+    component: LowCodeTextArea,
+    defaultProps: {
+      placeholder: "请输入",
+      rows: 4,
+      maxLength: null,
+      showCount: false,
+    },
+    propsConfig: [
+      {
+        key: "placeholder",
+        label: "占位符",
+        type: "text",
+      },
+      {
+        key: "rows",
+        label: "行数",
+        type: "number",
+      },
+      {
+        key: "maxLength",
+        label: "最大长度",
+        type: "number",
+      },
+      {
+        key: "showCount",
+        label: "显示计数",
+        type: "switch",
+      },
+    ],
   },
   {
-    type: "checkbox",
-    name: "Checkbox",
-    description: "多选组件，用于勾选多个选项。",
-    defaultConfig: {} as any,
-    render: LowCodeCheckbox,
+    type: "low-code-radio",
+    name: "单选框",
+    icon: "CircleDot",
+    component: LowCodeRadio,
+    defaultProps: {
+      options: [
+        { label: "选项1", value: "1" },
+        { label: "选项2", value: "2" },
+      ],
+      direction: "horizontal",
+    },
+    propsConfig: [
+      {
+        key: "options",
+        label: "选项",
+        type: "array",
+      },
+      {
+        key: "direction",
+        label: "方向",
+        type: "select",
+        options: [
+          { label: "水平", value: "horizontal" },
+          { label: "垂直", value: "vertical" },
+        ],
+      },
+    ],
   },
   {
-    type: "barChart",
-    name: "BarChart",
-    description: "柱状图组件，用于展示分类数据对比。",
-    defaultConfig: {} as any,
-    render: LowCodeBarChart,
+    type: "low-code-checkbox",
+    name: "复选框",
+    icon: "CheckSquare",
+    component: LowCodeCheckbox,
+    defaultProps: {
+      options: [
+        { label: "选项1", value: "1" },
+        { label: "选项2", value: "2" },
+      ],
+    },
+    propsConfig: [
+      {
+        key: "options",
+        label: "选项",
+        type: "array",
+      },
+    ],
   },
   {
-    type: "lineChart",
-    name: "LineChart",
-    description: "折线图组件，用于展示趋势变化。",
-    defaultConfig: {} as any,
-    render: LowCodeLineChart,
+    type: "low-code-bar-chart",
+    name: "柱状图",
+    icon: "BarChart",
+    component: LowCodeBarChart,
+    defaultProps: {
+      title: "",
+      xAxis: [],
+      series: [],
+      height: 300,
+    },
+    propsConfig: [
+      {
+        key: "title",
+        label: "标题",
+        type: "text",
+      },
+      {
+        key: "xAxis",
+        label: "X轴数据",
+        type: "array",
+      },
+      {
+        key: "series",
+        label: "系列数据",
+        type: "array",
+      },
+      {
+        key: "height",
+        label: "高度",
+        type: "number",
+      },
+    ],
   },
   {
-    type: "pieChart",
-    name: "PieChart",
-    description: "饼图组件，用于展示占比结构。",
-    defaultConfig: {} as any,
-    render: LowCodePieChart,
+    type: "low-code-line-chart",
+    name: "折线图",
+    icon: "LineChart",
+    component: LowCodeLineChart,
+    defaultProps: {
+      title: "",
+      xAxis: [],
+      series: [],
+      height: 300,
+      smooth: true,
+    },
+    propsConfig: [
+      {
+        key: "title",
+        label: "标题",
+        type: "text",
+      },
+      {
+        key: "xAxis",
+        label: "X轴数据",
+        type: "array",
+      },
+      {
+        key: "series",
+        label: "系列数据",
+        type: "array",
+      },
+      {
+        key: "height",
+        label: "高度",
+        type: "number",
+      },
+      {
+        key: "smooth",
+        label: "平滑曲线",
+        type: "switch",
+      },
+    ],
+  },
+  {
+    type: "low-code-pie-chart",
+    name: "饼图",
+    icon: "PieChart",
+    component: LowCodePieChart,
+    defaultProps: {
+      title: "",
+      data: [],
+      height: 300,
+      donut: false,
+    },
+    propsConfig: [
+      {
+        key: "title",
+        label: "标题",
+        type: "text",
+      },
+      {
+        key: "data",
+        label: "数据",
+        type: "array",
+      },
+      {
+        key: "height",
+        label: "高度",
+        type: "number",
+      },
+      {
+        key: "donut",
+        label: "环形图",
+        type: "switch",
+      },
+    ],
   },
 ];
 
-let builtinComponentsInitialized = false;
-
-/**
- * 根据物料类型查找对应的内置组件定义，供注册和运行时渲染复用。
- */
-export function getBuiltinComponentDefinitionByType(type?: string | null) {
-  if (!type) {
-    return null;
-  }
-
-  return builtinComponentDefinitions.find((item) => item.type === type) ?? null;
-}
-
-/**
- * 初始化内置物料与图表主题，并确保组件注册只执行一次。
- */
 export function initBuiltinComponents() {
   initBuiltinEChartsThemes();
-  if (builtinComponentsInitialized) {
-    return;
-  }
 
-  builtinComponentsInitialized = true;
-  builtinComponentDefinitions.forEach((item) => registerComponent(item));
+  for (const definition of builtinComponentDefinitions) {
+    registerComponent(definition.type, definition);
+  }
+}
+
+export function getBuiltinComponentDefinitionByType(type: TComponentTypes) {
+  return builtinComponentDefinitions.find((d) => d.type === type);
 }

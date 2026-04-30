@@ -4,7 +4,7 @@ export function renderCode(schemaText: string) {
   return `import React, { useEffect, useMemo, useState } from "react";
 import { LowCodeRenderer } from "./LowCodeRenderer";
 
-const pageSchema = ${schemaText};
+const page-schema = ${schemaText};
 
 export default function Page() {
   const initialPageState = useMemo(() => {
@@ -50,7 +50,7 @@ export default function Page() {
       });
     };
 
-    visitNodes(pageSchema);
+    visitNodes(page-schema);
     return nextState;
   }, []);
   const [pageState, setPageState] = useState(initialPageState);
@@ -61,7 +61,7 @@ export default function Page() {
 
   return (
     <div className="codigo-page">
-      {pageSchema.map((component) => (
+      {page-schema.map((component) => (
         <LowCodeRenderer
           key={component.id}
           component={component}

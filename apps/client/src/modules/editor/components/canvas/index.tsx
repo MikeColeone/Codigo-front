@@ -18,10 +18,10 @@ import {
 } from "@/modules/editor/hooks";
 import { generateComponent } from "@/modules/editor/runtime";
 import type { TEditorComponentsStore } from "@/modules/editor/stores";
-import { useCanvasDragMove } from "./hooks/useCanvasDragMove";
-import { useCanvasDrop } from "./hooks/useCanvasDrop";
-import { useCanvasResize } from "./hooks/useCanvasResize";
-import { GridDashedOverlay } from "./GridDashedOverlay";
+import { useCanvasDragMove } from "./hooks/use-canvas-drag-move";
+import { useCanvasDrop } from "./hooks/use-canvas-drop";
+import { useCanvasResize } from "./hooks/use-canvas-resize";
+import { GridDashedOverlay } from "./grid-dashed-overlay";
 
 interface ComponentWrapperProps {
   id: string;

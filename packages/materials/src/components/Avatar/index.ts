@@ -1,2 +1,2 @@
 export * from './type'; 
-export { default as AvatarComponent } from './AvatarComponent'
+export { default as AvatarComponent } from './avatar-component'

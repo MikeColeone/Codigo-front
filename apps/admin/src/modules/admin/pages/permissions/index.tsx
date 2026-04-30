@@ -1,9 +1,9 @@
 import { Input } from "antd";
-import { AdminUserPermissionModal } from "@/modules/admin/components/AdminUserPermissionModal";
-import { AdminUsersTable } from "@/modules/admin/components/AdminUsersTable";
-import { useAdminAccess } from "@/modules/admin/hooks/useAdminAccess";
-import { useAdminPermissionEditor } from "@/modules/admin/hooks/useAdminPermissionEditor";
-import { useAdminUsersData } from "@/modules/admin/hooks/useAdminUsersData";
+import { AdminUserPermissionModal } from "@/modules/admin/components/admin-user-permission-modal";
+import { AdminUsersTable } from "@/modules/admin/components/admin-users-table";
+import { useAdminAccess } from "@/modules/admin/hooks/use-admin-access";
+import { useAdminPermissionEditor } from "@/modules/admin/hooks/use-admin-permission-editor";
+import { useAdminUsersData } from "@/modules/admin/hooks/use-admin-users-data";
 
 const { Search } = Input;
 
